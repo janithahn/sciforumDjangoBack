@@ -55,7 +55,7 @@ SITE_ID = 1
 
 ACCOUNT_AUTHENTICATION_METHOD ='username_email'
 ACCOUNT_EMAIL_REQUIRED=False
-ACCOUNT_EMAIL_VERIFICATION ='optional'
+ACCOUNT_EMAIL_VERIFICATION ='none'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
