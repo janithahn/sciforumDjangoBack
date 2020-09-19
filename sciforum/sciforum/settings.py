@@ -38,9 +38,24 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework.authtoken',
     'post.apps.PostConfig',
     'corsheaders',
+    'rest_auth',
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'rest_auth.registration',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.facebook',
+    'allauth.socialaccount.providers.twitter',
 ]
+
+SITE_ID = 1
+
+ACCOUNT_AUTHENTICATION_METHOD ='username_email'
+ACCOUNT_EMAIL_REQUIRED=False
+ACCOUNT_EMAIL_VERIFICATION ='optional'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
