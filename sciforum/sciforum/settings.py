@@ -57,6 +57,13 @@ ACCOUNT_AUTHENTICATION_METHOD ='username_email'
 ACCOUNT_EMAIL_REQUIRED=False
 ACCOUNT_EMAIL_VERIFICATION ='none'
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+    )
+}
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
