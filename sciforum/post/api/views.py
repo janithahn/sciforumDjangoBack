@@ -26,7 +26,7 @@ class UserDetailView(RetrieveAPIView):
     serializer_class = UserSerializer
 
 class UserUpdateView(UpdateAPIView):
-    #authentication_classes = [authentication.TokenAuthentication]
+    authentication_classes = [authentication.TokenAuthentication]
     permission_classes = [permissions.IsAuthenticated]
     queryset = User.objects.all()
     serializer_class = UserSerializer
