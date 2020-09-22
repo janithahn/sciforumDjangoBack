@@ -1,18 +1,35 @@
-#from rest_framework.generics import ListAPIView, RetrieveAPIView, CreateAPIView, UpdateAPIView, DestroyAPIView
-from rest_framework import viewsets
+from rest_framework.generics import ListAPIView, RetrieveAPIView, CreateAPIView, UpdateAPIView, DestroyAPIView
+from rest_framework import viewsets, permissions, authentication
 from post.models import Post
-from .serializers import PostSerializer
+from .serializers import PostSerializer, UserSerializer
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
-#from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin
 from rest_auth.views import LoginView
 from rest_auth.registration.views import RegisterView
 from rest_auth.registration.serializers import RegisterSerializer
+from django.contrib.auth.models import User
 
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
+
+class UserListView(ListAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+class UserDetailView(RetrieveAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+class UserUpdateView(UpdateAPIView):
+    #authentication_classes = [authentication.TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
 
 class CustomAuthToken(ObtainAuthToken):
 

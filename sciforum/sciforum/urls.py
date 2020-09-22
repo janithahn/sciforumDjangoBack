@@ -16,7 +16,7 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 from django.urls import path, include
-from post.api.views import CustomAuthToken, CustomLoginView, CustomRegisterView
+from post.api.views import CustomAuthToken, CustomLoginView, CustomRegisterView, UserListView, UserDetailView, UserUpdateView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -27,4 +27,7 @@ urlpatterns = [
     path('api-token-auth/', CustomAuthToken.as_view()),
     url(r'^user/login/', CustomLoginView.as_view()),
     url(r'^user/register/', CustomRegisterView.as_view()),
+    path('users/', UserListView.as_view()),
+    path('users/<int:pk>/', UserDetailView.as_view()),
+    path('users/<int:pk>/update/', UserUpdateView.as_view()),
 ]
