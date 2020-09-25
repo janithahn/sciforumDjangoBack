@@ -28,6 +28,7 @@ urlpatterns = [
     url(r'^user/login/', CustomLoginView.as_view()),
     url(r'^user/register/', CustomRegisterView.as_view()),
     path('users/', UserListView.as_view()),
-    path('users/<int:pk>/', UserDetailView.as_view()),
+    path('users/<str:username>/', UserDetailView.as_view()),
     path('users/<int:pk>/update/', UserUpdateView.as_view()),
+    path('profile_api/', include('user_profile.profile_api.urls')),
 ]

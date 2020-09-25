@@ -25,7 +25,7 @@ SECRET_KEY = 'mw5cq4ourty2m6lw-99)_rr@v$z7qon(lhxmmg@j)b5qj!#2hh'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['192.168.8.100', 'localhost', '127.0.0.1']
 
 
 # Application definition
@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'post.apps.PostConfig',
+    'user_profile.apps.UserProfileConfig',
     'corsheaders',
     'rest_auth',
     'django.contrib.sites',
@@ -73,6 +74,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'user_profile.middlewares.SetLastVisitMiddleware',
 ]
 
 ROOT_URLCONF = 'sciforum.urls'
