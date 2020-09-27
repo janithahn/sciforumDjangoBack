@@ -15,6 +15,8 @@ from django.shortcuts import get_object_or_404
 
 
 class ProfileViewSet(viewsets.ModelViewSet):
+    #authentication_classes = [authentication.TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
     lookup_field = 'user'

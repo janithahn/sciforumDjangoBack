@@ -3,7 +3,7 @@ from post.models import Post
 from django.contrib.auth.models import User
 from user_profile.models import Profile
 #from user_profile.profile_api.serializers import ProfileSerializer
-from drf_writable_nested.serializers import WritableNestedModelSerializer
+#from drf_writable_nested.serializers import WritableNestedModelSerializer
 
 class PostSerializer(serializers.ModelSerializer):
     class Meta:
@@ -16,7 +16,7 @@ class ProfileSerializer(serializers.ModelSerializer):
         model = Profile
         fields = ['aboutMe', 'lastAccessDate']
 
-class UserSerializer(serializers.ModelSerializer):
+class UserSerializer(serializers.ModelSerializer): # you can try WritableNestedModelSerializer here
     profile = ProfileSerializer('profile')
 
     class Meta:
