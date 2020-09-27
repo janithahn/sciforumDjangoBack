@@ -16,7 +16,7 @@ class ProfileSerializer(serializers.ModelSerializer):
         model = Profile
         fields = ['aboutMe', 'lastAccessDate']
 
-class UserSerializer(serializers.ModelSerializer):
+class UserSerializer(WritableNestedModelSerializer):
     profile = ProfileSerializer('profile')
 
     class Meta:
@@ -38,7 +38,7 @@ class UserSerializer(serializers.ModelSerializer):
 
         return instance'''
 
-    def create(self, validated_data):
+    '''def create(self, validated_data):
         profile_data = validated_data.pop('profile', None)
         user = super(UserSerializer, self).create(validated_data)
         self.update_or_create_profile(user, profile_data)
@@ -52,4 +52,4 @@ class UserSerializer(serializers.ModelSerializer):
     def update_or_create_profile(self, user, profile_data):
         # This always creates a Profile if the User is missing one;
         # change the logic here if that's not right for your app
-        Profile.objects.update_or_create(user=user, defaults=profile_data)
+        Profile.objects.update_or_create(user=user, defaults=profile_data)'''
