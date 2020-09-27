@@ -7,8 +7,11 @@ class SetLastVisitMiddleware:
         self.get_response = get_response
 
     def __call__(self, request, *args, **kwargs):
+
         if request.user.is_authenticated:
             # Update last visit time after request finished processing.
-            Profile.objects.filter(user=request.user.pk).update(lastAccessDate=now())
+            Profile.objects.filter(pk=request.user.pk).update(lastAccessDate=now())
+
         response = self.get_response(request)
+
         return response

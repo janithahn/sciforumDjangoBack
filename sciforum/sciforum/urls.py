@@ -17,6 +17,7 @@ from django.conf.urls import url
 from django.contrib import admin
 from django.urls import path, include
 from post.api.views import CustomAuthToken, CustomLoginView, CustomRegisterView, UserListView, UserDetailView, UserUpdateView
+#from user_profile.profile_api.views import ProfileUpdateView, ProfileDetailView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -29,6 +30,8 @@ urlpatterns = [
     url(r'^user/register/', CustomRegisterView.as_view()),
     path('users/', UserListView.as_view()),
     path('users/<str:username>/', UserDetailView.as_view()),
-    path('users/<int:pk>/update/', UserUpdateView.as_view()),
+    path('users/<str:username>/update/', UserUpdateView.as_view()),
     path('profile_api/', include('user_profile.profile_api.urls')),
+    #path('profile/<int:pk>/', ProfileDetailView.as_view()),
+    #path('profile/<int:pk>/update/', ProfileUpdateView.as_view()),
 ]

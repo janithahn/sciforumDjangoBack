@@ -18,7 +18,6 @@ class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
 
-
 class UserListView(ListAPIView):
     permission_classes = [permissions.IsAuthenticated]
     queryset = User.objects.all()
@@ -43,10 +42,11 @@ class UserDetailView(RetrieveAPIView):
 
 
 class UserUpdateView(UpdateAPIView):
-    authentication_classes = [authentication.TokenAuthentication]
+    #authentication_classes = [authentication.TokenAuthentication]
     permission_classes = [permissions.IsAuthenticated]
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    lookup_field = 'username'
 
 
 class CustomAuthToken(ObtainAuthToken):
@@ -94,23 +94,3 @@ class CustomRegisterView(RegisterView):
             'email': user.email
         })
 
-
-'''class PostListView(ListAPIView):
-    queryset = Post.objects.all()
-    serializer_class = PostSerializer
-
-class PostDetailView(RetrieveAPIView):
-    queryset = Post.objects.all()
-    serializer_class = PostSerializer
-
-class PostCreateView(CreateAPIView):
-    queryset = Post.objects.all()
-    serializer_class = PostSerializer
-
-class PostUpdateView(UpdateAPIView):
-    queryset = Post.objects.all()
-    serializer_class = PostSerializer
-
-class PostDeleteView(DestroyAPIView):
-    queryset = Post.objects.all()
-    serializer_class = PostSerializer'''
