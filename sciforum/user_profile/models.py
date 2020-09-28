@@ -6,7 +6,19 @@ from django.dispatch import receiver
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
     aboutMe = models.TextField(max_length=500, blank=True)
-    lastAccessDate = models.DateTimeField()
+    lastAccessDate = models.DateTimeField(auto_now=True)
+    #creationDate = models.DateTimeField(auto_now_add=True)
+    #location = models.TextField(max_length=200, blank=True, null=True)
+    #views = models.IntegerField(blank=True, null=True)
+    #upVotes = models.IntegerField(blank=True, null=True)
+    #downVotes = models.IntegerField(blank=True, null=True)
+    #profileImgUrl = models.URLField(blank=True)
+
+class UserContact(models.Model):
+    profile = models.OneToOneField(Profile, on_delete=models.CASCADE, primary_key=True)
+    github = models.URLField(blank=True)
+    linkedIn = models.URLField(blank=True)
+    facebook = models.URLField(blank=True)
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):

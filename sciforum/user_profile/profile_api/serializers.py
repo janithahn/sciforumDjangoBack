@@ -1,14 +1,23 @@
 from rest_framework import serializers
 
-from user_profile.models import Profile
-from django.contrib.auth.models import User
+from user_profile.models import Profile, UserContact
+#from django.contrib.auth.models import User
 #from user_profile.profile_api.serializers import UserProfileSerializer
+
+class UserContactSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = UserContact
+        fields = ['github', 'linkedIn', 'facebook']
 
 class ProfileSerializer(serializers.ModelSerializer):
 
+    #userContact = UserContactSerializer('userContact')
+
     class Meta:
         model = Profile
-        fields = ['user', 'aboutMe', 'lastAccessDate']
+        fields = ['user', 'aboutMe']
+            #, 'lastAccessDate', 'creationDate', 'location', 'views', 'upVotes', 'downVotes', 'profileImgUrl']
 
     ''' update(self, instance, validated_data):
         # First, update the User

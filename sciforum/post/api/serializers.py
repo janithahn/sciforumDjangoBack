@@ -14,7 +14,8 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Profile
-        fields = ['aboutMe', 'lastAccessDate']
+        fields = ['aboutMe']
+            #, 'lastAccessDate']
 
 class UserSerializer(serializers.ModelSerializer): # you can try WritableNestedModelSerializer here
     profile = ProfileSerializer('profile')

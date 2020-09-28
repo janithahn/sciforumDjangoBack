@@ -10,7 +10,7 @@ class SetLastVisitMiddleware:
 
         if request.user.is_authenticated:
             # Update last visit time after request finished processing.
-            Profile.objects.filter(pk=request.user.pk).update(lastAccessDate=now())
+            Profile.objects.filter(pk=request.user).update(lastAccessDate=now())
 
         response = self.get_response(request)
 
