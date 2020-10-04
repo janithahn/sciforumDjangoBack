@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from post.models import Post
 from django.contrib.auth.models import User
-from user_profile.models import Profile
+from user_profile.models import Profile, ProfileImage
 #from user_profile.profile_api.serializers import ProfileSerializer
 #from drf_writable_nested.serializers import WritableNestedModelSerializer
 
@@ -14,8 +14,14 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Profile
-        fields = ['aboutMe']
+        fields = ['aboutMe', 'profileImg']
             #, 'lastAccessDate']
+
+class ProfileImageSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = ProfileImage
+        fields = ['id', 'profileImg']
 
 class CustomUserSerializer(serializers.ModelSerializer):
     profile = ProfileSerializer('profile')

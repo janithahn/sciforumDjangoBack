@@ -16,6 +16,8 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
 from post.api.views import CustomAuthToken, CustomLoginView, CustomRegisterView, UserListView, UserDetailView, UserUpdateView
 #from user_profile.profile_api.views import ProfileUpdateView, ProfileDetailView
 
@@ -34,4 +36,4 @@ urlpatterns = [
     path('profile_api/', include('user_profile.profile_api.urls')),
     #path('profile/<int:pk>/', ProfileDetailView.as_view()),
     #path('profile/<int:pk>/update/', ProfileUpdateView.as_view()),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -13,6 +13,10 @@ class Profile(models.Model):
     #upVotes = models.IntegerField(blank=True, null=True)
     #downVotes = models.IntegerField(blank=True, null=True)
     #profileImgUrl = models.URLField(blank=True)
+    profileImg = models.ImageField(upload_to='profile_image', blank=True)
+
+class ProfileImage(models.Model):
+    profileImg = models.ImageField(upload_to='profile_image', blank=True)
 
 class UserContact(models.Model):
     profile = models.OneToOneField(Profile, on_delete=models.CASCADE, primary_key=True)

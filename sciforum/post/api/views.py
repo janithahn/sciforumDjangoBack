@@ -1,7 +1,8 @@
 from rest_framework.generics import ListAPIView, RetrieveAPIView, CreateAPIView, UpdateAPIView, DestroyAPIView
 from rest_framework import viewsets, permissions, authentication, status
 from post.models import Post
-from .serializers import PostSerializer, UserSerializer, CustomUserSerializer
+from user_profile.models import ProfileImage
+from .serializers import PostSerializer, UserSerializer, CustomUserSerializer, ProfileImageSerializer
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
@@ -52,12 +53,17 @@ class UserDetailView(RetrieveAPIView):
 
 
 class UserUpdateView(UpdateAPIView):
-    authentication_classes = [authentication.TokenAuthentication]
+    #authentication_classes = [authentication.TokenAuthentication]
     permission_classes = [permissions.IsAuthenticated]
     queryset = User.objects.all()
     serializer_class = UserSerializer
     lookup_field = 'username'
 
+class ProfileImageViewset(viewsets.ModelViewSet):
+    #authentication_classes = [authentication.TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+    queryset = ProfileImage.objects.all()
+    serializer_class = ProfileImageSerializer
 
 class CustomAuthToken(ObtainAuthToken):
 

@@ -17,7 +17,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 
 class ProfileViewSet(viewsets.ModelViewSet):
     #authentication_classes = [authentication.TokenAuthentication]
-    permission_classes = [permissions.IsAuthenticated]
+    #permission_classes = [permissions.IsAuthenticated]
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
     lookup_field = 'user'
