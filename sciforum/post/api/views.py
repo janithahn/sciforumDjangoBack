@@ -1,7 +1,7 @@
 from rest_framework.generics import ListAPIView, RetrieveAPIView, CreateAPIView, UpdateAPIView, DestroyAPIView
 from rest_framework import viewsets, permissions, authentication, status
 from post.models import Post
-from .serializers import PostSerializer, UserSerializer
+from .serializers import PostSerializer, UserSerializer, CustomUserSerializer
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
@@ -21,7 +21,7 @@ class PostViewSet(viewsets.ModelViewSet):
 class UserListView(ListAPIView):
     permission_classes = [permissions.IsAuthenticated]
     queryset = User.objects.all()
-    serializer_class = UserSerializer
+    serializer_class = CustomUserSerializer
 
     @action(methods=['get'], detail=True, url_path='retrieve_by_username/(?P<username>\w+)')
     def retrieve_by_username(self, request, username):
@@ -30,10 +30,20 @@ class UserListView(ListAPIView):
 
 
 class UserDetailView(RetrieveAPIView):
-    permission_classes = [permissions.IsAuthenticated]
+    #permission_classes = [permissions.IsAuthenticated]
     queryset = User.objects.all()
-    serializer_class = UserSerializer
+    #serializer_class = UserSerializer
     lookup_field = 'username'
+
+    def get_serializer_class(self):
+        #print(self.request.session.get('_auth_user_id', 0))
+        #print(self.kwargs['username'])
+        user = self.request.user
+        if user.is_authenticated and user.username == self.kwargs['username']:
+            return UserSerializer
+        return CustomUserSerializer
+
+
 
     '''@action(methods=['get'], detail=True, url_path='retrieve_by_username/(?P<username>\w+)')
     def retrieve_by_username(self, request, username):
@@ -42,7 +52,7 @@ class UserDetailView(RetrieveAPIView):
 
 
 class UserUpdateView(UpdateAPIView):
-    #authentication_classes = [authentication.TokenAuthentication]
+    authentication_classes = [authentication.TokenAuthentication]
     permission_classes = [permissions.IsAuthenticated]
     queryset = User.objects.all()
     serializer_class = UserSerializer

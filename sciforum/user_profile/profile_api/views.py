@@ -12,6 +12,7 @@ from rest_auth.registration.serializers import RegisterSerializer
 from django.contrib.auth.models import User
 from rest_framework.decorators import action
 from django.shortcuts import get_object_or_404
+from django_filters.rest_framework import DjangoFilterBackend
 
 
 class ProfileViewSet(viewsets.ModelViewSet):
@@ -20,3 +21,6 @@ class ProfileViewSet(viewsets.ModelViewSet):
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
     lookup_field = 'user'
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['aboutMe', 'user']
+
