@@ -14,7 +14,7 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Profile
-        fields = ['aboutMe', 'profileImg']
+        fields = ['aboutMe', 'profileImg', 'location', 'displayName']
             #, 'lastAccessDate']
 
 class ProfileImageSerializer(serializers.ModelSerializer):

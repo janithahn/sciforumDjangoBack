@@ -60,7 +60,7 @@ class UserUpdateView(UpdateAPIView):
     lookup_field = 'username'
 
 class ProfileImageViewset(viewsets.ModelViewSet):
-    #authentication_classes = [authentication.TokenAuthentication]
+    authentication_classes = [authentication.TokenAuthentication]
     permission_classes = [permissions.IsAuthenticated]
     queryset = ProfileImage.objects.all()
     serializer_class = ProfileImageSerializer
