@@ -67,6 +67,7 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
     ),
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
+    #'DATETIME_FORMAT': '%s',
 }
 
 MIDDLEWARE = [
@@ -141,7 +142,8 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+USE_TZ = True
+TIME_ZONE = 'Asia/Colombo'
 
 USE_I18N = True
 

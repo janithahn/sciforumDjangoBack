@@ -6,9 +6,13 @@ from user_profile.models import Profile, ProfileImage
 #from drf_writable_nested.serializers import WritableNestedModelSerializer
 
 class PostSerializer(serializers.ModelSerializer):
+
+    created_at = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S", read_only=True)
+    updated_at = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S", read_only=True)
+
     class Meta:
         model = Post
-        fields = ['id', 'owner', 'title', 'body', 'viewCount']
+        fields = ['id', 'owner', 'title', 'body', 'viewCount', 'created_at', 'updated_at']
 
 class ProfileSerializer(serializers.ModelSerializer):
 
