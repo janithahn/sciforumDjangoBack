@@ -19,6 +19,12 @@ class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
 
+    def retrieve(self, request, *args, **kwargs):
+        obj = self.get_object()
+        obj.viewCount = obj.viewCount + 1
+        obj.save(update_fields=('viewCount', ))
+        return super().retrieve(request, *args, **kwargs)
+
 class UserListView(ListAPIView):
     permission_classes = [permissions.IsAuthenticated]
     queryset = User.objects.all()
