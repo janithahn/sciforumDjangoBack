@@ -18,8 +18,9 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from post.api.views import CustomAuthToken, CustomLoginView, CustomRegisterView, UserListView, UserDetailView, UserUpdateView
+from post.api.views import CustomAuthToken, CustomLoginView, CustomRegisterView, UserListView, UserDetailView, UserUpdateView, ObtainJWTView
 #from user_profile.profile_api.views import ProfileUpdateView, ProfileDetailView
+from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -34,6 +35,9 @@ urlpatterns = [
     path('users/<str:username>/', UserDetailView.as_view()),
     path('users/<str:username>/update/', UserUpdateView.as_view()),
     path('profile_api/', include('user_profile.profile_api.urls')),
+    url(r'^api-jwt-token-auth/', obtain_jwt_token),
+    url(r'^api-jwt-token-refresh/', refresh_jwt_token),
+    path('jwtlogin/', ObtainJWTView.as_view()),
     #path('profile/<int:pk>/', ProfileDetailView.as_view()),
     #path('profile/<int:pk>/update/', ProfileUpdateView.as_view()),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

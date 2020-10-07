@@ -10,13 +10,12 @@ class Profile(models.Model):
     #creationDate = models.DateTimeField(auto_now_add=True)
     location = models.TextField(max_length=200, blank=True)
     displayName = models.TextField(max_length=25, blank=True)
+    login_ip = models.GenericIPAddressField(null=True, blank=True)
+    user_agent_info = models.CharField(max_length=255, default='')
     #views = models.IntegerField(blank=True, null=True)
     #upVotes = models.IntegerField(blank=True, null=True)
     #downVotes = models.IntegerField(blank=True, null=True)
     #profileImgUrl = models.URLField(blank=True)
-    profileImg = models.ImageField(upload_to='profile_image', blank=True)
-
-class ProfileImage(models.Model):
     profileImg = models.ImageField(upload_to='profile_image', blank=True)
 
 class UserContact(models.Model):
