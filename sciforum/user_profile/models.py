@@ -12,9 +12,9 @@ class Profile(models.Model):
     displayName = models.TextField(max_length=25, blank=True)
     login_ip = models.GenericIPAddressField(null=True, blank=True)
     user_agent_info = models.CharField(max_length=255, default='')
-    views = models.IntegerField(blank=True)
-    upVotes = models.IntegerField(blank=True)
-    downVotes = models.IntegerField(blank=True)
+    views = models.IntegerField(blank=True, null=True)
+    upVotes = models.IntegerField(blank=True, null=True)
+    downVotes = models.IntegerField(blank=True, null=True)
     profileImg = models.ImageField(upload_to='profile_image', blank=True)
     #profileImgUrl = models.URLField(blank=True)
 

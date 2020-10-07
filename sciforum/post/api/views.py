@@ -1,5 +1,5 @@
 from rest_framework.generics import ListAPIView, RetrieveAPIView, CreateAPIView, UpdateAPIView, DestroyAPIView
-from rest_framework import viewsets, permissions, authentication, status
+from rest_framework import viewsets, permissions, status
 from post.models import Post
 from .serializers import PostSerializer, UserSerializer, CustomUserSerializer, JWTSerializer
 from rest_framework.authtoken.views import ObtainAuthToken
@@ -9,13 +9,14 @@ from rest_framework.response import Response
 from rest_auth.views import LoginView
 from rest_auth.registration.views import RegisterView
 from rest_auth.registration.serializers import RegisterSerializer
-from django.contrib.auth.models import User, update_last_login
+from django.contrib.auth.models import User
 from rest_framework.decorators import action
 from django.shortcuts import get_object_or_404
 from django.utils.timezone import now
 from user_profile.models import Profile
 from rest_framework_jwt.views import ObtainJSONWebToken
 from rest_framework_jwt.settings import api_settings
+from rest_framework_jwt import authentication
 
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
@@ -60,7 +61,7 @@ class UserDetailView(RetrieveAPIView):
 
 
 class UserUpdateView(UpdateAPIView):
-    authentication_classes = [authentication.TokenAuthentication]
+    authentication_classes = [authentication.JSONWebTokenAuthentication]
     permission_classes = [permissions.IsAuthenticated]
     queryset = User.objects.all()
     serializer_class = UserSerializer
