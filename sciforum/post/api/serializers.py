@@ -31,12 +31,6 @@ class CustomUserSerializer(serializers.ModelSerializer):
         model = User
         fields = ['id', 'first_name', 'last_name', 'profile']
 
-class JWTUserSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = User
-        fields = ['id', 'username', 'first_name', 'last_name', 'email']
-
 class UserSerializer(serializers.ModelSerializer): # you can try WritableNestedModelSerializer here
     profile = ProfileSerializer('profile')
     last_login = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S", read_only=True)
@@ -76,7 +70,14 @@ class UserSerializer(serializers.ModelSerializer): # you can try WritableNestedM
         # change the logic here if that's not right for your app
         Profile.objects.update_or_create(user=user, defaults=profile_data)
 
+class JWTUserSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email']
+
 class JWTSerializer(JSONWebTokenSerializer):
+
     def validate(self, attrs):
         credentials = {
             self.username_field: attrs.get(self.username_field),
@@ -93,7 +94,7 @@ class JWTSerializer(JSONWebTokenSerializer):
 
                 payload = jwt_payload_handler(user)
                 user_logged_in.send(sender=user.__class__, request=self.context['request'], user=user)
-                print(user)
+
                 return {
                     'token': jwt_encode_handler(payload),
                     'user': user

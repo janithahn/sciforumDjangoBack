@@ -15,7 +15,7 @@ from django.shortcuts import get_object_or_404
 from django.utils.timezone import now
 from user_profile.models import Profile
 from rest_framework_jwt.views import ObtainJSONWebToken
-
+from rest_framework_jwt.settings import api_settings
 
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
@@ -28,7 +28,7 @@ class PostViewSet(viewsets.ModelViewSet):
         return super().retrieve(request, *args, **kwargs)
 
 class UserListView(ListAPIView):
-    permission_classes = [permissions.IsAuthenticated]
+    #permission_classes = [permissions.IsAuthenticated]
     queryset = User.objects.all()
     serializer_class = CustomUserSerializer
 
@@ -39,7 +39,7 @@ class UserListView(ListAPIView):
 
 
 class UserDetailView(RetrieveAPIView):
-    #permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated]
     queryset = User.objects.all()
     #serializer_class = UserSerializer
     lookup_field = 'username'
@@ -53,7 +53,6 @@ class UserDetailView(RetrieveAPIView):
         return CustomUserSerializer
 
 
-
     '''@action(methods=['get'], detail=True, url_path='retrieve_by_username/(?P<username>\w+)')
     def retrieve_by_username(self, request, username):
         user = get_object_or_404(User, username=username)
@@ -61,7 +60,7 @@ class UserDetailView(RetrieveAPIView):
 
 
 class UserUpdateView(UpdateAPIView):
-    #authentication_classes = [authentication.TokenAuthentication]
+    authentication_classes = [authentication.TokenAuthentication]
     permission_classes = [permissions.IsAuthenticated]
     queryset = User.objects.all()
     serializer_class = UserSerializer
@@ -91,9 +90,32 @@ class CustomAuthToken(ObtainAuthToken):
         })
 
 # JWT Views
-class ObtainJWTView(ObtainJSONWebToken):
+class JWTLoginView(ObtainJSONWebToken):
     serializer_class = JWTSerializer
 
+class JWTRegisterView(RegisterView):
+    #serializer_class = JWTSerializer
+
+    def create(self, request, *args, **kwargs):
+        serializer = RegisterSerializer(data=self.request.data)
+        serializer.is_valid(raise_exception=True)
+        user = self.perform_create(serializer)
+        #token, created = Token.objects.get_or_create(user=user)
+
+        jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
+        jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
+
+        payload = jwt_payload_handler(user)
+        jwttoken = jwt_encode_handler(payload)
+
+        return Response({
+            'token': jwttoken,
+            'user': {
+                'id': user.id,
+                'username': user.username,
+                'email': user.email
+            }
+        })
 
 class CustomLoginView(LoginView):
 
