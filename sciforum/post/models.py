@@ -15,6 +15,6 @@ class Post(models.Model):
         return self.title
 
 class Visitors(models.Model):
-    post= models.ForeignKey(Post, on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
     visitorIp = models.GenericIPAddressField(null=True, blank=True)
     visitDate = models.DateTimeField(blank=True)
