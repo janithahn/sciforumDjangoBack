@@ -27,7 +27,7 @@ SECRET_KEY = 'mw5cq4ourty2m6lw-99)_rr@v$z7qon(lhxmmg@j)b5qj!#2hh'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.8.100', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['192.168.8.100', 'localhost', '127.0.0.1', '192.168.43.100', '192.168.8.101']
 
 
 # Application definition
@@ -58,7 +58,7 @@ INSTALLED_APPS = [
 SITE_ID = 1
 
 ACCOUNT_AUTHENTICATION_METHOD ='username_email'
-ACCOUNT_EMAIL_REQUIRED=False
+ACCOUNT_EMAIL_REQUIRED = False
 ACCOUNT_EMAIL_VERIFICATION ='none'
 
 REST_FRAMEWORK = {
@@ -99,7 +99,7 @@ JWT_AUTH = {
     'JWT_VERIFY': True,
     'JWT_VERIFY_EXPIRATION': True,
     'JWT_LEEWAY': 0,
-    'JWT_EXPIRATION_DELTA': timedelta(seconds=300),
+    'JWT_EXPIRATION_DELTA': timedelta(seconds=360),
     'JWT_AUDIENCE': None,
     'JWT_ISSUER': None,
 

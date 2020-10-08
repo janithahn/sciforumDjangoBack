@@ -1,4 +1,4 @@
-from post.models import Post
+from post.models import Post, Visitors
 from django.contrib.auth.models import User
 from user_profile.models import Profile
 from django.contrib.auth import authenticate, user_logged_in
@@ -6,6 +6,13 @@ from rest_framework import serializers
 from rest_framework_jwt.serializers import JSONWebTokenSerializer, jwt_payload_handler, jwt_encode_handler
 #from user_profile.profile_api.serializers import ProfileSerializer
 #from drf_writable_nested.serializers import WritableNestedModelSerializer
+
+class VisitorSerializer(serializers.ModelSerializer):
+    visitDate = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S", read_only=True)
+
+    class Meta:
+        model = Visitors
+        fields = ['post', 'visitorIp', 'visitDate']
 
 class PostSerializer(serializers.ModelSerializer):
 

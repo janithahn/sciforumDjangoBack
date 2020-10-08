@@ -1,7 +1,7 @@
 from rest_framework.generics import ListAPIView, RetrieveAPIView, CreateAPIView, UpdateAPIView, DestroyAPIView
 from rest_framework import viewsets, permissions, status
-from post.models import Post
-from .serializers import PostSerializer, UserSerializer, CustomUserSerializer, JWTSerializer
+from post.models import Post, Visitors
+from .serializers import PostSerializer, UserSerializer, CustomUserSerializer, JWTSerializer, VisitorSerializer
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
@@ -17,12 +17,22 @@ from user_profile.models import Profile
 from rest_framework_jwt.views import ObtainJSONWebToken
 from rest_framework_jwt.settings import api_settings
 from rest_framework_jwt import authentication
+from .utils import get_client_ip
+
+class VisitorsListView(ListAPIView):
+    queryset = Visitors.objects.all()
+    serializer_class = VisitorSerializer
 
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
 
+    visitorsQuerySet = Visitors.objects.all()
+
     def retrieve(self, request, *args, **kwargs):
+        newVisitor = Visitors(post=self.get_object(), visitorIp=get_client_ip(request), visitDate=now())
+        newVisitor.save()
+        print(get_client_ip(request))
         obj = self.get_object()
         obj.viewCount = obj.viewCount + 1
         obj.save(update_fields=('viewCount', ))
@@ -40,7 +50,8 @@ class UserListView(ListAPIView):
 
 
 class UserDetailView(RetrieveAPIView):
-    permission_classes = [permissions.IsAuthenticated]
+    #authentication_classes = [authentication.JSONWebTokenAuthentication]
+    #permission_classes = [permissions.IsAuthenticated]
     queryset = User.objects.all()
     #serializer_class = UserSerializer
     lookup_field = 'username'
