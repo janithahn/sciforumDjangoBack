@@ -19,6 +19,7 @@ from rest_framework_jwt.settings import api_settings
 from rest_framework_jwt import authentication
 from .utils import get_client_ip
 from django.db.models import Count
+from .mixins import GetSerializerClassMixin
 
 class VisitorsListView(ListAPIView):
     queryset = Visitors.objects.all()
@@ -32,7 +33,7 @@ class PostViewSet(viewsets.ModelViewSet):
         #viewCounter = Visitors.objects.values('post_id').annotate(viewCount=Count('visitorIp', distinct=True))
         postId = self.get_object().id
         viewCount = 0
-        
+
         try:
             viewCount = Visitors.objects.filter(post_id=postId).values('post_id').annotate(viewCount=Count('visitorIp', distinct=True))[0]['viewCount']
         except Exception as exep:
@@ -45,6 +46,17 @@ class PostViewSet(viewsets.ModelViewSet):
         obj.viewCount = viewCount
         obj.save(update_fields=('viewCount', ))
         return super().retrieve(request, *args, **kwargs)
+
+class UserViewSet(GetSerializerClassMixin, viewsets.ModelViewSet):
+
+    '''here it describes the way of getting user information over the drf depending on the serializer.'''
+
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    serializer_action_classes = {
+        'list': CustomUserSerializer,
+    }
+
 
 class UserListView(ListAPIView):
     #permission_classes = [permissions.IsAuthenticated]

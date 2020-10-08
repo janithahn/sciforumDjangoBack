@@ -2,14 +2,20 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from enumfields import Enum
+from enumfields import EnumField
+
+class UserRole(Enum):
+    ADMIN = 'ADMIN'
+    USER = 'USER'
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
+    userRole = EnumField(UserRole, default=UserRole.USER, blank=True, null=True)
     aboutMe = models.TextField(max_length=500, blank=True)
     lastAccessDate = models.DateTimeField(auto_now=True)
     creationDate = models.DateTimeField(auto_now_add=True)
     location = models.TextField(max_length=200, blank=True)
-    displayName = models.TextField(max_length=25, blank=True)
     login_ip = models.GenericIPAddressField(null=True, blank=True)
     user_agent_info = models.CharField(max_length=255, default='')
     views = models.IntegerField(blank=True, null=True)

@@ -4,6 +4,7 @@ from user_profile.models import Profile
 from django.contrib.auth import authenticate, user_logged_in
 from rest_framework import serializers
 from rest_framework_jwt.serializers import JSONWebTokenSerializer, jwt_payload_handler, jwt_encode_handler
+from enumfields.drf.serializers import EnumSupportSerializerMixin
 #from user_profile.profile_api.serializers import ProfileSerializer
 #from drf_writable_nested.serializers import WritableNestedModelSerializer
 
@@ -23,13 +24,19 @@ class PostSerializer(serializers.ModelSerializer):
         model = Post
         fields = ['id', 'owner', 'title', 'body', 'viewCount', 'created_at', 'updated_at']
 
-class ProfileSerializer(serializers.ModelSerializer):
+class ProfileSerializer(EnumSupportSerializerMixin, serializers.ModelSerializer):
 
     lastAccessDate = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S", read_only=True)
+    #login_ip = serializers.IPAddressField(write_only=True)
 
     class Meta:
         model = Profile
-        fields = ['aboutMe', 'profileImg', 'location', 'displayName', 'lastAccessDate', 'login_ip', 'user_agent_info']
+        fields = ['aboutMe', 'profileImg', 'location', 'lastAccessDate', 'login_ip', 'user_agent_info']
+            #, 'userRole']
+        extra_kwargs = {
+            'login_ip': { 'write_only': True },
+            'user_agent_info': { 'write_only': True }
+        }
 
 class CustomUserSerializer(serializers.ModelSerializer):
     profile = ProfileSerializer('profile')
