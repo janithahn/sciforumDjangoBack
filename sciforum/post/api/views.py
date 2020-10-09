@@ -1,7 +1,8 @@
 from rest_framework.generics import ListAPIView, RetrieveAPIView, CreateAPIView, UpdateAPIView, DestroyAPIView
 from rest_framework import viewsets, permissions, status
 from post.models import Post, Visitors
-from .serializers import PostSerializer, UserSerializer, CustomUserSerializer, JWTSerializer, VisitorSerializer
+from user_profile.models import ProfileViewerInfo, Profile
+from .serializers import PostSerializer, UserSerializer, CustomUserSerializer, JWTSerializer, VisitorSerializer, ProfileViewerInfoSerializer
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
@@ -18,12 +19,16 @@ from rest_framework_jwt.views import ObtainJSONWebToken
 from rest_framework_jwt.settings import api_settings
 from rest_framework_jwt import authentication
 from .utils import get_client_ip
-from django.db.models import Count
+from django.db.models import Count, Sum
 from .mixins import GetSerializerClassMixin
 
 class VisitorsListView(ListAPIView):
     queryset = Visitors.objects.all()
     serializer_class = VisitorSerializer
+
+class ProfileViewerInfoView(ListAPIView):
+    queryset = ProfileViewerInfo.objects.all()
+    serializer_class = ProfileViewerInfoSerializer
 
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
@@ -32,7 +37,9 @@ class PostViewSet(viewsets.ModelViewSet):
     def retrieve(self, request, *args, **kwargs):
         #viewCounter = Visitors.objects.values('post_id').annotate(viewCount=Count('visitorIp', distinct=True))
         postId = self.get_object().id
+        postOwner = self.get_object().owner
         viewCount = 0
+        totalPostViewCount = 0
 
         try:
             viewCount = Visitors.objects.filter(post_id=postId).values('post_id').annotate(viewCount=Count('visitorIp', distinct=True))[0]['viewCount']
@@ -41,6 +48,16 @@ class PostViewSet(viewsets.ModelViewSet):
 
         newVisitor = Visitors(post=self.get_object(), visitorIp=get_client_ip(request), visitDate=now())
         newVisitor.save()
+
+        try:
+            totalPostViewCount = Post.objects.filter(owner=postOwner).aggregate(totalPostViewCount=Sum('viewCount'))['totalPostViewCount']
+        except Exception as exep:
+            print(exep)
+
+        print(totalPostViewCount)
+        profileObj = Profile.objects.get(user=postOwner)
+        profileObj.postViews = totalPostViewCount
+        profileObj.save(update_fields=('postViews', ))
 
         obj = self.get_object()
         obj.viewCount = viewCount
@@ -83,6 +100,45 @@ class UserDetailView(RetrieveAPIView):
         if user.is_authenticated and user.username == self.kwargs['username']:
             return UserSerializer
         return CustomUserSerializer
+
+    def retrieve(self, request, *args, **kwargs):
+        user = self.get_object()
+        profileViewCount = 0
+        totalPostViewCount = 0
+        agent_info = ''
+        requestUser = ''
+
+        try:
+            profileViewCount = ProfileViewerInfo.objects.filter(user=user).values('user').annotate(viewCount=Count('viwer_ip', distinct=True))[0]['viewCount']
+        except Exception as exep:
+            print(exep)
+
+        #print(profileViewCount)
+
+        try:
+            agent_info = request.META.get('HTTP_USER_AGENT', '<unknown>')[:255]
+        except Exception as exep:
+            print(exep)
+
+        try:
+            requestUser = request.user
+        except Exception as exep:
+            print(exep)
+
+        try:
+            totalPostViewCount = Post.objects.filter(owner=self.get_object()).aggregate(totalPostViewCount=Sum('viewCount'))['totalPostViewCount']
+        except Exception as exep:
+            print(exep)
+
+        #print(totalPostViewCount)
+        profileObj = Profile.objects.get(user=self.get_object())
+        profileObj.postViews = totalPostViewCount
+        profileObj.save(update_fields=('postViews', ))
+
+        newProfileViewer = ProfileViewerInfo(user=self.get_object(), viewerUsername=requestUser, visitDate=now(), viwer_ip=get_client_ip(request), viwer_agent_info=agent_info)
+        newProfileViewer.save()
+
+        return super().retrieve(request, *args, **kwargs)
 
 
     '''@action(methods=['get'], detail=True, url_path='retrieve_by_username/(?P<username>\w+)')

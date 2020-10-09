@@ -18,7 +18,7 @@ class Profile(models.Model):
     location = models.TextField(max_length=200, blank=True)
     login_ip = models.GenericIPAddressField(null=True, blank=True)
     user_agent_info = models.CharField(max_length=255, default='')
-    views = models.IntegerField(blank=True, null=True)
+    postViews = models.IntegerField(blank=True, null=True)
     upVotes = models.IntegerField(blank=True, null=True)
     downVotes = models.IntegerField(blank=True, null=True)
     profileImg = models.ImageField(upload_to='profile_image', blank=True)
@@ -29,6 +29,19 @@ class UserContact(models.Model):
     github = models.URLField(blank=True)
     linkedIn = models.URLField(blank=True)
     facebook = models.URLField(blank=True)
+
+'''class Views(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
+    postViews = models.IntegerField(blank=True, null=True)
+    profileViews = models.IntegerField(blank=True, null=True)'''
+
+class ProfileViewerInfo(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    viewerUsername = models.TextField(null=True, blank=True)
+    visitDate = models.DateTimeField(blank=True, null=True)
+    viwer_ip = models.GenericIPAddressField(null=True, blank=True)
+    viwer_agent_info = models.CharField(max_length=255, default='')
+
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):

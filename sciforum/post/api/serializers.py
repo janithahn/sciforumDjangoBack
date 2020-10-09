@@ -1,6 +1,6 @@
 from post.models import Post, Visitors
 from django.contrib.auth.models import User
-from user_profile.models import Profile
+from user_profile.models import Profile, ProfileViewerInfo
 from django.contrib.auth import authenticate, user_logged_in
 from rest_framework import serializers
 from rest_framework_jwt.serializers import JSONWebTokenSerializer, jwt_payload_handler, jwt_encode_handler
@@ -14,6 +14,11 @@ class VisitorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Visitors
         fields = ['post', 'visitorIp', 'visitDate']
+
+class ProfileViewerInfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProfileViewerInfo
+        fields = '__all__'
 
 class PostSerializer(serializers.ModelSerializer):
 
@@ -32,11 +37,12 @@ class ProfileSerializer(EnumSupportSerializerMixin, serializers.ModelSerializer)
 
     class Meta:
         model = Profile
-        fields = ['aboutMe', 'profileImg', 'location', 'lastAccessDate', 'login_ip', 'user_agent_info']
+        fields = ['aboutMe', 'profileImg', 'location', 'lastAccessDate', 'postViews', 'login_ip', 'user_agent_info']
             #, 'userRole']
         extra_kwargs = {
             'login_ip': { 'write_only': True },
-            'user_agent_info': { 'write_only': True }
+            'user_agent_info': { 'write_only': True },
+            'postViews': { 'read_only': True },
         }
 
 class CustomUserSerializer(serializers.ModelSerializer):
