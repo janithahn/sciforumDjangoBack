@@ -16,7 +16,7 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Profile
-        fields = ['user', 'aboutMe', 'profileImg', 'location', 'displayName']
+        fields = ['user', 'aboutMe', 'profileImg', 'location']
             #, 'lastAccessDate', 'creationDate', 'location', 'views', 'upVotes', 'downVotes', 'profileImgUrl']
 
     ''' update(self, instance, validated_data):

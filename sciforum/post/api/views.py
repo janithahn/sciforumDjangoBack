@@ -2,7 +2,8 @@ from rest_framework.generics import ListAPIView, RetrieveAPIView, CreateAPIView,
 from rest_framework import viewsets, permissions, status
 from post.models import Post, Visitors
 from user_profile.models import ProfileViewerInfo, Profile
-from .serializers import PostSerializer, UserSerializer, CustomUserSerializer, JWTSerializer, VisitorSerializer, ProfileViewerInfoSerializer
+from .serializers import PostSerializer, UserSerializer, CustomUserSerializer,\
+    JWTSerializer, VisitorSerializer, ProfileViewerInfoSerializer, PostUpdateSerializer, PostCreateSerializer
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
@@ -33,6 +34,7 @@ class ProfileViewerInfoView(ListAPIView):
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
+    http_method_names = ['get']
 
     def retrieve(self, request, *args, **kwargs):
         #viewCounter = Visitors.objects.values('post_id').annotate(viewCount=Count('visitorIp', distinct=True))
@@ -63,6 +65,18 @@ class PostViewSet(viewsets.ModelViewSet):
         obj.viewCount = viewCount
         obj.save(update_fields=('viewCount', ))
         return super().retrieve(request, *args, **kwargs)
+
+class PostCreateview(CreateAPIView):
+    authentication_classes = [authentication.JSONWebTokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+    queryset = Post.objects.all()
+    serializer_class = PostCreateSerializer
+
+class PostUpdateView(UpdateAPIView):
+    authentication_classes = [authentication.JSONWebTokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+    queryset = Post.objects.all()
+    serializer_class = PostUpdateSerializer
 
 class UserViewSet(GetSerializerClassMixin, viewsets.ModelViewSet):
 

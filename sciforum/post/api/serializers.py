@@ -30,6 +30,18 @@ class PostSerializer(serializers.ModelSerializer):
         model = Post
         fields = ['id', 'owner', 'title', 'body', 'viewCount', 'created_at', 'updated_at']
 
+class PostCreateSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Post
+        fields = ['owner', 'title', 'body']
+
+class PostUpdateSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Post
+        fields = ['title', 'body']
+
 class ProfileSerializer(EnumSupportSerializerMixin, serializers.ModelSerializer):
 
     lastAccessDate = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S", read_only=True)

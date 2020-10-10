@@ -19,7 +19,7 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from post.api.views import CustomAuthToken, CustomLoginView, CustomRegisterView, UserListView, UserDetailView\
-    , UserUpdateView, JWTLoginView, JWTRegisterView, VisitorsListView, ProfileViewerInfoView
+    , UserUpdateView, JWTLoginView, JWTRegisterView, VisitorsListView, ProfileViewerInfoView, PostUpdateView, PostCreateview
 #from user_profile.profile_api.views import ProfileUpdateView, ProfileDetailView
 from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token
 
@@ -27,6 +27,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls')),
     path('api/', include('post.api.urls')),
+    path('api/post/<int:pk>/update/', PostUpdateView.as_view()),
+    path('api/post/create/', PostCreateview.as_view()),
     path('rest-auth/', include('rest_auth.urls')),
     path('rest-auth/registration/', include('rest_auth.registration.urls')),
     path('api-token-auth/', CustomAuthToken.as_view()),
