@@ -1,5 +1,5 @@
 from rest_framework.generics import ListAPIView, RetrieveAPIView, CreateAPIView, UpdateAPIView, DestroyAPIView
-from rest_framework import viewsets, permissions, status
+from rest_framework import viewsets, permissions, status, pagination
 from post.models import Post, Visitors
 from user_profile.models import ProfileViewerInfo, Profile
 from .serializers import PostSerializer, UserSerializer, CustomUserSerializer,\
@@ -31,9 +31,13 @@ class ProfileViewerInfoView(ListAPIView):
     queryset = ProfileViewerInfo.objects.all()
     serializer_class = ProfileViewerInfoSerializer
 
+class PostsPagination(pagination.PageNumberPagination):
+    page_size = 8
+
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
+    pagination_class = PostsPagination
     http_method_names = ['get']
 
     def retrieve(self, request, *args, **kwargs):
