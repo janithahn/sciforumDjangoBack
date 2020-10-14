@@ -9,7 +9,8 @@ from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 #from django.contrib.auth.mixins import LoginRequiredMixin
 from rest_auth.views import LoginView
-from rest_auth.registration.views import RegisterView
+from rest_auth.registration.views import RegisterView, SocialLoginView
+from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
 from rest_auth.registration.serializers import RegisterSerializer
 from django.contrib.auth.models import User
 from rest_framework.decorators import action
@@ -22,6 +23,7 @@ from rest_framework_jwt import authentication
 from .utils import get_client_ip
 from django.db.models import Count, Sum
 from .mixins import GetSerializerClassMixin
+from allauth.account.adapter import get_adapter
 
 class VisitorsListView(ListAPIView):
     queryset = Visitors.objects.all()
@@ -32,7 +34,7 @@ class ProfileViewerInfoView(ListAPIView):
     serializer_class = ProfileViewerInfoSerializer
 
 class PostsPagination(pagination.PageNumberPagination):
-    page_size = 8
+    page_size = 5
 
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
@@ -210,6 +212,31 @@ class JWTRegisterView(RegisterView):
 
         jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
         jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
+
+        payload = jwt_payload_handler(user)
+        jwttoken = jwt_encode_handler(payload)
+
+        return Response({
+            'token': jwttoken,
+            'user': {
+                'id': user.id,
+                'username': user.username,
+                'email': user.email
+            }
+        })
+
+class GoogleLoginView(SocialLoginView):
+    adapter_class = GoogleOAuth2Adapter
+
+    def get_response(self):
+        #get_adapter(self.request).login(self.request, self.user)
+
+        #print(self.user.email)
+
+        jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
+        jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
+
+        user = self.user
 
         payload = jwt_payload_handler(user)
         jwttoken = jwt_encode_handler(payload)

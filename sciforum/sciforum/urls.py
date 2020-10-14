@@ -19,7 +19,8 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from post.api.views import CustomAuthToken, CustomLoginView, CustomRegisterView, UserListView, UserDetailView\
-    , UserUpdateView, JWTLoginView, JWTRegisterView, VisitorsListView, ProfileViewerInfoView, PostUpdateView, PostCreateview
+    , UserUpdateView, JWTLoginView, JWTRegisterView, VisitorsListView, ProfileViewerInfoView, PostUpdateView\
+    , PostCreateview, GoogleLoginView
 #from user_profile.profile_api.views import ProfileUpdateView, ProfileDetailView
 from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token
 
@@ -30,6 +31,8 @@ urlpatterns = [
     path('api/post/<int:pk>/update/', PostUpdateView.as_view()),
     path('api/post/create/', PostCreateview.as_view()),
     path('rest-auth/', include('rest_auth.urls')),
+    path('rest-auth/google/', GoogleLoginView.as_view(), name='google_login'),
+    path('accounts/', include('allauth.urls')),
     path('rest-auth/registration/', include('rest_auth.registration.urls')),
     path('api-token-auth/', CustomAuthToken.as_view()),
     url(r'^user/login/', CustomLoginView.as_view()),
@@ -44,6 +47,7 @@ urlpatterns = [
     path('jwtregister/', JWTRegisterView.as_view()),
     path('postvisitors/', VisitorsListView.as_view()),
     path('profilevisitor/', ProfileViewerInfoView.as_view()),
+    path('socialauth/', include('rest_framework_social_oauth2.urls')),
     #path('profile/<int:pk>/', ProfileDetailView.as_view()),
     #path('profile/<int:pk>/update/', ProfileUpdateView.as_view()),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
