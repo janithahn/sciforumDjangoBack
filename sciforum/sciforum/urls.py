@@ -21,6 +21,7 @@ from django.conf.urls.static import static
 from post.api.views import CustomAuthToken, CustomLoginView, CustomRegisterView, UserListView, UserDetailView\
     , UserUpdateView, JWTLoginView, JWTRegisterView, VisitorsListView, ProfileViewerInfoView, PostUpdateView\
     , PostCreateview, GoogleLoginView
+from answer.answer_api.views import AnswerCreateview, AnswerUpdateView
 #from user_profile.profile_api.views import ProfileUpdateView, ProfileDetailView
 from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token
 
@@ -34,9 +35,14 @@ urlpatterns = [
     path('profile_api/', include('user_profile.profile_api.urls')),
     path('answer_api/', include('answer.answer_api.urls')),
 
-
+    #post changes
     path('api/post/<int:pk>/update/', PostUpdateView.as_view()),
     path('api/post/create/', PostCreateview.as_view()),
+
+    #answer changes
+    path('answer_api/answer/<int:pk>/update/', AnswerUpdateView.as_view()),
+    path('answer_api/answer/create/', AnswerCreateview.as_view()),
+
     path('rest-auth/', include('rest_auth.urls')),
 
     #for google token

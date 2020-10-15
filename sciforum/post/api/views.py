@@ -23,8 +23,8 @@ from rest_framework_jwt import authentication
 from .utils import get_client_ip
 from django.db.models import Count, Sum
 from .mixins import GetSerializerClassMixin
-from allauth.account.adapter import get_adapter
 
+#Temporary sample views to get visitors
 class VisitorsListView(ListAPIView):
     queryset = Visitors.objects.all()
     serializer_class = VisitorSerializer
@@ -33,6 +33,7 @@ class ProfileViewerInfoView(ListAPIView):
     queryset = ProfileViewerInfo.objects.all()
     serializer_class = ProfileViewerInfoSerializer
 
+#views for posts
 class PostsPagination(pagination.PageNumberPagination):
     page_size = 5
 
@@ -84,6 +85,7 @@ class PostUpdateView(UpdateAPIView):
     queryset = Post.objects.all()
     serializer_class = PostUpdateSerializer
 
+#views for users
 class UserViewSet(GetSerializerClassMixin, viewsets.ModelViewSet):
 
     '''here it describes the way of getting user information over the drf depending on the serializer.'''
@@ -174,6 +176,8 @@ class UserUpdateView(UpdateAPIView):
     serializer_class = UserSerializer
     lookup_field = 'username'
 
+
+#views for authentication
 class CustomAuthToken(ObtainAuthToken):
 
     def post(self, request, *args, **kwargs):
