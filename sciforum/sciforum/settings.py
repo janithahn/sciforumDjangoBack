@@ -41,11 +41,19 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    #rest framework
     'rest_framework',
     'rest_framework.authtoken',
+
+    #apps
     'post.apps.PostConfig',
     'user_profile.apps.UserProfileConfig',
+    'answer.apps.AnswerConfig',
+
     'corsheaders',
+
+    #authentication
     'rest_auth',
     'django.contrib.sites',
     'allauth',
@@ -127,7 +135,7 @@ JWT_AUTH = {
     'JWT_VERIFY': True,
     'JWT_VERIFY_EXPIRATION': True,
     'JWT_LEEWAY': 0,
-    'JWT_EXPIRATION_DELTA': timedelta(seconds=20),
+    'JWT_EXPIRATION_DELTA': timedelta(seconds=3600),
     'JWT_AUDIENCE': None,
     'JWT_ISSUER': None,
 

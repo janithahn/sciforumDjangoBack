@@ -59,12 +59,14 @@ def social_login_profilepic(sociallogin, user, **kwargs):
         #verified = sociallogin.account.extra_data['verified_email']
         picture_url = sociallogin.account.extra_data['picture']
 
-    image, header = urlretrieve(picture_url)
+    image, header = urlretrieve(picture_url, 'picture.jpg')
     #image = download_image(picture_url)
 
     profile = Profile.objects.get(user=user)
     profile.profileImg.save(os.path.basename(picture_url), File(open(image, 'rb')))
-    #profile.save(update_fields=('profileImg', ))
+    profile.save(update_fields=('profileImg', ))
+
+    print(profile.profileImg.url)
 
 def download_image(url):
     """Downloads an image and makes sure it's verified.

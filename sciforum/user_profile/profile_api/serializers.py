@@ -13,11 +13,17 @@ class UserContactSerializer(serializers.ModelSerializer):
 class ProfileSerializer(serializers.ModelSerializer):
 
     #userContact = UserContactSerializer('userContact')
+    #picture_url = serializers.SerializerMethodField('get_picture_url')
+    profileImg = serializers.ImageField(use_url=True)
 
     class Meta:
         model = Profile
         fields = ['user', 'aboutMe', 'profileImg', 'location']
             #, 'lastAccessDate', 'creationDate', 'location', 'views', 'upVotes', 'downVotes', 'profileImgUrl']
+
+    def get_picture_url(self, profile):
+        print(profile.profileImg.url)
+        return profile.profileImg.url
 
     ''' update(self, instance, validated_data):
         # First, update the User

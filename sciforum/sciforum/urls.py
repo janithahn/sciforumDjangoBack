@@ -26,21 +26,33 @@ from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+
     path('api-auth/', include('rest_framework.urls')),
+
+    #basic end-ponits
     path('api/', include('post.api.urls')),
+    path('profile_api/', include('user_profile.profile_api.urls')),
+    path('answer_api/', include('answer.answer_api.urls')),
+
+
     path('api/post/<int:pk>/update/', PostUpdateView.as_view()),
     path('api/post/create/', PostCreateview.as_view()),
     path('rest-auth/', include('rest_auth.urls')),
+
+    #for google token
     path('rest-auth/google/', GoogleLoginView.as_view(), name='google_login'),
+
     path('accounts/', include('allauth.urls')),
+
     path('rest-auth/registration/', include('rest_auth.registration.urls')),
     path('api-token-auth/', CustomAuthToken.as_view()),
+
     url(r'^user/login/', CustomLoginView.as_view()),
     url(r'^user/register/', CustomRegisterView.as_view()),
+
     path('users/', UserListView.as_view()),
     path('users/<str:username>/', UserDetailView.as_view()),
     path('users/<str:username>/update/', UserUpdateView.as_view()),
-    path('profile_api/', include('user_profile.profile_api.urls')),
     url(r'^api-jwt-token-auth/', obtain_jwt_token),
     url(r'^api-jwt-token-refresh/', refresh_jwt_token),
     path('jwtlogin/', JWTLoginView.as_view()),
