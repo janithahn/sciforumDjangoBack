@@ -6,11 +6,12 @@ class AnswerSerializer(serializers.ModelSerializer):
 
     created_at = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S", read_only=True)
     updated_at = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S", read_only=True)
-    #owner = serializers.CharField(source='owner.username')
+    ownerDisplayName = serializers.CharField(source='owner.username')
+    ownerAvatar = serializers.ImageField(source='owner.profile.profileImg')
 
     class Meta:
         model = Answer
-        fields = ['id', 'postBelong', 'owner', 'answerContent', 'created_at', 'updated_at']
+        fields = ['id', 'postBelong', 'owner', 'ownerDisplayName', 'ownerAvatar', 'answerContent', 'created_at', 'updated_at']
 
 class AnswerCreateSerializer(serializers.ModelSerializer):
 
