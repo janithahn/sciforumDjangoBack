@@ -17,13 +17,19 @@ class AnswerViewSet(viewsets.ModelViewSet):
 
 class AnswerCreateview(CreateAPIView):
     #authentication_classes = [authentication.JSONWebTokenAuthentication]
-    #permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated]
     queryset = Answer.objects.all()
     serializer_class = AnswerCreateSerializer
 
 class AnswerUpdateView(UpdateAPIView):
-    #authentication_classes = [authentication.JSONWebTokenAuthentication]
-    #permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [authentication.JSONWebTokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
     queryset = Answer.objects.all()
     serializer_class = AnswerUpdateSerializer
+
+class AnswerDeleteView(DestroyAPIView):
+    authentication_classes = [authentication.JSONWebTokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+    queryset = Answer.objects.all()
+
 

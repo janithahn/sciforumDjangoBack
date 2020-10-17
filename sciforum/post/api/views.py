@@ -85,6 +85,11 @@ class PostUpdateView(UpdateAPIView):
     queryset = Post.objects.all()
     serializer_class = PostUpdateSerializer
 
+class PostDeleteView(DestroyAPIView):
+    authentication_classes = [authentication.JSONWebTokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+    queryset = Post.objects.all()
+
 #views for users
 class UserViewSet(GetSerializerClassMixin, viewsets.ModelViewSet):
 
