@@ -5,6 +5,7 @@ from .serializers import PostVoteSerializer, PostVoteCreateSerializer, PostVoteU
     , AnswerVoteSerializer, AnswerVoteCreateSerializer, AnswerVoteUpdateSerializer
 from vote.models import PostVote, AnswerVote
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.response import Response
 
 # POST VOTE
 class PostVoteViewSet(viewsets.ModelViewSet):
@@ -48,6 +49,26 @@ class AnswerVoteCreateview(CreateAPIView):
     #permission_classes = [permissions.IsAuthenticated]
     queryset = AnswerVote.objects.all()
     serializer_class = AnswerVoteCreateSerializer
+
+    '''def create(self, request, *args, **kwargs):
+        print(request.data['answer'])
+        print(request.user)
+        obj = None
+
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        try:
+            obj = AnswerVote.objects.get(answer=request.data['answer'], voteType=request.data['voteType'], owner=request.data['owner'])
+            print('YES')
+        except Exception as excep:
+            if(excep == AnswerVote.DoesNotExist):
+                print('YES')
+                self.perform_create(serializer)
+                headers = self.get_success_headers(serializer.data)
+                return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+        return Response(None)'''
 
 class AnswerVoteUpdateView(UpdateAPIView):
     #authentication_classes = [authentication.JSONWebTokenAuthentication]
