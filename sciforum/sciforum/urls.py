@@ -22,6 +22,8 @@ from post.api.views import CustomAuthToken, CustomLoginView, CustomRegisterView,
     , UserUpdateView, JWTLoginView, JWTRegisterView, VisitorsListView, ProfileViewerInfoView, PostUpdateView\
     , PostCreateview, GoogleLoginView, PostDeleteView
 from answer.answer_api.views import AnswerCreateview, AnswerUpdateView, AnswerDeleteView
+from vote.vote_api.views import PostVoteCreateview, PostVoteUpdateView, PostVoteDeleteView\
+    , AnswerVoteCreateview, AnswerVoteUpdateView, AnswerVoteDeleteView
 #from user_profile.profile_api.views import ProfileUpdateView, ProfileDetailView
 from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token
 
@@ -34,6 +36,7 @@ urlpatterns = [
     path('api/', include('post.api.urls')),
     path('profile_api/', include('user_profile.profile_api.urls')),
     path('answer_api/', include('answer.answer_api.urls')),
+    path('vote_api/', include('vote.vote_api.urls')),
 
     #post changes
     path('api/post/<int:pk>/update/', PostUpdateView.as_view()),
@@ -44,6 +47,16 @@ urlpatterns = [
     path('answer_api/answer/<int:pk>/update/', AnswerUpdateView.as_view()),
     path('answer_api/answer/create/', AnswerCreateview.as_view()),
     path('answer_api/answer/<int:pk>/delete/', AnswerDeleteView.as_view()),
+
+    #post vote changes
+    path('vote_api/postvote/vote/<int:pk>/update/', PostVoteUpdateView.as_view()),
+    path('vote_api/postvote/vote/create/', PostVoteCreateview.as_view()),
+    path('vote_api/postvote/vote/<int:pk>/delete/', PostVoteDeleteView.as_view()),
+
+    #answer vote changes
+    path('vote_api/answervote/vote/<int:pk>/update/', AnswerVoteUpdateView.as_view()),
+    path('vote_api/answervote/vote/create/', AnswerVoteCreateview.as_view()),
+    path('vote_api/answervote/vote/<int:pk>/delete/', AnswerVoteDeleteView.as_view()),
 
     path('rest-auth/', include('rest_auth.urls')),
 
