@@ -54,9 +54,11 @@ urlpatterns = [
     path('vote_api/postvote/vote/<int:pk>/delete/', PostVoteDeleteView.as_view()),
 
     #answer vote changes
-    path('vote_api/answervote/vote/<int:pk>/update/', AnswerVoteUpdateView.as_view()),
+    #path('vote_api/answervote/vote/<int:pk>/update/', AnswerVoteUpdateView.as_view()),
+    path('vote_api/answervote/vote/answer=<int:answer>&owner=<int:owner>/update/', AnswerVoteUpdateView.as_view()),
     path('vote_api/answervote/vote/create/', AnswerVoteCreateview.as_view()),
-    path('vote_api/answervote/vote/<int:pk>/delete/', AnswerVoteDeleteView.as_view()),
+    #path('vote_api/answervote/vote/<int:pk>/delete/', AnswerVoteDeleteView.as_view()),
+    path('vote_api/answervote/vote/answer=<int:answer>&voteType=<str:voteType>&owner=<int:owner>/delete/', AnswerVoteDeleteView.as_view()),
 
     path('rest-auth/', include('rest_auth.urls')),
 

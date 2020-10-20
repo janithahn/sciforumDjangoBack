@@ -18,7 +18,7 @@ class PostVote(models.Model):
     '''Make post, voteType and owner unique together inorder to avoid 
     same user putting likes on same answer again and again'''
     class Meta:
-        unique_together = ('post', 'owner', 'voteType', )
+        unique_together = ('post', 'owner', )
 
 class AnswerVote(models.Model):
 
@@ -28,4 +28,4 @@ class AnswerVote(models.Model):
     created_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        unique_together = ('answer', 'owner', 'voteType', )
+        unique_together = ('answer', 'owner', )

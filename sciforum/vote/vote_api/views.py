@@ -5,6 +5,7 @@ from .serializers import PostVoteSerializer, PostVoteCreateSerializer, PostVoteU
     , AnswerVoteSerializer, AnswerVoteCreateSerializer, AnswerVoteUpdateSerializer
 from vote.models import PostVote, AnswerVote
 from django_filters.rest_framework import DjangoFilterBackend
+from .mixins import MultipleFieldLookupMixin
 from rest_framework.response import Response
 
 # POST VOTE
@@ -41,8 +42,16 @@ class AnswerVoteViewSet(viewsets.ModelViewSet):
     queryset = AnswerVote.objects.all()
     serializer_class = AnswerVoteSerializer
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['id', 'answer', 'owner', 'voteType']
-    http_method_names = ['get']
+    filterset_fields = ['answer', 'owner', 'voteType']
+    #http_method_names = ['get']
+
+    def create(self, validated_data):
+        answer, created = AnswerVote.objects.update_or_create(
+            answer=validated_data.data.get('answer', None),
+            owner=validated_data.data.get('owner', None),
+        )
+        return answer
+
 
 class AnswerVoteCreateview(CreateAPIView):
     #authentication_classes = [authentication.JSONWebTokenAuthentication]
@@ -50,35 +59,19 @@ class AnswerVoteCreateview(CreateAPIView):
     queryset = AnswerVote.objects.all()
     serializer_class = AnswerVoteCreateSerializer
 
-    '''def create(self, request, *args, **kwargs):
-        print(request.data['answer'])
-        print(request.user)
-        obj = None
-
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-
-        try:
-            obj = AnswerVote.objects.get(answer=request.data['answer'], voteType=request.data['voteType'], owner=request.data['owner'])
-            print('YES')
-        except Exception as excep:
-            if(excep == AnswerVote.DoesNotExist):
-                print('YES')
-                self.perform_create(serializer)
-                headers = self.get_success_headers(serializer.data)
-                return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
-
-        return Response(None)'''
-
-class AnswerVoteUpdateView(UpdateAPIView):
+class AnswerVoteUpdateView(MultipleFieldLookupMixin, UpdateAPIView):
     #authentication_classes = [authentication.JSONWebTokenAuthentication]
     #permission_classes = [permissions.IsAuthenticated]
     queryset = AnswerVote.objects.all()
     serializer_class = AnswerVoteUpdateSerializer
 
-class AnswerVoteDeleteView(DestroyAPIView):
-    #authentication_classes = [authentication.JSONWebTokenAuthentication]
-    #permission_classes = [permissions.IsAuthenticated]
+    lookup_fields = ['answer', 'owner']
+
+class AnswerVoteDeleteView(MultipleFieldLookupMixin, DestroyAPIView):
+    authentication_classes = [authentication.JSONWebTokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
     queryset = AnswerVote.objects.all()
+
+    lookup_fields = ['answer', 'owner']
 
 

@@ -5,7 +5,7 @@ from vote.models import PostVote, AnswerVote
 class PostVoteSerializer(serializers.ModelSerializer):
 
     created_at = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S", read_only=True)
-    ownerDisplayName = serializers.CharField(source='owner.username')
+    ownerDisplayName = serializers.CharField(source='owner.username', read_only=True)
 
     class Meta:
         model = PostVote
@@ -27,7 +27,7 @@ class PostVoteUpdateSerializer(serializers.ModelSerializer):
 class AnswerVoteSerializer(serializers.ModelSerializer):
 
     created_at = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S", read_only=True)
-    ownerDisplayName = serializers.CharField(source='owner.username')
+    ownerDisplayName = serializers.CharField(source='owner.username', read_only=True)
 
     class Meta:
         model = AnswerVote
