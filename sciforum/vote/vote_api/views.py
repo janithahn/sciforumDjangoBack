@@ -8,33 +8,6 @@ from django_filters.rest_framework import DjangoFilterBackend
 from .mixins import MultipleFieldLookupMixin
 from rest_framework.response import Response
 
-# POST VOTE
-class PostVoteViewSet(viewsets.ModelViewSet):
-    #authentication_classes = [authentication.TokenAuthentication]
-    #permission_classes = [permissions.IsAuthenticated]
-    queryset = PostVote.objects.all()
-    serializer_class = PostVoteSerializer
-    filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['id', 'post', 'owner', 'voteType']
-    http_method_names = ['get']
-
-class PostVoteCreateview(CreateAPIView):
-    #authentication_classes = [authentication.JSONWebTokenAuthentication]
-    #permission_classes = [permissions.IsAuthenticated]
-    queryset = PostVote.objects.all()
-    serializer_class = PostVoteCreateSerializer
-
-class PostVoteUpdateView(UpdateAPIView):
-    #authentication_classes = [authentication.JSONWebTokenAuthentication]
-    #permission_classes = [permissions.IsAuthenticated]
-    queryset = PostVote.objects.all()
-    serializer_class = PostVoteUpdateSerializer
-
-class PostVoteDeleteView(DestroyAPIView):
-    #authentication_classes = [authentication.JSONWebTokenAuthentication]
-    #permission_classes = [permissions.IsAuthenticated]
-    queryset = PostVote.objects.all()
-
 #ANSWER VOTE
 class AnswerVoteViewSet(viewsets.ModelViewSet):
     #authentication_classes = [authentication.TokenAuthentication]
@@ -47,8 +20,8 @@ class AnswerVoteViewSet(viewsets.ModelViewSet):
 
 
 class AnswerVoteCreateview(CreateAPIView):
-    #authentication_classes = [authentication.JSONWebTokenAuthentication]
-    #permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [authentication.JSONWebTokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
     queryset = AnswerVote.objects.all()
     serializer_class = AnswerVoteCreateSerializer
 
@@ -81,8 +54,8 @@ class AnswerVoteCreateview(CreateAPIView):
         )'''
 
 class AnswerVoteUpdateView(MultipleFieldLookupMixin, UpdateAPIView):
-    #authentication_classes = [authentication.JSONWebTokenAuthentication]
-    #permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [authentication.JSONWebTokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
     queryset = AnswerVote.objects.all()
     serializer_class = AnswerVoteUpdateSerializer
 
@@ -95,4 +68,30 @@ class AnswerVoteDeleteView(MultipleFieldLookupMixin, DestroyAPIView):
 
     lookup_fields = ['answer', 'owner']
 
+# POST VOTE
+class PostVoteViewSet(viewsets.ModelViewSet):
+    #authentication_classes = [authentication.TokenAuthentication]
+    #permission_classes = [permissions.IsAuthenticated]
+    queryset = PostVote.objects.all()
+    serializer_class = PostVoteSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['id', 'post', 'owner', 'voteType']
+    http_method_names = ['get']
+
+class PostVoteCreateview(CreateAPIView):
+    #authentication_classes = [authentication.JSONWebTokenAuthentication]
+    #permission_classes = [permissions.IsAuthenticated]
+    queryset = PostVote.objects.all()
+    serializer_class = PostVoteCreateSerializer
+
+class PostVoteUpdateView(UpdateAPIView):
+    #authentication_classes = [authentication.JSONWebTokenAuthentication]
+    #permission_classes = [permissions.IsAuthenticated]
+    queryset = PostVote.objects.all()
+    serializer_class = PostVoteUpdateSerializer
+
+class PostVoteDeleteView(DestroyAPIView):
+    #authentication_classes = [authentication.JSONWebTokenAuthentication]
+    #permission_classes = [permissions.IsAuthenticated]
+    queryset = PostVote.objects.all()
 
