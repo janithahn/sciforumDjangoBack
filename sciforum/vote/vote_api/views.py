@@ -43,14 +43,7 @@ class AnswerVoteViewSet(viewsets.ModelViewSet):
     serializer_class = AnswerVoteSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['answer', 'owner', 'voteType']
-    #http_method_names = ['get']
-
-    def create(self, validated_data):
-        answer, created = AnswerVote.objects.update_or_create(
-            answer=validated_data.data.get('answer', None),
-            owner=validated_data.data.get('owner', None),
-        )
-        return answer
+    http_method_names = ['get']
 
 
 class AnswerVoteCreateview(CreateAPIView):
@@ -58,6 +51,34 @@ class AnswerVoteCreateview(CreateAPIView):
     #permission_classes = [permissions.IsAuthenticated]
     queryset = AnswerVote.objects.all()
     serializer_class = AnswerVoteCreateSerializer
+
+    '''
+        Here I have overridden the create function in order to create or update object if exists already
+        in the model
+    '''
+    '''def create(self, request, *args, **kwargs):
+        owner = request.data.get('owner'),
+        voteType = request.data.get('voteType')
+        answer = request.data.get('answer')
+        #print(request.data['owner'])
+        AnswerVote.objects.update_or_create(
+            owner=owner,
+            answer=answer,
+            defaults={"voteType": voteType}
+        )
+        return Response(status=status.HTTP_201_CREATED)'''
+
+    ''' below code also works fine without unique together validator '''
+    '''def perform_create(self, serializer):
+        owner = serializer.validated_data.get('owner'),
+        voteType = serializer.validated_data.get('voteType')
+        answer = serializer.validated_data.get('answer')
+        print(serializer.validated_data.get('owner'))
+        AnswerVote.objects.update_or_create(
+            owner=owner,
+            answer=answer,
+            defaults={"voteType": voteType}
+        )'''
 
 class AnswerVoteUpdateView(MultipleFieldLookupMixin, UpdateAPIView):
     #authentication_classes = [authentication.JSONWebTokenAuthentication]
