@@ -51,6 +51,24 @@ class PostVoteSerializer(serializers.ModelSerializer):
 
 class PostVoteCreateSerializer(serializers.ModelSerializer):
 
+    ''' get_unique_together_validators returns an empty array just to avoid unique together validator '''
+
+    def get_unique_together_validators(self):
+        return []
+
+    '''  overriding create method to and update or create functionality to update if the object already exists '''
+
+    def create(self, validated_data):
+        owner = validated_data.get('owner', None)
+        post = validated_data.get('post', None)
+        voteType = validated_data.get('voteType', None)
+        vote, created = PostVote.objects.update_or_create(
+            owner=owner,
+            post=post,
+            defaults={"voteType": voteType}
+        )
+        return vote
+
     class Meta:
         model = PostVote
         fields = ['post', 'voteType', 'owner']

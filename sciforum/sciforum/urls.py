@@ -49,9 +49,9 @@ urlpatterns = [
     path('answer_api/answer/<int:pk>/delete/', AnswerDeleteView.as_view()),
 
     #post vote changes
-    path('vote_api/postvote/vote/<int:pk>/update/', PostVoteUpdateView.as_view()),
+    path('vote_api/postvote/vote/post=<int:post>&owner=<int:owner>/update/', PostVoteUpdateView.as_view()),
     path('vote_api/postvote/vote/create/', PostVoteCreateview.as_view()),
-    path('vote_api/postvote/vote/<int:pk>/delete/', PostVoteDeleteView.as_view()),
+    path('vote_api/postvote/vote/post=<int:post>&owner=<int:owner>/delete/', PostVoteDeleteView.as_view()),
 
     #answer vote changes
     #path('vote_api/answervote/vote/<int:pk>/update/', AnswerVoteUpdateView.as_view()),

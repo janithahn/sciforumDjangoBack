@@ -84,14 +84,18 @@ class PostVoteCreateview(CreateAPIView):
     queryset = PostVote.objects.all()
     serializer_class = PostVoteCreateSerializer
 
-class PostVoteUpdateView(UpdateAPIView):
+class PostVoteUpdateView(MultipleFieldLookupMixin, UpdateAPIView):
     #authentication_classes = [authentication.JSONWebTokenAuthentication]
     #permission_classes = [permissions.IsAuthenticated]
     queryset = PostVote.objects.all()
     serializer_class = PostVoteUpdateSerializer
 
-class PostVoteDeleteView(DestroyAPIView):
+    lookup_fields = ['post', 'owner']
+
+class PostVoteDeleteView(MultipleFieldLookupMixin, DestroyAPIView):
     #authentication_classes = [authentication.JSONWebTokenAuthentication]
     #permission_classes = [permissions.IsAuthenticated]
     queryset = PostVote.objects.all()
+
+    lookup_fields = ['post', 'owner']
 
