@@ -38,7 +38,6 @@ def log_user_logged_in_failed(sender, credentials, request, **kwargs):
         # user_login_activity_log.save()
         Profile.objects.select_related().filter(user=credentials).update(login_ip=get_client_ip(request), user_agent_info=user_agent_info)
 
-
     except Exception as e:
         # log the error
         error_log.error("log_user_logged_in request: %s, error: %s" % (request, e))
@@ -51,7 +50,7 @@ def get_client_ip(request):
         ip = request.META.get('REMOTE_ADDR')
     return ip
 
-@receiver(user_signed_up)
+'''@receiver(user_signed_up)
 def social_login_profilepic(sociallogin, user, **kwargs):
 
     if sociallogin:
@@ -66,7 +65,7 @@ def social_login_profilepic(sociallogin, user, **kwargs):
     profile.profileImg.save(os.path.basename(picture_url), File(open(image, 'rb')))
     profile.save(update_fields=('profileImg', ))
 
-    print(profile.profileImg.url)
+    print(profile.profileImg.url)'''
 
 def download_image(url):
     """Downloads an image and makes sure it's verified.

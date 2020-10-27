@@ -21,11 +21,12 @@ from django.conf.urls.static import static
 from post.api.views import CustomAuthToken, CustomLoginView, CustomRegisterView, UserListView, UserDetailView\
     , UserUpdateView, JWTLoginView, JWTRegisterView, VisitorsListView, ProfileViewerInfoView, PostUpdateView\
     , PostCreateview, GoogleLoginView, PostDeleteView
-from answer.answer_api.views import AnswerCreateview, AnswerUpdateView, AnswerDeleteView
+from answer.answer_api.views import AnswerCreateview, AnswerUpdateView, AnswerDeleteView # , NotificationViewSet
 from vote.vote_api.views import PostVoteCreateview, PostVoteUpdateView, PostVoteDeleteView\
     , AnswerVoteCreateview, AnswerVoteUpdateView, AnswerVoteDeleteView
 #from user_profile.profile_api.views import ProfileUpdateView, ProfileDetailView
 from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token
+import notifications.urls
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -47,6 +48,7 @@ urlpatterns = [
     path('answer_api/answer/<int:pk>/update/', AnswerUpdateView.as_view()),
     path('answer_api/answer/create/', AnswerCreateview.as_view()),
     path('answer_api/answer/<int:pk>/delete/', AnswerDeleteView.as_view()),
+    #path("answer_api/answer/notifications/", NotificationViewSet.as_view({'get': 'list'}), name='notifications'),
 
     #post vote changes
     path('vote_api/postvote/vote/post=<int:post>&owner=<int:owner>/update/', PostVoteUpdateView.as_view()),
@@ -85,4 +87,7 @@ urlpatterns = [
     path('socialauth/', include('rest_framework_social_oauth2.urls')),
     #path('profile/<int:pk>/', ProfileDetailView.as_view()),
     #path('profile/<int:pk>/update/', ProfileUpdateView.as_view()),
+
+    #notifications
+    path('inbox/notifications/', include(notifications.urls, namespace='notifications')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
