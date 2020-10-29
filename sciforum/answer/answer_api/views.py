@@ -33,6 +33,8 @@ class AnswerCreateview(CreateAPIView):
         message = from_user.username + ' has put an answer to your question'
         to_user = action_object.owner
 
+        #print(to_user.notifications.unread())
+
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
@@ -64,9 +66,26 @@ class AnswerDeleteView(DestroyAPIView):
         queryset = Notification.objects.all()
         return Response(NotificationSerializer(queryset, many=True).data)'''
 
-class NotificationViewSetSample(viewsets.ModelViewSet):
+class NotificationViewSet(viewsets.ModelViewSet):
     serializer_class = NotificationSerializer
     queryset = Notification.objects.all()
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['id', 'recipient']
     http_method_names = ['get']
+
+    def list(self, request, *args, **kwargs):
+
+        user = User.objects.get(pk=1)
+        notifications = user.notifications.read()
+        notifications.mark_all_as_unread()
+        print(notifications)
+
+        queryset = self.filter_queryset(self.get_queryset())
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
