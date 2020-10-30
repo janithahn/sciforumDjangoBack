@@ -103,11 +103,19 @@ class UserSerializer(serializers.ModelSerializer): # you can try WritableNestedM
         # change the logic here if that's not right for your app
         Profile.objects.update_or_create(user=user, defaults=profile_data)
 
+class UserprofileImgSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Profile
+        fields = ['profileImg']
+
 class JWTUserSerializer(serializers.ModelSerializer):
+
+    profile = UserprofileImgSerializer(read_only=True)
 
     class Meta:
         model = User
-        fields = ['id', 'username', 'email']
+        fields = ['id', 'username', 'email', 'profile']
 
 class JWTSerializer(JSONWebTokenSerializer):
 

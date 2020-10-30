@@ -49,7 +49,7 @@ class NotificationSerializer(serializers.Serializer):
     verb = serializers.CharField()
     description = serializers.CharField()
     action_object = ActionObjectSerializer(read_only=True)
-    timestamp = serializers.DateTimeField(read_only=True)
+    timestamp = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S", read_only=True)
 
     class Meta:
         fields = ['id', 'recipient', 'actor', 'unread', 'public', 'action_object', 'verb', 'description', 'timestamp']
