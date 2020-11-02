@@ -67,18 +67,20 @@ class AnswerDeleteView(DestroyAPIView):
         return Response(NotificationSerializer(queryset, many=True).data)'''
 
 class NotificationViewSet(viewsets.ModelViewSet):
+    # authentication_classes = [authentication.JSONWebTokenAuthentication]
+    # permission_classes = [permissions.IsAuthenticated]
     serializer_class = NotificationSerializer
     queryset = Notification.objects.all()
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['id', 'recipient']
-    http_method_names = ['get']
+    http_method_names = ['get', 'delete', 'patch']
 
     def list(self, request, *args, **kwargs):
 
-        user = User.objects.get(pk=1)
+        '''user = User.objects.get(pk=1)
         notifications = user.notifications.read()
         notifications.mark_all_as_unread()
-        print(notifications)
+        print(notifications)'''
 
         queryset = self.filter_queryset(self.get_queryset())
 
