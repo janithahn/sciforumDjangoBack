@@ -56,16 +56,6 @@ class AnswerDeleteView(DestroyAPIView):
     permission_classes = [permissions.IsAuthenticated]
     queryset = Answer.objects.all()
 
-'''class NotificationViewSet(viewsets.ViewSet):
-    serializer_class = NotificationSerializer
-    filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['id', 'recipient']
-    http_method_names = ['get']
-
-    def list(self, request):
-        queryset = Notification.objects.all()
-        return Response(NotificationSerializer(queryset, many=True).data)'''
-
 class NotificationViewSet(viewsets.ModelViewSet):
     # authentication_classes = [authentication.JSONWebTokenAuthentication]
     # permission_classes = [permissions.IsAuthenticated]

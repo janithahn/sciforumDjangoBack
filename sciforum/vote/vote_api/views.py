@@ -7,6 +7,9 @@ from vote.models import PostVote, AnswerVote
 from django_filters.rest_framework import DjangoFilterBackend
 from .mixins import MultipleFieldLookupMixin
 from rest_framework.response import Response
+from post.models import Post
+from notifications.signals import notify
+from answer.models import Answer
 
 #ANSWER VOTE
 class AnswerVoteViewSet(viewsets.ModelViewSet):
@@ -18,15 +21,44 @@ class AnswerVoteViewSet(viewsets.ModelViewSet):
     filterset_fields = ['answer', 'owner', 'voteType']
     http_method_names = ['get']
 
-
 class AnswerVoteCreateview(CreateAPIView):
     authentication_classes = [authentication.JSONWebTokenAuthentication]
     permission_classes = [permissions.IsAuthenticated]
     queryset = AnswerVote.objects.all()
     serializer_class = AnswerVoteCreateSerializer
 
+    def create(self, request, *args, **kwargs):
+
+        from_user = request.user
+        action_object = Answer.objects.get(id=request.data['answer'])
+        vote_type = request.data['voteType']
+        to_user = action_object.owner
+
+        print(action_object)
+
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+
+        if vote_type == 'LIKE':
+            message = from_user.username + ' has put a like on your answer'
+            if from_user.is_authenticated:
+                print('created the like notification')
+                notify.send(sender=from_user, recipient=to_user, verb=message, action_object=action_object.postBelong)
+        else:
+            notification = to_user.notifications.filter(actor_object_id=from_user.id, action_object_object_id=action_object.id)
+            print(notification)
+            try:
+                notification.delete()
+                print('existing records deleted')
+            except Exception as excep:
+                print(excep)
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
     '''
-        Here I have overridden the create function in order to create or update object if exists already
+        Here I have overridden the create function in order to create or update object if it exists already
         in the model
     '''
     '''def create(self, request, *args, **kwargs):
@@ -83,6 +115,33 @@ class PostVoteCreateview(CreateAPIView):
     #permission_classes = [permissions.IsAuthenticated]
     queryset = PostVote.objects.all()
     serializer_class = PostVoteCreateSerializer
+
+    def create(self, request, *args, **kwargs):
+
+        from_user = request.user
+        action_object = Post.objects.get(id=request.data['post'])
+        vote_type = request.data['voteType']
+        to_user = action_object.owner
+
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+
+        if vote_type == 'LIKE':
+            message = from_user.username + ' has put a like on your question'
+            if from_user.is_authenticated:
+                notify.send(sender=from_user, recipient=to_user, verb=message, action_object=action_object)
+        else:
+            notification = to_user.notifications.filter(actor_object_id=from_user.id, action_object_object_id=action_object.id)
+            # print(notification)
+            try:
+                notification.delete()
+                # print('existing records deleted')
+            except Exception as excep:
+                print(excep)
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 class PostVoteUpdateView(MultipleFieldLookupMixin, UpdateAPIView):
     #authentication_classes = [authentication.JSONWebTokenAuthentication]

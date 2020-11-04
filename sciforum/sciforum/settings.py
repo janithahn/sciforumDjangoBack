@@ -42,11 +42,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    #rest framework
+    # rest framework
     'rest_framework',
     'rest_framework.authtoken',
 
-    #apps
+    # apps
     'post.apps.PostConfig',
     'user_profile.apps.UserProfileConfig',
     'answer.apps.AnswerConfig',
@@ -54,22 +54,22 @@ INSTALLED_APPS = [
 
     'corsheaders',
 
-    #authentication
+    # authentication
     'rest_auth',
     'django.contrib.sites',
     'allauth',
     'allauth.account',
     'rest_auth.registration',
     'allauth.socialaccount',
-    #'allauth.socialaccount.providers.facebook',
-    #'allauth.socialaccount.providers.twitter',
+    # 'allauth.socialaccount.providers.facebook',
+    # 'allauth.socialaccount.providers.twitter',
     'allauth.socialaccount.providers.google',
     'django_filters',
     'oauth2_provider',
     'social_django',
     'rest_framework_social_oauth2',
 
-    #notifications
+    # notifications
     'notifications',
 ]
 
