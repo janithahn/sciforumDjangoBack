@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from post.models import Post
+from answer.models import Answer
 from notifications.models import Notification
 
 class UserSerializer(serializers.ModelSerializer):
@@ -9,11 +10,27 @@ class UserSerializer(serializers.ModelSerializer):
         model = get_user_model()
         fields = ['id', 'username', 'email', 'first_name', 'last_name']
 
-class ActionObjectSerializer(serializers.ModelSerializer):
+class PostObjectSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Post
         fields = '__all__'
+
+class AnswerObjectSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Answer
+        fields = '__all__'
+
+class GenericNotificationRelatedField(serializers.RelatedField):
+
+    def to_representation(self, value):
+        if isinstance(value, Post):
+            serializer = PostObjectSerializer(value)
+        if isinstance(value, Answer):
+            serializer = AnswerObjectSerializer(value)
+
+        return serializer.data
 
 class NotificationSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(read_only=True)
@@ -24,7 +41,7 @@ class NotificationSerializer(serializers.ModelSerializer):
     # target = ActionObjectSerializer(read_only=True)
     verb = serializers.CharField(read_only=True)
     description = serializers.CharField(read_only=True)
-    action_object = ActionObjectSerializer(read_only=True)
+    action_object = GenericNotificationRelatedField(read_only=True)
     timestamp = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S", read_only=True)
 
     class Meta:

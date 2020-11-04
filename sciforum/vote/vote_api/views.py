@@ -10,6 +10,7 @@ from rest_framework.response import Response
 from post.models import Post
 from notifications.signals import notify
 from answer.models import Answer
+from django.contrib.contenttypes.models import ContentType
 
 #ANSWER VOTE
 class AnswerVoteViewSet(viewsets.ModelViewSet):
@@ -33,6 +34,7 @@ class AnswerVoteCreateview(CreateAPIView):
         action_object = Answer.objects.get(id=request.data['answer'])
         vote_type = request.data['voteType']
         to_user = action_object.owner
+        content_type = ContentType.objects.get_for_model(Answer)
 
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -42,9 +44,9 @@ class AnswerVoteCreateview(CreateAPIView):
         if vote_type == 'LIKE':
             message = from_user.username + ' has put a like on your answer'
             if from_user.is_authenticated:
-                notify.send(sender=from_user, recipient=to_user, verb=message, action_object=action_object.postBelong)
+                notify.send(sender=from_user, recipient=to_user, verb=message, action_object=action_object)
         else:
-            notification = to_user.notifications.filter(actor_object_id=from_user.id, action_object_object_id=action_object.id)
+            notification = to_user.notifications.filter(actor_object_id=from_user.id, action_object_content_type=content_type, action_object_object_id=action_object.id)
             # print(notification)
             try:
                 notification.delete()
@@ -96,17 +98,18 @@ class AnswerVoteUpdateView(MultipleFieldLookupMixin, UpdateAPIView):
         action_object = self.get_object().answer
         vote_type = request.data['voteType']
         to_user = action_object.owner
+        content_type = ContentType.objects.get_for_model(Answer)
 
-        if vote_type == 'LIKE':
+        '''if vote_type == 'LIKE':
             message = from_user.username + ' has put a like on your answer'
             if from_user.is_authenticated:
-                notify.send(sender=from_user, recipient=to_user, verb=message, action_object=action_object.postBelong)
-        else:
-            notification = to_user.notifications.filter(actor_object_id=from_user.id, action_object_object_id=action_object.id)
-            try:
-                notification.delete()
-            except Exception as excep:
-                print(excep)
+                notify.send(sender=from_user, recipient=to_user, verb=message, action_object=action_object)
+        else:'''
+        notification = to_user.notifications.filter(actor_object_id=from_user.id, action_object_content_type=content_type, action_object_object_id=action_object.id)
+        try:
+            notification.delete()
+        except Exception as excep:
+            print(excep)
 
         return self.partial_update(request, *args, **kwargs)
 
@@ -139,6 +142,7 @@ class PostVoteCreateview(CreateAPIView):
         action_object = Post.objects.get(id=request.data['post'])
         vote_type = request.data['voteType']
         to_user = action_object.owner
+        content_type = ContentType.objects.get_for_model(Post)
 
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -150,7 +154,7 @@ class PostVoteCreateview(CreateAPIView):
             if from_user.is_authenticated:
                 notify.send(sender=from_user, recipient=to_user, verb=message, action_object=action_object)
         else:
-            notification = to_user.notifications.filter(actor_object_id=from_user.id, action_object_object_id=action_object.id)
+            notification = to_user.notifications.filter(actor_object_id=from_user.id, action_object_content_type=content_type, action_object_object_id=action_object.id)
             # print(notification)
             try:
                 notification.delete()
@@ -174,17 +178,18 @@ class PostVoteUpdateView(MultipleFieldLookupMixin, UpdateAPIView):
         action_object = self.get_object().post
         vote_type = request.data['voteType']
         to_user = action_object.owner
+        content_type = ContentType.objects.get_for_model(Post)
 
-        if vote_type == 'LIKE':
+        '''if vote_type == 'LIKE':
             message = from_user.username + ' has put a like on your answer'
             if from_user.is_authenticated:
-                notify.send(sender=from_user, recipient=to_user, verb=message, action_object=action_object.postBelong)
-        else:
-            notification = to_user.notifications.filter(actor_object_id=from_user.id, action_object_object_id=action_object.id)
-            try:
-                notification.delete()
-            except Exception as excep:
-                print(excep)
+                notify.send(sender=from_user, recipient=to_user, verb=message, action_object=action_object)
+        else:'''
+        notification = to_user.notifications.filter(actor_object_id=from_user.id, action_object_content_type=content_type, action_object_object_id=action_object.id)
+        try:
+            notification.delete()
+        except Exception as excep:
+            print(excep)
 
         return self.partial_update(request, *args, **kwargs)
 
