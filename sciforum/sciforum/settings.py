@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'user_profile.apps.UserProfileConfig',
     'answer.apps.AnswerConfig',
     'vote.apps.VoteConfig',
+    'notification.apps.NotificationConfig',
 
     'corsheaders',
 

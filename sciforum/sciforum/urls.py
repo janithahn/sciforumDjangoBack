@@ -24,11 +24,13 @@ from post.api.views import CustomAuthToken, CustomLoginView, CustomRegisterView,
 from answer.answer_api.views import AnswerCreateview, AnswerUpdateView, AnswerDeleteView
 from vote.vote_api.views import PostVoteCreateview, PostVoteUpdateView, PostVoteDeleteView\
     , AnswerVoteCreateview, AnswerVoteUpdateView, AnswerVoteDeleteView
+from notification.views import NotificationViewSet
 #from user_profile.profile_api.views import ProfileUpdateView, ProfileDetailView
 from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token
-import notifications.urls
+from rest_framework.routers import DefaultRouter
 
 urlpatterns = [
+
     path('admin/', admin.site.urls),
 
     path('api-auth/', include('rest_framework.urls')),
@@ -88,6 +90,8 @@ urlpatterns = [
     #path('profile/<int:pk>/', ProfileDetailView.as_view()),
     #path('profile/<int:pk>/update/', ProfileUpdateView.as_view()),
 
-    #notifications
-    path('inbox/notifications/', include(notifications.urls, namespace='notifications')),
+    # notifications
+    path('inbox/notifications/', include('notification.urls')),
+
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+

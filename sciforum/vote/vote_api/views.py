@@ -13,8 +13,8 @@ from answer.models import Answer
 
 #ANSWER VOTE
 class AnswerVoteViewSet(viewsets.ModelViewSet):
-    #authentication_classes = [authentication.TokenAuthentication]
-    #permission_classes = [permissions.IsAuthenticated]
+    # authentication_classes = [authentication.TokenAuthentication]
+    # permission_classes = [permissions.IsAuthenticated]
     queryset = AnswerVote.objects.all()
     serializer_class = AnswerVoteSerializer
     filter_backends = [DjangoFilterBackend]
@@ -34,8 +34,6 @@ class AnswerVoteCreateview(CreateAPIView):
         vote_type = request.data['voteType']
         to_user = action_object.owner
 
-        print(action_object)
-
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
@@ -44,14 +42,13 @@ class AnswerVoteCreateview(CreateAPIView):
         if vote_type == 'LIKE':
             message = from_user.username + ' has put a like on your answer'
             if from_user.is_authenticated:
-                print('created the like notification')
                 notify.send(sender=from_user, recipient=to_user, verb=message, action_object=action_object.postBelong)
         else:
             notification = to_user.notifications.filter(actor_object_id=from_user.id, action_object_object_id=action_object.id)
-            print(notification)
+            # print(notification)
             try:
                 notification.delete()
-                print('existing records deleted')
+                # print('existing records deleted')
             except Exception as excep:
                 print(excep)
 
@@ -93,6 +90,26 @@ class AnswerVoteUpdateView(MultipleFieldLookupMixin, UpdateAPIView):
 
     lookup_fields = ['answer', 'owner']
 
+    def patch(self, request, *args, **kwargs):
+
+        from_user = request.user
+        action_object = self.get_object().answer
+        vote_type = request.data['voteType']
+        to_user = action_object.owner
+
+        if vote_type == 'LIKE':
+            message = from_user.username + ' has put a like on your answer'
+            if from_user.is_authenticated:
+                notify.send(sender=from_user, recipient=to_user, verb=message, action_object=action_object.postBelong)
+        else:
+            notification = to_user.notifications.filter(actor_object_id=from_user.id, action_object_object_id=action_object.id)
+            try:
+                notification.delete()
+            except Exception as excep:
+                print(excep)
+
+        return self.partial_update(request, *args, **kwargs)
+
 class AnswerVoteDeleteView(MultipleFieldLookupMixin, DestroyAPIView):
     authentication_classes = [authentication.JSONWebTokenAuthentication]
     permission_classes = [permissions.IsAuthenticated]
@@ -102,8 +119,8 @@ class AnswerVoteDeleteView(MultipleFieldLookupMixin, DestroyAPIView):
 
 # POST VOTE
 class PostVoteViewSet(viewsets.ModelViewSet):
-    #authentication_classes = [authentication.TokenAuthentication]
-    #permission_classes = [permissions.IsAuthenticated]
+    # authentication_classes = [authentication.TokenAuthentication]
+    # permission_classes = [permissions.IsAuthenticated]
     queryset = PostVote.objects.all()
     serializer_class = PostVoteSerializer
     filter_backends = [DjangoFilterBackend]
@@ -111,8 +128,8 @@ class PostVoteViewSet(viewsets.ModelViewSet):
     http_method_names = ['get']
 
 class PostVoteCreateview(CreateAPIView):
-    #authentication_classes = [authentication.JSONWebTokenAuthentication]
-    #permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [authentication.JSONWebTokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
     queryset = PostVote.objects.all()
     serializer_class = PostVoteCreateSerializer
 
@@ -144,16 +161,36 @@ class PostVoteCreateview(CreateAPIView):
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 class PostVoteUpdateView(MultipleFieldLookupMixin, UpdateAPIView):
-    #authentication_classes = [authentication.JSONWebTokenAuthentication]
-    #permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [authentication.JSONWebTokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
     queryset = PostVote.objects.all()
     serializer_class = PostVoteUpdateSerializer
 
     lookup_fields = ['post', 'owner']
 
+    def patch(self, request, *args, **kwargs):
+
+        from_user = request.user
+        action_object = self.get_object().post
+        vote_type = request.data['voteType']
+        to_user = action_object.owner
+
+        if vote_type == 'LIKE':
+            message = from_user.username + ' has put a like on your answer'
+            if from_user.is_authenticated:
+                notify.send(sender=from_user, recipient=to_user, verb=message, action_object=action_object.postBelong)
+        else:
+            notification = to_user.notifications.filter(actor_object_id=from_user.id, action_object_object_id=action_object.id)
+            try:
+                notification.delete()
+            except Exception as excep:
+                print(excep)
+
+        return self.partial_update(request, *args, **kwargs)
+
 class PostVoteDeleteView(MultipleFieldLookupMixin, DestroyAPIView):
-    #authentication_classes = [authentication.JSONWebTokenAuthentication]
-    #permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [authentication.JSONWebTokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
     queryset = PostVote.objects.all()
 
     lookup_fields = ['post', 'owner']
