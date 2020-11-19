@@ -18,16 +18,16 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from post.api.views import CustomAuthToken, CustomLoginView, CustomRegisterView, UserListView, UserDetailView\
-    , UserUpdateView, JWTLoginView, JWTRegisterView, VisitorsListView, ProfileViewerInfoView, PostUpdateView\
-    , PostCreateview, GoogleLoginView, PostDeleteView
+from post.api.views import VisitorsListView, ProfileViewerInfoView, PostUpdateView, PostCreateview, PostDeleteView
+from user_profile.profile_api.views import CustomAuthToken, CustomLoginView, CustomRegisterView, UserListView, UserDetailView\
+    , UserUpdateView, JWTLoginView, JWTRegisterView, GoogleLoginView
 from answer.answer_api.views import AnswerCreateview, AnswerUpdateView, AnswerDeleteView
 from vote.vote_api.views import PostVoteCreateview, PostVoteUpdateView, PostVoteDeleteView\
     , AnswerVoteCreateview, AnswerVoteUpdateView, AnswerVoteDeleteView
-from notification.views import NotificationViewSet
-#from user_profile.profile_api.views import ProfileUpdateView, ProfileDetailView
+# from notification.views import NotificationViewSet
+# from user_profile.profile_api.views import ProfileUpdateView, ProfileDetailView
 from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token
-from rest_framework.routers import DefaultRouter
+# from rest_framework.routers import DefaultRouter
 
 urlpatterns = [
 

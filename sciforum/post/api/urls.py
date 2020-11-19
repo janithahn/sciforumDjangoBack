@@ -1,11 +1,11 @@
 from django.urls import path
 #from .views import PostDetailView, PostListView, PostCreateView, PostUpdateView, PostDeleteView
-from post.api.views import PostViewSet, UserViewSet
+from post.api.views import PostViewSet
 from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
 router.register(r'', PostViewSet, basename='posts')
-router.register(r'users/viewset', UserViewSet, basename='users')
+# router.register(r'users/viewset', UserViewSet, basename='users')
 urlpatterns = router.urls
 
 
