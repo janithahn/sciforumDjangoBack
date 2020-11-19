@@ -100,11 +100,6 @@ class AnswerVoteUpdateView(MultipleFieldLookupMixin, UpdateAPIView):
         to_user = action_object.owner
         content_type = ContentType.objects.get_for_model(Answer)
 
-        '''if vote_type == 'LIKE':
-            message = from_user.username + ' has put a like on your answer'
-            if from_user.is_authenticated:
-                notify.send(sender=from_user, recipient=to_user, verb=message, action_object=action_object)
-        else:'''
         notification = to_user.notifications.filter(actor_object_id=from_user.id, action_object_content_type=content_type, action_object_object_id=action_object.id)
         try:
             notification.delete()
@@ -176,15 +171,10 @@ class PostVoteUpdateView(MultipleFieldLookupMixin, UpdateAPIView):
 
         from_user = request.user
         action_object = self.get_object().post
-        vote_type = request.data['voteType']
+        # vote_type = request.data['voteType']
         to_user = action_object.owner
         content_type = ContentType.objects.get_for_model(Post)
 
-        '''if vote_type == 'LIKE':
-            message = from_user.username + ' has put a like on your answer'
-            if from_user.is_authenticated:
-                notify.send(sender=from_user, recipient=to_user, verb=message, action_object=action_object)
-        else:'''
         notification = to_user.notifications.filter(actor_object_id=from_user.id, action_object_content_type=content_type, action_object_object_id=action_object.id)
         try:
             notification.delete()

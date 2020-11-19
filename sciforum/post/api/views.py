@@ -103,7 +103,7 @@ class UserViewSet(GetSerializerClassMixin, viewsets.ModelViewSet):
 
 
 class UserListView(ListAPIView):
-    #permission_classes = [permissions.IsAuthenticated]
+    # permission_classes = [permissions.IsAuthenticated]
     queryset = User.objects.all()
     serializer_class = CustomUserSerializer
 
@@ -114,15 +114,15 @@ class UserListView(ListAPIView):
 
 
 class UserDetailView(RetrieveAPIView):
-    #authentication_classes = [authentication.JSONWebTokenAuthentication]
-    #permission_classes = [permissions.IsAuthenticated]
+    # authentication_classes = [authentication.JSONWebTokenAuthentication]
+    # permission_classes = [permissions.IsAuthenticated]
     queryset = User.objects.all()
-    #serializer_class = UserSerializer
+    # serializer_class = UserSerializer
     lookup_field = 'username'
 
     def get_serializer_class(self):
-        #print(self.request.session.get('_auth_user_id', 0))
-        #print(self.kwargs['username'])
+        # print(self.request.session.get('_auth_user_id', 0))
+        # print(self.kwargs['username'])
         user = self.request.user
         if user.is_authenticated and user.username == self.kwargs['username']:
             return UserSerializer
@@ -140,7 +140,7 @@ class UserDetailView(RetrieveAPIView):
         except Exception as exep:
             print(exep)
 
-        #print(profileViewCount)
+        # print(profileViewCount)
 
         try:
             agent_info = request.META.get('HTTP_USER_AGENT', '<unknown>')[:255]
@@ -210,14 +210,18 @@ class CustomAuthToken(ObtainAuthToken):
 class JWTLoginView(ObtainJSONWebToken):
     serializer_class = JWTSerializer
 
+from user_profile.models import Profile
+
 class JWTRegisterView(RegisterView):
-    #serializer_class = JWTSerializer
+    # serializer_class = JWTSerializer
 
     def create(self, request, *args, **kwargs):
         serializer = RegisterSerializer(data=self.request.data)
         serializer.is_valid(raise_exception=True)
         user = self.perform_create(serializer)
-        #token, created = Token.objects.get_or_create(user=user)
+        # token, created = Token.objects.get_or_create(user=user)
+
+        Profile.objects.update_or_create(user=user)# creating user profile when the user is registered
 
         jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
         jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
@@ -238,9 +242,9 @@ class GoogleLoginView(SocialLoginView):
     adapter_class = GoogleOAuth2Adapter
 
     def get_response(self):
-        #get_adapter(self.request).login(self.request, self.user)
+        # get_adapter(self.request).login(self.request, self.user)
 
-        #print(self.user.email)
+        Profile.objects.update_or_create(user=self.user)
 
         jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
         jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
