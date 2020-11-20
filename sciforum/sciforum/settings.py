@@ -81,6 +81,7 @@ INSTALLED_APPS = [
     # tags
     'taggit',
     'taggit_serializer',
+    'taggit_suggest',
 ]
 
 SITE_ID = 3

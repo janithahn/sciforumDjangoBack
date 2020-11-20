@@ -28,11 +28,13 @@ class PostSerializer(serializers.ModelSerializer, TaggitSerializer):
         model = Post
         fields = ['id', 'owner', 'title', 'body', 'viewCount', 'created_at', 'updated_at', 'tags']
 
-class PostCreateSerializer(serializers.ModelSerializer):
+class PostCreateSerializer(TaggitSerializer, serializers.ModelSerializer):
+
+    tags = TagListSerializerField()
 
     class Meta:
         model = Post
-        fields = ['owner', 'title', 'body']
+        fields = ['owner', 'title', 'body', 'tags']
 
 class PostUpdateSerializer(serializers.ModelSerializer):
 
