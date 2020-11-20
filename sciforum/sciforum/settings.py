@@ -77,6 +77,10 @@ INSTALLED_APPS = [
 
     # notifications
     'notifications',
+
+    # tags
+    'taggit',
+    'taggit_serializer',
 ]
 
 SITE_ID = 3

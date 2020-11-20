@@ -1,6 +1,7 @@
 from django.db import models
 #from django.conf import settings
 from django.contrib.auth.models import User
+from taggit.managers import TaggableManager
 
 
 class Post(models.Model):
@@ -11,6 +12,7 @@ class Post(models.Model):
     viewCount = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    tags = TaggableManager()
 
     def __str__(self):
         return self.title

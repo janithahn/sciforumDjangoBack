@@ -34,8 +34,9 @@ class PostViewSet(viewsets.ModelViewSet):
     pagination_class = PostsPagination
     http_method_names = ['get']
 
-    filter_backends = [filters.SearchFilter]
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
     search_fields = ['title', 'body']
+    ordering_fields = ['viewCount', 'created_at']
     # filter_backends = [FullWordSearchFilter]
     # word_fields = ['title', 'body']
 
