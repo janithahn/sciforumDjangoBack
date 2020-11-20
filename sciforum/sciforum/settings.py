@@ -56,11 +56,13 @@ INSTALLED_APPS = [
     'corsheaders',
 
     # authentication
-    'rest_auth',
+    #'rest_auth',
+    'dj_rest_auth',
     'django.contrib.sites',
     'allauth',
     'allauth.account',
-    'rest_auth.registration',
+    # 'rest_auth.registration',
+    'dj_rest_auth.registration',
     'allauth.socialaccount',
     # 'allauth.socialaccount.providers.facebook',
     # 'allauth.socialaccount.providers.twitter',

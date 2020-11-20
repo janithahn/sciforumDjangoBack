@@ -64,14 +64,14 @@ urlpatterns = [
     #path('vote_api/answervote/vote/<int:pk>/delete/', AnswerVoteDeleteView.as_view()),
     path('vote_api/answervote/vote/answer=<int:answer>&voteType=<str:voteType>&owner=<int:owner>/delete/', AnswerVoteDeleteView.as_view()),
 
-    path('rest-auth/', include('rest_auth.urls')),
+    path('rest-auth/', include('dj_rest_auth.urls')),
 
     #for google token
     path('rest-auth/google/', GoogleLoginView.as_view(), name='google_login'),
 
     path('accounts/', include('allauth.urls')),
 
-    path('rest-auth/registration/', include('rest_auth.registration.urls')),
+    path('rest-auth/registration/', include('dj_rest_auth.registration.urls')),
     path('api-token-auth/', CustomAuthToken.as_view()),
 
     url(r'^user/login/', CustomLoginView.as_view()),

@@ -10,7 +10,8 @@ from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 # from django.contrib.auth.mixins import LoginRequiredMixin
 from rest_auth.views import LoginView
-from rest_auth.registration.views import RegisterView, SocialLoginView
+# from rest_auth.registration.views import RegisterView, SocialLoginView
+from dj_rest_auth.registration.views import RegisterView, SocialLoginView
 from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
 from rest_auth.registration.serializers import RegisterSerializer
 from django.contrib.auth.models import User
