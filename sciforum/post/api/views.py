@@ -8,6 +8,8 @@ from user_profile.models import Profile
 from rest_framework_jwt import authentication
 from .utils import get_client_ip
 from django.db.models import Count, Sum
+from rest_framework import filters
+# from rest_framework_word_filter import FullWordSearchFilter
 
 # Temporary sample views to get visitors
 class VisitorsListView(ListAPIView):
@@ -22,11 +24,20 @@ class ProfileViewerInfoView(ListAPIView):
 class PostsPagination(pagination.PageNumberPagination):
     page_size = 5
 
+class PostListView(ListAPIView):
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
+
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
     pagination_class = PostsPagination
     http_method_names = ['get']
+
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['title', 'body']
+    # filter_backends = [FullWordSearchFilter]
+    # word_fields = ['title', 'body']
 
     def retrieve(self, request, *args, **kwargs):
         #viewCounter = Visitors.objects.values('post_id').annotate(viewCount=Count('visitorIp', distinct=True))

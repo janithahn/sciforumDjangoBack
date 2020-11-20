@@ -65,10 +65,13 @@ INSTALLED_APPS = [
     # 'allauth.socialaccount.providers.facebook',
     # 'allauth.socialaccount.providers.twitter',
     'allauth.socialaccount.providers.google',
-    'django_filters',
     'oauth2_provider',
     'social_django',
     'rest_framework_social_oauth2',
+
+    # filters
+    'django_filters',
+    'rest_framework_word_filter',
 
     # notifications
     'notifications',
