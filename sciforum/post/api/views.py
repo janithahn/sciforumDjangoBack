@@ -8,7 +8,7 @@ from user_profile.models import Profile
 from rest_framework_jwt import authentication
 from .utils import get_client_ip
 from django.db.models import Count, Sum
-# from rest_framework import filters
+from rest_framework import filters
 # from rest_framework_word_filter import FullWordSearchFilter
 
 # Temporary sample views to get visitors
@@ -34,8 +34,8 @@ class PostViewSet(viewsets.ModelViewSet):
     pagination_class = PostsPagination
     http_method_names = ['get']
 
-    # filter_backends = [filters.SearchFilter]
-    # search_fields = ['title', 'body']
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['title', 'body']
     # filter_backends = [FullWordSearchFilter]
     # word_fields = ['title', 'body']
 
