@@ -10,7 +10,8 @@ from rest_framework_jwt import authentication
 from .utils import get_client_ip
 from django.db.models import Count, Sum
 from rest_framework import filters
-from django_filters.rest_framework import DjangoFilterBackend
+from django_filters.rest_framework import DjangoFilterBackend, FilterSet, filters as filters_for_tags
+from django_filters.widgets import CSVWidget
 # from rest_framework_word_filter import FullWordSearchFilter
 from taggit_suggest.utils import suggest_tags
 
@@ -36,6 +37,16 @@ class PostsPagination(pagination.PageNumberPagination):
             'results': data
         })
 
+class TaggedPostsFilterSet(FilterSet):
+    tags = filters_for_tags.BaseCSVFilter(distinct=True, widget=CSVWidget, method='filter_tags')
+
+    class Meta:
+        model = Post
+        fields = ['owner', 'tags']
+
+    def filter_tags(self, queryset, name, value):
+        return queryset.filter(tags__name__in=value)
+
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
@@ -43,9 +54,10 @@ class PostViewSet(viewsets.ModelViewSet):
     http_method_names = ['get']
 
     filter_backends = [filters.SearchFilter, filters.OrderingFilter, DjangoFilterBackend]
+    filter_class = TaggedPostsFilterSet
     search_fields = ['title', 'body']
     ordering_fields = ['viewCount', 'created_at']
-    filterset_fields = ['owner']
+    # filterset_fields = ['owner']
     # filter_backends = [FullWordSearchFilter]
     # word_fields = ['title', 'body']
 
@@ -96,8 +108,8 @@ class PostCreateview(CreateAPIView):
 
 
 class PostUpdateView(UpdateAPIView):
-    authentication_classes = [authentication.JSONWebTokenAuthentication]
-    permission_classes = [permissions.IsAuthenticated]
+    # authentication_classes = [authentication.JSONWebTokenAuthentication]
+    # permission_classes = [permissions.IsAuthenticated]
     queryset = Post.objects.all()
     serializer_class = PostUpdateSerializer
 
