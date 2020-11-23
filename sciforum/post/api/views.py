@@ -10,6 +10,7 @@ from rest_framework_jwt import authentication
 from .utils import get_client_ip
 from django.db.models import Count, Sum
 from rest_framework import filters
+from django_filters.rest_framework import DjangoFilterBackend
 # from rest_framework_word_filter import FullWordSearchFilter
 from taggit_suggest.utils import suggest_tags
 
@@ -25,6 +26,15 @@ class ProfileViewerInfoView(ListAPIView):
 #views for posts
 class PostsPagination(pagination.PageNumberPagination):
     page_size = 5
+    def get_paginated_response(self, data):
+        return Response({
+            'next': self.get_next_link(),
+            'previous': self.get_previous_link(),
+            'count': self.page.paginator.count,
+            'current_page': self.page.number,
+            'total_pages': self.page.paginator.num_pages,
+            'results': data
+        })
 
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
@@ -32,20 +42,20 @@ class PostViewSet(viewsets.ModelViewSet):
     pagination_class = PostsPagination
     http_method_names = ['get']
 
-    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter, DjangoFilterBackend]
     search_fields = ['title', 'body']
     ordering_fields = ['viewCount', 'created_at']
+    filterset_fields = ['owner']
     # filter_backends = [FullWordSearchFilter]
     # word_fields = ['title', 'body']
 
     def retrieve(self, request, *args, **kwargs):
-        # viewCounter = Visitors.objects.values('post_id').annotate(viewCount=Count('visitorIp', distinct=True))
         postId = self.get_object().id
         postOwner = self.get_object().owner
         viewCount = 0
         totalPostViewCount = 0
 
-        print(suggest_tags(content='react text with django drf text here'))
+        print(suggest_tags(content=['sample', 'reactjs', 'django']))
 
         try:
             viewCount = Visitors.objects.filter(post_id=postId).values('post_id').annotate(viewCount=Count('visitorIp', distinct=True))[0]['viewCount']
@@ -71,8 +81,8 @@ class PostViewSet(viewsets.ModelViewSet):
         return super().retrieve(request, *args, **kwargs)
 
 class PostCreateview(CreateAPIView):
-    #authentication_classes = [authentication.JSONWebTokenAuthentication]
-    #permission_classes = [permissions.IsAuthenticated]
+    # authentication_classes = [authentication.JSONWebTokenAuthentication]
+    # permission_classes = [permissions.IsAuthenticated]
     queryset = Post.objects.all()
     serializer_class = PostCreateSerializer
 

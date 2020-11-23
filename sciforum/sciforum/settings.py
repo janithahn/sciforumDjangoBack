@@ -100,6 +100,8 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
     #'DATETIME_FORMAT': '%s',
+    # 'DEFAULT_PAGINATION_CLASS': 'post.api.views.PostsPagination',
+    # 'PAGE_SIZE': 100,
 }
 
 AUTHENTICATION_BACKENDS = (

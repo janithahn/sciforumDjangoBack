@@ -28,6 +28,7 @@ from vote.vote_api.views import PostVoteCreateview, PostVoteUpdateView, PostVote
 # from user_profile.profile_api.views import ProfileUpdateView, ProfileDetailView
 from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token
 # from rest_framework.routers import DefaultRouter
+from taggit_suggest.tag_api.views import TagListView
 
 urlpatterns = [
 
@@ -92,6 +93,9 @@ urlpatterns = [
 
     # notifications
     path('inbox/notifications/', include('notification.urls')),
+
+    # tags
+    path('tag_api/tags/', TagListView.as_view()),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
