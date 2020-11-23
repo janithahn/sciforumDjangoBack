@@ -113,6 +113,9 @@ AUTHENTICATION_BACKENDS = (
 
     # Django
     'django.contrib.auth.backends.ModelBackend',
+
+    # Custom to login with email
+    'user_profile.backends.EmailModelBackend',
 )
 
 # Google configuration
