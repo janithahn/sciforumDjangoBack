@@ -36,38 +36,38 @@ urlpatterns = [
 
     path('api-auth/', include('rest_framework.urls')),
 
-    #basic end-ponits
+    # basic end-ponits
     path('api/', include('post.api.urls')),
     path('profile_api/', include('user_profile.profile_api.urls')),
     path('answer_api/', include('answer.answer_api.urls')),
     path('vote_api/', include('vote.vote_api.urls')),
 
-    #post changes
+    # post changes
     path('api/post/<int:pk>/update/', PostUpdateView.as_view()),
     path('api/post/create/', PostCreateview.as_view()),
     path('api/post/<int:pk>/delete/', PostDeleteView.as_view()),
 
-    #answer changes
+    # answer changes
     path('answer_api/answer/<int:pk>/update/', AnswerUpdateView.as_view()),
     path('answer_api/answer/create/', AnswerCreateview.as_view()),
     path('answer_api/answer/<int:pk>/delete/', AnswerDeleteView.as_view()),
     # path("answer_api/answer/notifications/<int:pk>/update", NotificationsUpdateView.as_view()),
 
-    #post vote changes
+    # post vote changes
     path('vote_api/postvote/vote/post=<int:post>&owner=<int:owner>/update/', PostVoteUpdateView.as_view()),
     path('vote_api/postvote/vote/create/', PostVoteCreateview.as_view()),
     path('vote_api/postvote/vote/post=<int:post>&owner=<int:owner>/delete/', PostVoteDeleteView.as_view()),
 
-    #answer vote changes
-    #path('vote_api/answervote/vote/<int:pk>/update/', AnswerVoteUpdateView.as_view()),
+    # answer vote changes
+    # path('vote_api/answervote/vote/<int:pk>/update/', AnswerVoteUpdateView.as_view()),
     path('vote_api/answervote/vote/answer=<int:answer>&owner=<int:owner>/update/', AnswerVoteUpdateView.as_view()),
     path('vote_api/answervote/vote/create/', AnswerVoteCreateview.as_view()),
-    #path('vote_api/answervote/vote/<int:pk>/delete/', AnswerVoteDeleteView.as_view()),
+    # path('vote_api/answervote/vote/<int:pk>/delete/', AnswerVoteDeleteView.as_view()),
     path('vote_api/answervote/vote/answer=<int:answer>&voteType=<str:voteType>&owner=<int:owner>/delete/', AnswerVoteDeleteView.as_view()),
 
     path('rest-auth/', include('dj_rest_auth.urls')),
 
-    #for google token
+    # for google token
     path('rest-auth/google/', GoogleLoginView.as_view(), name='google_login'),
 
     path('accounts/', include('allauth.urls')),
@@ -88,8 +88,8 @@ urlpatterns = [
     path('postvisitors/', VisitorsListView.as_view()),
     path('profilevisitor/', ProfileViewerInfoView.as_view()),
     path('socialauth/', include('rest_framework_social_oauth2.urls')),
-    #path('profile/<int:pk>/', ProfileDetailView.as_view()),
-    #path('profile/<int:pk>/update/', ProfileUpdateView.as_view()),
+    # path('profile/<int:pk>/', ProfileDetailView.as_view()),
+    # path('profile/<int:pk>/update/', ProfileUpdateView.as_view()),
 
     # notifications
     path('inbox/notifications/', include('notification.urls')),

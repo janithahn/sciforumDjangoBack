@@ -10,8 +10,8 @@ from post.models import Post
 
 
 class AnswerViewSet(viewsets.ModelViewSet):
-    #authentication_classes = [authentication.TokenAuthentication]
-    #permission_classes = [permissions.IsAuthenticated]
+    # authentication_classes = [authentication.TokenAuthentication]
+    # permission_classes = [permissions.IsAuthenticated]
     queryset = Answer.objects.all()
     serializer_class = AnswerSerializer
     filter_backends = [DjangoFilterBackend]

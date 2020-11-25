@@ -7,7 +7,7 @@ from taggit.managers import TaggableManager
 class Post(models.Model):
     title = models.CharField(max_length=120)
     body = models.TextField()
-    #owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    # owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     viewCount = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
