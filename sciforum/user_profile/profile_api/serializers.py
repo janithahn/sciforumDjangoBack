@@ -4,6 +4,8 @@ from django.contrib.auth import authenticate, user_logged_in
 from rest_framework_jwt.serializers import JSONWebTokenSerializer, jwt_payload_handler, jwt_encode_handler
 from enumfields.drf.serializers import EnumSupportSerializerMixin
 from user_profile.models import Profile, UserContact
+from answer.models import Answer
+from post.models import Post
 # from django.contrib.auth.models import User
 # from user_profile.profile_api.serializers import UserProfileSerializer
 # from drf_writable_nested.serializers import WritableNestedModelSerializer
@@ -62,18 +64,28 @@ class CustomProfileSerializer(EnumSupportSerializerMixin, serializers.ModelSeria
 
 class CustomUserSerializer(serializers.ModelSerializer):
     profile = CustomProfileSerializer('profile')
+    answers = serializers.SerializerMethodField(read_only=True)
+    posts = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = User
-        fields = ['id', 'first_name', 'last_name', 'profile']
+        fields = ['id', 'first_name', 'last_name', 'profile', 'answers', 'posts']
+
+    def get_answers(self, obj):
+        return Answer.objects.filter(owner=obj.id).count()
+
+    def get_posts(self, obj):
+        return Post.objects.filter(owner=obj.id).count()
 
 class UserSerializer(serializers.ModelSerializer): # you can try WritableNestedModelSerializer here
     profile = CustomProfileSerializer('profile')
     last_login = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S", read_only=True)
+    answers = serializers.SerializerMethodField(read_only=True)
+    posts = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = User
-        fields = ['username', 'first_name', 'last_name', 'email', 'last_login', 'profile']
+        fields = ['username', 'first_name', 'last_name', 'email', 'last_login', 'profile', 'answers', 'posts']
 
         '''def update(self, instance, validated_data):
         #profile_data = validated_data.pop('profile')
@@ -89,6 +101,12 @@ class UserSerializer(serializers.ModelSerializer): # you can try WritableNestedM
         profile.save()
 
         return instance'''
+
+    def get_answers(self, obj):
+        return Answer.objects.filter(owner=obj.id).count()
+
+    def get_posts(self, obj):
+        return Post.objects.filter(owner=obj.id).count()
 
     def create(self, validated_data):
         profile_data = validated_data.pop('profile', None)

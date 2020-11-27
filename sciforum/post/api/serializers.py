@@ -3,6 +3,7 @@ from user_profile.models import ProfileViewerInfo
 from rest_framework import serializers
 from taggit_serializer.serializers import TagListSerializerField, TaggitSerializer
 from vote.models import PostVote
+from answer.models import Answer
 # from user_profile.profile_api.serializers import ProfileSerializer
 # from drf_writable_nested.serializers import WritableNestedModelSerializer
 
@@ -26,16 +27,20 @@ class PostSerializer(serializers.ModelSerializer, TaggitSerializer):
     tags = TagListSerializerField()
     likes = serializers.SerializerMethodField(read_only=True)
     dislikes = serializers.SerializerMethodField(read_only=True)
+    answers = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Post
-        fields = ['id', 'owner', 'title', 'body', 'viewCount', 'created_at', 'updated_at', 'tags', 'likes', 'dislikes']
+        fields = ['id', 'owner', 'title', 'body', 'viewCount', 'created_at', 'updated_at', 'tags', 'likes', 'dislikes', 'answers']
 
     def get_likes(self, obj):
         return PostVote.objects.filter(post_id=obj.id, voteType='LIKE').count()
 
     def get_dislikes(self, obj):
         return PostVote.objects.filter(post_id=obj.id, voteType='DISLIKE').count()
+
+    def get_answers(self, obj):
+        return Answer.objects.filter(postBelong=obj.id).count()
 
 class PostCreateSerializer(TaggitSerializer, serializers.ModelSerializer):
 
