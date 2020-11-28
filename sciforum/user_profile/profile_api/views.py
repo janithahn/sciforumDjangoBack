@@ -124,8 +124,8 @@ class UserDetailView(RetrieveAPIView):
 
 
 class UserUpdateView(UpdateAPIView):
-    authentication_classes = [authentication.JSONWebTokenAuthentication]
-    permission_classes = [permissions.IsAuthenticated]
+    # authentication_classes = [authentication.JSONWebTokenAuthentication]
+    # permission_classes = [permissions.IsAuthenticated]
     queryset = User.objects.all()
     serializer_class = UserSerializer
     lookup_field = 'username'

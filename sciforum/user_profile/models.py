@@ -1,16 +1,18 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.db.models.signals import post_save
-from django.dispatch import receiver
+# from django.db.models.signals import post_save
+# from django.dispatch import receiver
 from enumfields import Enum
 from enumfields import EnumField
+
 
 class UserRole(Enum):
     ADMIN = 'ADMIN'
     USER = 'USER'
 
+
 class Profile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True, related_name='profile')
     userRole = EnumField(UserRole, default=UserRole.USER, blank=True, null=True)
     aboutMe = models.TextField(max_length=500, blank=True)
     lastAccessDate = models.DateTimeField(auto_now=True)
@@ -24,16 +26,19 @@ class Profile(models.Model):
     profileImg = models.ImageField(upload_to='profile_image', blank=True)
     # profileImgUrl = models.URLField(blank=True)
 
+
 class UserContact(models.Model):
-    profile = models.OneToOneField(Profile, on_delete=models.CASCADE, primary_key=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='contact', primary_key=True)
     github = models.URLField(blank=True)
     linkedIn = models.URLField(blank=True)
     facebook = models.URLField(blank=True)
+
 
 '''class Views(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
     postViews = models.IntegerField(blank=True, null=True)
     profileViews = models.IntegerField(blank=True, null=True)'''
+
 
 class ProfileViewerInfo(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)

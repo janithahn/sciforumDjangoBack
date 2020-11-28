@@ -10,6 +10,7 @@ from post.models import Post
 # from user_profile.profile_api.serializers import UserProfileSerializer
 # from drf_writable_nested.serializers import WritableNestedModelSerializer
 
+
 class UserContactSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -57,13 +58,27 @@ class CustomProfileSerializer(EnumSupportSerializerMixin, serializers.ModelSeria
         fields = ['aboutMe', 'profileImg', 'location', 'lastAccessDate', 'postViews', 'login_ip', 'user_agent_info']
             #, 'userRole']
         extra_kwargs = {
-            'login_ip': { 'write_only': True },
-            'user_agent_info': { 'write_only': True },
-            'postViews': { 'read_only': True },
+            'login_ip': {'write_only': True},
+            'user_agent_info': {'write_only': True},
+            'postViews': {'read_only': True},
         }
 
+    '''def create(self, validated_data):
+        user_contact_data = validated_data.pop('userContact')
+        profile = Profile.objects.create(**validated_data)
+        for contact in user_contact_data:
+            UserContact.objects.create(profile=profile, **contact)
+        return profile
+
+    def update(self, instance, validated_data):
+        user_contact_data = validated_data.pop('userContact', None)
+        print(user_contact_data)
+        # UserContact.objects.update_or_create(profile=instance, defaults=user_contact_data)
+        return super(CustomProfileSerializer, self).update(instance, validated_data)'''
+
+
 class CustomUserSerializer(serializers.ModelSerializer):
-    profile = CustomProfileSerializer('profile')
+    profile = CustomProfileSerializer('profile', partial=True)
     answers = serializers.SerializerMethodField(read_only=True)
     posts = serializers.SerializerMethodField(read_only=True)
 
@@ -77,15 +92,18 @@ class CustomUserSerializer(serializers.ModelSerializer):
     def get_posts(self, obj):
         return Post.objects.filter(owner=obj.id).count()
 
-class UserSerializer(serializers.ModelSerializer): # you can try WritableNestedModelSerializer here
-    profile = CustomProfileSerializer('profile')
+
+class UserSerializer(serializers.ModelSerializer):  # you can try WritableNestedModelSerializer here
+    profile = CustomProfileSerializer('profile', partial=True)
+    contact = UserContactSerializer('contact', partial=True)
     last_login = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S", read_only=True)
     answers = serializers.SerializerMethodField(read_only=True)
     posts = serializers.SerializerMethodField(read_only=True)
 
+
     class Meta:
         model = User
-        fields = ['username', 'first_name', 'last_name', 'email', 'last_login', 'profile', 'answers', 'posts']
+        fields = ['username', 'first_name', 'last_name', 'email', 'last_login', 'profile', 'contact', 'answers', 'posts']
 
         '''def update(self, instance, validated_data):
         #profile_data = validated_data.pop('profile')
@@ -110,19 +128,22 @@ class UserSerializer(serializers.ModelSerializer): # you can try WritableNestedM
 
     def create(self, validated_data):
         profile_data = validated_data.pop('profile', None)
+        user_contact_data = validated_data.pop('contact', None)
         user = super(UserSerializer, self).create(validated_data)
-        self.update_or_create_profile(user, profile_data)
+        self.update_or_create_profile(user, profile_data, user_contact_data)
         return user
 
     def update(self, instance, validated_data):
         profile_data = validated_data.pop('profile', None)
-        self.update_or_create_profile(instance, profile_data)
+        user_contact_data = validated_data.pop('contact', None)
+        self.update_or_create_profile(instance, profile_data, user_contact_data)
         return super(UserSerializer, self).update(instance, validated_data)
 
-    def update_or_create_profile(self, user, profile_data):
-        # This always creates a Profile if the User is missing one;
+    def update_or_create_profile(self, user, profile_data, user_contact_data):
+        # This always creates a Profile if the User is missing one
         # change the logic here if that's not right for your app
         Profile.objects.update_or_create(user=user, defaults=profile_data)
+        UserContact.objects.update_or_create(user=user, defaults=user_contact_data)
 
 class UserprofileImgSerializer(serializers.ModelSerializer):
 
