@@ -4,7 +4,7 @@ from rest_framework.generics import ListAPIView, RetrieveAPIView, UpdateAPIView
 from rest_framework import viewsets, permissions, status, pagination
 from post.models import Post
 from user_profile.models import ProfileViewerInfo, Profile
-from .serializers import UserSerializer, CustomUserSerializer,JWTSerializer
+from .serializers import UserSerializer, CustomUserSerializer, JWTSerializer
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response

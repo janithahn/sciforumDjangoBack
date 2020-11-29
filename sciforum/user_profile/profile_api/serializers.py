@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, user_logged_in
 from rest_framework_jwt.serializers import JSONWebTokenSerializer, jwt_payload_handler, jwt_encode_handler
 from enumfields.drf.serializers import EnumSupportSerializerMixin
-from user_profile.models import Profile, UserContact
+from user_profile.models import Profile, UserContact, UserLanguages, UserEducation, UserEmployment, UserSkills
 from answer.models import Answer
 from post.models import Post
 # from django.contrib.auth.models import User
@@ -16,6 +16,35 @@ class UserContactSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserContact
         fields = ['github', 'linkedIn', 'facebook']
+
+
+class UserLanguageSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = UserLanguages
+        fields = ['language']
+
+
+class UserEducationSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = UserEducation
+        fields = ['school', 'degree', 'field_of_study', 'start_year', 'end_year', 'description']
+
+
+class UserEmploymentSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = UserEmployment
+        fields = ['position', 'company', 'start_year', 'end_year', 'currently_work']
+
+
+class UserSkillsSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = UserSkills
+        fields = ['skill']
+
 
 class ProfileSerializer(serializers.ModelSerializer):
 
@@ -48,6 +77,7 @@ class ProfileSerializer(serializers.ModelSerializer):
         instance.save()
         return instance'''
 
+
 class CustomProfileSerializer(EnumSupportSerializerMixin, serializers.ModelSerializer):
 
     lastAccessDate = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S", read_only=True)
@@ -79,12 +109,17 @@ class CustomProfileSerializer(EnumSupportSerializerMixin, serializers.ModelSeria
 
 class CustomUserSerializer(serializers.ModelSerializer):
     profile = CustomProfileSerializer('profile', partial=True)
+    contact = UserContactSerializer('contact', read_only=True)
+    employment = UserEmploymentSerializer('employment', partial=True, many=True, read_only=True)
+    education = UserEducationSerializer('education', partial=True, many=True, read_only=True)
+    languages = UserLanguageSerializer('languages', partial=True, many=True, read_only=True)
+    skills = UserSkillsSerializer('skills', partial=True, many=True, read_only=True)
     answers = serializers.SerializerMethodField(read_only=True)
     posts = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = User
-        fields = ['id', 'first_name', 'last_name', 'profile', 'answers', 'posts']
+        fields = ['id', 'first_name', 'last_name', 'profile', 'contact', 'employment', 'education', 'languages', 'skills', 'answers', 'posts']
 
     def get_answers(self, obj):
         return Answer.objects.filter(owner=obj.id).count()
@@ -96,14 +131,17 @@ class CustomUserSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):  # you can try WritableNestedModelSerializer here
     profile = CustomProfileSerializer('profile', partial=True)
     contact = UserContactSerializer('contact', partial=True)
+    employment = UserEmploymentSerializer('employment', partial=True, many=True)
+    education = UserEducationSerializer('education', partial=True, many=True)
+    languages = UserLanguageSerializer('languages', partial=True, many=True)
+    skills = UserSkillsSerializer('skills', partial=True, many=True)
     last_login = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S", read_only=True)
     answers = serializers.SerializerMethodField(read_only=True)
     posts = serializers.SerializerMethodField(read_only=True)
 
-
     class Meta:
         model = User
-        fields = ['username', 'first_name', 'last_name', 'email', 'last_login', 'profile', 'contact', 'answers', 'posts']
+        fields = ['username', 'first_name', 'last_name', 'email', 'last_login', 'profile', 'contact', 'employment', 'education', 'languages', 'skills', 'answers', 'posts']
 
         '''def update(self, instance, validated_data):
         #profile_data = validated_data.pop('profile')
@@ -129,27 +167,54 @@ class UserSerializer(serializers.ModelSerializer):  # you can try WritableNested
     def create(self, validated_data):
         profile_data = validated_data.pop('profile', None)
         user_contact_data = validated_data.pop('contact', None)
+        user_employment_data = validated_data.pop('employment', None)
+        user_education_data = validated_data.pop('education', None)
+        user_languages_data = validated_data.pop('languages', None)
+        user_skills_data = validated_data.pop('skills', None)
         user = super(UserSerializer, self).create(validated_data)
-        self.update_or_create_profile(user, profile_data, user_contact_data)
+        self.update_or_create_profile(user, profile_data, user_contact_data, user_employment_data, user_education_data, user_languages_data, user_skills_data)
         return user
 
     def update(self, instance, validated_data):
         profile_data = validated_data.pop('profile', None)
         user_contact_data = validated_data.pop('contact', None)
-        self.update_or_create_profile(instance, profile_data, user_contact_data)
+        user_employment_data = validated_data.pop('employment', None)
+        user_education_data = validated_data.pop('education', None)
+        user_languages_data = validated_data.pop('languages', None)
+        user_skills_data = validated_data.pop('skills', None)
+        self.update_or_create_profile(instance, profile_data, user_contact_data, user_employment_data, user_education_data, user_languages_data, user_skills_data)
         return super(UserSerializer, self).update(instance, validated_data)
 
-    def update_or_create_profile(self, user, profile_data, user_contact_data):
+    def update_or_create_profile(self, user, profile_data, user_contact_data, user_employment_data, user_education_data, user_languages_data, user_skills_data):
         # This always creates a Profile if the User is missing one
         # change the logic here if that's not right for your app
+
         Profile.objects.update_or_create(user=user, defaults=profile_data)
         UserContact.objects.update_or_create(user=user, defaults=user_contact_data)
+
+        if user_employment_data:
+            for employment in user_employment_data:
+                UserContact.objects.update_or_create(user=user, **employment)
+
+        if user_education_data:
+            for education in user_education_data:
+                UserEducation.objects.update_or_create(user=user, **education)
+
+        if user_languages_data:
+            for language in user_languages_data:
+                UserLanguages.objects.update_or_create(user=user, **language)
+
+        if user_skills_data:
+            for skill in user_skills_data:
+                UserSkills.objects.update_or_create(user=user, **skill)
+
 
 class UserprofileImgSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Profile
         fields = ['profileImg']
+
 
 class JWTUserSerializer(serializers.ModelSerializer):
 
@@ -158,6 +223,7 @@ class JWTUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'username', 'email', 'profile']
+
 
 class JWTSerializer(JSONWebTokenSerializer):
 

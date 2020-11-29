@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 # from django.dispatch import receiver
 from enumfields import Enum
 from enumfields import EnumField
+from django_mysql.models import ListCharField
 
 
 class UserRole(Enum):
@@ -32,6 +33,35 @@ class UserContact(models.Model):
     github = models.URLField(blank=True)
     linkedIn = models.URLField(blank=True)
     facebook = models.URLField(blank=True)
+
+
+class UserLanguages(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='languages')
+    language = models.TextField(blank=True)
+
+
+class UserEmployment(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='employment')
+    position = models.TextField(blank=True)
+    company = models.TextField(blank=True)
+    start_year = models.DateField(blank=True, null=True)
+    end_year = models.DateField(blank=True, null=True)
+    currently_work = models.BooleanField(default=False)
+
+
+class UserSkills(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='skills')
+    skill = models.TextField(blank=True)
+
+
+class UserEducation(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='education')
+    school = models.TextField(blank=True)
+    degree = models.CharField(blank=True, max_length=10)
+    field_of_study = models.TextField(blank=True)
+    start_year = models.DateField(blank=True, null=True)
+    end_year = models.DateField(blank=True, null=True)
+    description = models.TextField(blank=True)
 
 
 '''class Views(models.Model):

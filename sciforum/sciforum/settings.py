@@ -82,6 +82,9 @@ INSTALLED_APPS = [
     'taggit',
     'taggit_serializer',
     'taggit_suggest',
+
+    # django-mysql
+    'django_mysql',
 ]
 
 SITE_ID = 3
@@ -212,7 +215,15 @@ DATABASES = {
         'USER': 'root',
         'PASSWORD': 'Hello.php1227',
         'HOST': 'localhost',
-        'PORT': '3306'
+        'PORT': '3306',
+        'OPTIONS': {
+            # Tell MySQLdb to connect with 'utf8mb4' character set
+            'charset': 'utf8mb4',
+        },
+        'TEST': {
+            'CHARSET': 'utf8mb4',
+            'COLLATION': 'utf8mb4_unicode_ci',
+        },
     }
 }
 
