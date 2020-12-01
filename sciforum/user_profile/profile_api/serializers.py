@@ -34,9 +34,11 @@ class UserEducationSerializer(serializers.ModelSerializer):
 
 class UserEmploymentSerializer(serializers.ModelSerializer):
 
+    user = serializers.ReadOnlyField(source='user.username')
+
     class Meta:
         model = UserEmployment
-        fields = ['position', 'company', 'start_year', 'end_year', 'currently_work']
+        fields = ['id', 'user', 'position', 'company', 'start_year', 'end_year', 'currently_work']
 
 
 class UserSkillsSerializer(serializers.ModelSerializer):

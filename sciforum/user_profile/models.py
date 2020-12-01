@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 # from django.dispatch import receiver
 from enumfields import Enum
 from enumfields import EnumField
-from django_mysql.models import ListCharField
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 
 class UserRole(Enum):
@@ -44,8 +44,8 @@ class UserEmployment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='employment')
     position = models.TextField(blank=True)
     company = models.TextField(blank=True)
-    start_year = models.DateField(blank=True, null=True)
-    end_year = models.DateField(blank=True, null=True)
+    start_year = models.IntegerField(blank=True, null=True, validators=[MinValueValidator(1969), MaxValueValidator(2051)])
+    end_year = models.IntegerField(blank=True, null=True, validators=[MinValueValidator(1969), MaxValueValidator(2051)])
     currently_work = models.BooleanField(default=False)
 
 
@@ -58,9 +58,9 @@ class UserEducation(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='education')
     school = models.TextField(blank=True)
     degree = models.CharField(blank=True, max_length=10)
-    field_of_study = models.TextField(blank=True)
-    start_year = models.DateField(blank=True, null=True)
-    end_year = models.DateField(blank=True, null=True)
+    field_of_study = models.TextField(blank=True, validators=[MinValueValidator(1969), MaxValueValidator(2051)])
+    start_year = models.IntegerField(blank=True, null=True, validators=[MinValueValidator(1969), MaxValueValidator(2051)])
+    end_year = models.IntegerField(blank=True, null=True)
     description = models.TextField(blank=True)
 
 

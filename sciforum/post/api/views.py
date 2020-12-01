@@ -15,18 +15,22 @@ from django_filters.widgets import CSVWidget
 # from rest_framework_word_filter import FullWordSearchFilter
 from taggit_suggest.utils import suggest_tags
 
+
 # Temporary sample views to get visitors
 class VisitorsListView(ListAPIView):
     queryset = Visitors.objects.all()
     serializer_class = VisitorSerializer
 
+
 class ProfileViewerInfoView(ListAPIView):
     queryset = ProfileViewerInfo.objects.all()
     serializer_class = ProfileViewerInfoSerializer
 
+
 #views for posts
 class PostsPagination(pagination.PageNumberPagination):
     page_size = 5
+
     def get_paginated_response(self, data):
         return Response({
             'next': self.get_next_link(),
@@ -37,6 +41,7 @@ class PostsPagination(pagination.PageNumberPagination):
             'results': data
         })
 
+
 class TaggedPostsFilterSet(FilterSet):
     tags = filters_for_tags.BaseCSVFilter(distinct=True, widget=CSVWidget, method='filter_tags')
 
@@ -46,6 +51,7 @@ class TaggedPostsFilterSet(FilterSet):
 
     def filter_tags(self, queryset, name, value):
         return queryset.filter(tags__name__in=value)
+
 
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
@@ -92,6 +98,7 @@ class PostViewSet(viewsets.ModelViewSet):
         obj.save(update_fields=('viewCount', ))
         return super().retrieve(request, *args, **kwargs)
 
+
 class PostCreateview(CreateAPIView):
     # authentication_classes = [authentication.JSONWebTokenAuthentication]
     # permission_classes = [permissions.IsAuthenticated]
@@ -112,6 +119,7 @@ class PostUpdateView(UpdateAPIView):
     # permission_classes = [permissions.IsAuthenticated]
     queryset = Post.objects.all()
     serializer_class = PostUpdateSerializer
+
 
 class PostDeleteView(DestroyAPIView):
     # authentication_classes = [authentication.JSONWebTokenAuthentication]

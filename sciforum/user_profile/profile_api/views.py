@@ -1,6 +1,6 @@
 from .serializers import ProfileSerializer
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.generics import ListAPIView, RetrieveAPIView, UpdateAPIView
+from rest_framework.generics import ListAPIView, RetrieveAPIView, UpdateAPIView, CreateAPIView, DestroyAPIView
 from rest_framework import viewsets, permissions, status, pagination
 from post.models import Post
 from user_profile.models import ProfileViewerInfo, Profile
@@ -24,6 +24,8 @@ from rest_framework_jwt import authentication
 from .utils import get_client_ip
 from django.db.models import Count, Sum
 from .mixins import GetSerializerClassMixin
+from .serializers import UserEmploymentSerializer
+from user_profile.models import UserEmployment
 
 
 class ProfileViewSet(viewsets.ModelViewSet):
@@ -131,6 +133,42 @@ class UserUpdateView(UpdateAPIView):
     lookup_field = 'username'
 
 
+class UserEmploymentViewSet(viewsets.ModelViewSet):
+    queryset = UserEmployment.objects.all()
+    serializer_class = UserEmploymentSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['user']
+    http_method_names = ['get']
+
+    def get_queryset(self):
+        """
+        filtering against a `username` query parameter in the URL.
+        """
+        queryset = UserEmployment.objects.all()
+        username = self.request.query_params.get('username', None)
+        if username is not None:
+            queryset = queryset.filter(user__username=username)
+        return queryset
+
+
+class UserEmploymentCreateView(CreateAPIView):
+
+    queryset = UserEmployment
+    serializer_class = UserEmploymentSerializer
+
+
+class UserEmploymentUpdateView(UpdateAPIView):
+
+    queryset = UserEmployment
+    serializer_class = UserEmploymentSerializer
+
+
+class UserEmploymentDeleteView(DestroyAPIView):
+
+    queryset = UserEmployment
+    serializer_class = UserEmploymentSerializer
+
+
 # views for authentication
 class CustomAuthToken(ObtainAuthToken):
 
@@ -155,11 +193,11 @@ class CustomAuthToken(ObtainAuthToken):
             'email': user.email
         })
 
+
 # JWT Views
 class JWTLoginView(ObtainJSONWebToken):
     serializer_class = JWTSerializer
 
-from user_profile.models import Profile
 
 class JWTRegisterView(RegisterView):
     # serializer_class = JWTSerializer
@@ -187,6 +225,7 @@ class JWTRegisterView(RegisterView):
             }
         })
 
+
 class GoogleLoginView(SocialLoginView):
     adapter_class = GoogleOAuth2Adapter
 
@@ -211,6 +250,7 @@ class GoogleLoginView(SocialLoginView):
                 'email': user.email
             }
         })
+
 
 class CustomLoginView(LoginView):
 

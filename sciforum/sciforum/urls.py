@@ -20,7 +20,8 @@ from django.conf import settings
 from django.conf.urls.static import static
 from post.api.views import VisitorsListView, ProfileViewerInfoView, PostUpdateView, PostCreateview, PostDeleteView
 from user_profile.profile_api.views import CustomAuthToken, CustomLoginView, CustomRegisterView, UserListView, UserDetailView\
-    , UserUpdateView, JWTLoginView, JWTRegisterView, GoogleLoginView
+    , UserUpdateView, JWTLoginView, JWTRegisterView, GoogleLoginView, UserEmploymentCreateView, UserEmploymentUpdateView\
+    , UserEmploymentDeleteView
 from answer.answer_api.views import AnswerCreateview, AnswerUpdateView, AnswerDeleteView
 from vote.vote_api.views import PostVoteCreateview, PostVoteUpdateView, PostVoteDeleteView\
     , AnswerVoteCreateview, AnswerVoteUpdateView, AnswerVoteDeleteView
@@ -90,6 +91,11 @@ urlpatterns = [
     path('socialauth/', include('rest_framework_social_oauth2.urls')),
     # path('profile/<int:pk>/', ProfileDetailView.as_view()),
     # path('profile/<int:pk>/update/', ProfileUpdateView.as_view()),
+
+    # user employment
+    path('users/employment/create/', UserEmploymentCreateView.as_view()),
+    path('users/employment/<int:pk>/update/', UserEmploymentUpdateView.as_view()),
+    path('users/employment/<int:pk>/delete/', UserEmploymentDeleteView.as_view()),
 
     # notifications
     path('inbox/notifications/', include('notification.urls')),
