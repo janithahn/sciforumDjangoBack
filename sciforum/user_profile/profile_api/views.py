@@ -1,5 +1,5 @@
 from .serializers import ProfileSerializer
-from django_filters.rest_framework import DjangoFilterBackend
+from django_filters.rest_framework import DjangoFilterBackend, FilterSet, CharFilter
 from rest_framework.generics import ListAPIView, RetrieveAPIView, UpdateAPIView, CreateAPIView, DestroyAPIView
 from rest_framework import viewsets, permissions, status, pagination
 from post.models import Post
@@ -26,7 +26,6 @@ from django.db.models import Count, Sum
 from .mixins import GetSerializerClassMixin
 from .serializers import UserEmploymentSerializer
 from user_profile.models import UserEmployment
-
 
 class ProfileViewSet(viewsets.ModelViewSet):
     # authentication_classes = [authentication.TokenAuthentication]
@@ -133,14 +132,23 @@ class UserUpdateView(UpdateAPIView):
     lookup_field = 'username'
 
 
+class UserEmploymentFilter(FilterSet):
+    username = CharFilter(field_name='user__username', lookup_expr='iexact')
+
+    class Meta:
+        fields = ('username',)
+        model = UserEmployment
+
+
 class UserEmploymentViewSet(viewsets.ModelViewSet):
     queryset = UserEmployment.objects.all()
     serializer_class = UserEmploymentSerializer
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['user']
+    filterset_class = UserEmploymentFilter
+    # filterset_fields = ['user__username']
     http_method_names = ['get']
 
-    def get_queryset(self):
+    '''def get_queryset(self):
         """
         filtering against a `username` query parameter in the URL.
         """
@@ -148,7 +156,7 @@ class UserEmploymentViewSet(viewsets.ModelViewSet):
         username = self.request.query_params.get('username', None)
         if username is not None:
             queryset = queryset.filter(user__username=username)
-        return queryset
+        return queryset'''
 
 
 class UserEmploymentCreateView(CreateAPIView):
