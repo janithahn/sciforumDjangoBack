@@ -125,8 +125,8 @@ class UserDetailView(RetrieveAPIView):
 
 
 class UserUpdateView(UpdateAPIView):
-    # authentication_classes = [authentication.JSONWebTokenAuthentication]
-    # permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [authentication.JSONWebTokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
     queryset = User.objects.all()
     serializer_class = UserSerializer
     lookup_field = 'username'
@@ -160,18 +160,24 @@ class UserEmploymentViewSet(viewsets.ModelViewSet):
 
 
 class UserEmploymentCreateView(CreateAPIView):
+    authentication_classes = [authentication.JSONWebTokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
 
     queryset = UserEmployment
     serializer_class = UserEmploymentSerializer
 
 
 class UserEmploymentUpdateView(UpdateAPIView):
+    authentication_classes = [authentication.JSONWebTokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
 
     queryset = UserEmployment
     serializer_class = UserEmploymentSerializer
 
 
 class UserEmploymentDeleteView(DestroyAPIView):
+    authentication_classes = [authentication.JSONWebTokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
 
     queryset = UserEmployment
     serializer_class = UserEmploymentSerializer
