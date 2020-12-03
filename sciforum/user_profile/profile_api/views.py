@@ -191,8 +191,8 @@ class UserEducationViewSet(viewsets.ModelViewSet):
 
 class UserEducationEditViewSet(viewsets.ModelViewSet):
 
-    # authentication_classes = [authentication.JSONWebTokenAuthentication]
-    # permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [authentication.JSONWebTokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
 
     queryset = UserEducation.objects.all()
     serializer_class = UserEducationSerializer
@@ -249,8 +249,9 @@ class UserSkillsViewSet(viewsets.ModelViewSet):
 
 
 class UserSkillsEditViewSet(viewsets.ModelViewSet):
-    authentication_classes = [authentication.JSONWebTokenAuthentication]
-    permission_classes = [permissions.IsAuthenticated]
+
+    # authentication_classes = [authentication.JSONWebTokenAuthentication]
+    # permission_classes = [permissions.IsAuthenticated]
 
     queryset = UserSkills.objects.all()
     serializer_class = UserSkillsSerializer
