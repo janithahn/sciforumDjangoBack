@@ -22,14 +22,14 @@ class UserLanguageSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UserLanguages
-        fields = ['language']
+        fields = ['id', 'user', 'language']
 
 
 class UserEducationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UserEducation
-        fields = ['school', 'degree', 'field_of_study', 'start_year', 'end_year', 'description']
+        fields = ['id', 'user', 'school', 'degree', 'field_of_study', 'start_year', 'end_year', 'description']
 
 
 class UserEmploymentSerializer(serializers.ModelSerializer):
@@ -43,7 +43,7 @@ class UserSkillsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UserSkills
-        fields = ['skill']
+        fields = ['id', 'user', 'skill']
 
 
 class ProfileSerializer(serializers.ModelSerializer):

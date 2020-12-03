@@ -1,10 +1,12 @@
 from .serializers import ProfileSerializer
 from django_filters.rest_framework import DjangoFilterBackend, FilterSet, CharFilter
 from rest_framework.generics import ListAPIView, RetrieveAPIView, UpdateAPIView, CreateAPIView, DestroyAPIView
-from rest_framework import viewsets, permissions, status, pagination
+from rest_framework import viewsets, permissions, status #, pagination
 from post.models import Post
-from user_profile.models import ProfileViewerInfo, Profile
-from .serializers import UserSerializer, CustomUserSerializer, JWTSerializer
+from user_profile.models import ProfileViewerInfo, Profile, UserEmployment, UserEducation, UserLanguages\
+    , UserContact, UserSkills
+from .serializers import UserSerializer, CustomUserSerializer, JWTSerializer, UserEmploymentSerializer\
+    , UserEducationSerializer, UserLanguageSerializer, UserSkillsSerializer, UserContactSerializer
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
@@ -24,8 +26,6 @@ from rest_framework_jwt import authentication
 from .utils import get_client_ip
 from django.db.models import Count, Sum
 from .mixins import GetSerializerClassMixin
-from .serializers import UserEmploymentSerializer
-from user_profile.models import UserEmployment
 
 class ProfileViewSet(viewsets.ModelViewSet):
     # authentication_classes = [authentication.TokenAuthentication]
@@ -132,12 +132,13 @@ class UserUpdateView(UpdateAPIView):
     lookup_field = 'username'
 
 
+# User Credentials
 class UserEmploymentFilter(FilterSet):
     username = CharFilter(field_name='user__username', lookup_expr='iexact')
 
     class Meta:
-        fields = ('username',)
         model = UserEmployment
+        fields = ('username',)
 
 
 class UserEmploymentViewSet(viewsets.ModelViewSet):
@@ -159,28 +160,130 @@ class UserEmploymentViewSet(viewsets.ModelViewSet):
         return queryset'''
 
 
-class UserEmploymentCreateView(CreateAPIView):
+class UserEmploymentEditViewSet(viewsets.ModelViewSet):
+
     authentication_classes = [authentication.JSONWebTokenAuthentication]
     permission_classes = [permissions.IsAuthenticated]
 
-    queryset = UserEmployment
+    queryset = UserEmployment.objects.all()
     serializer_class = UserEmploymentSerializer
 
+    http_method_names = ['get', 'post', 'patch', 'put', 'delete']
 
-class UserEmploymentUpdateView(UpdateAPIView):
+
+class UserEducationFilter(FilterSet):
+    username = CharFilter(field_name='user__username', lookup_expr='iexact')
+
+    class Meta:
+        model = UserEducation
+        fields = ('username',)
+
+
+class UserEducationViewSet(viewsets.ModelViewSet):
+
+    queryset = UserEducation.objects.all()
+    serializer_class = UserEducationSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = UserEducationFilter
+
+    http_method_names = ['get']
+
+
+class UserEducationEditViewSet(viewsets.ModelViewSet):
+
+    # authentication_classes = [authentication.JSONWebTokenAuthentication]
+    # permission_classes = [permissions.IsAuthenticated]
+
+    queryset = UserEducation.objects.all()
+    serializer_class = UserEducationSerializer
+
+    http_method_names = ['get', 'post', 'patch', 'put', 'delete']
+
+
+class UserLanguagesFilter(FilterSet):
+    username = CharFilter(field_name='user__username', lookup_expr='iexact')
+
+    class Meta:
+        model = UserLanguages
+        fields = ('username',)
+
+
+class UserLanguagesViewSet(viewsets.ModelViewSet):
+
+    queryset = UserLanguages.objects.all()
+    serializer_class = UserLanguageSerializer
+
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = UserLanguagesFilter
+
+    http_method_names = ['get']
+
+
+class UserLanguagesEditViewSet(viewsets.ModelViewSet):
+
     authentication_classes = [authentication.JSONWebTokenAuthentication]
     permission_classes = [permissions.IsAuthenticated]
 
-    queryset = UserEmployment
-    serializer_class = UserEmploymentSerializer
+    queryset = UserLanguages.objects.all()
+    serializer_class = UserLanguageSerializer
+
+    http_method_names = ['get', 'post', 'patch', 'put', 'delete']
 
 
-class UserEmploymentDeleteView(DestroyAPIView):
+class UserSkillsFilter(FilterSet):
+    username = CharFilter(field_name='user__username', lookup_expr='iexact')
+
+    class Meta:
+        model = UserSkills
+        fields = ('username',)
+
+
+class UserSkillsViewSet(viewsets.ModelViewSet):
+    queryset = UserSkills.objects.all()
+    serializer_class = UserSkillsSerializer
+
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = UserSkillsFilter
+
+    http_method_names = ['get']
+
+
+class UserSkillsEditViewSet(viewsets.ModelViewSet):
     authentication_classes = [authentication.JSONWebTokenAuthentication]
     permission_classes = [permissions.IsAuthenticated]
 
-    queryset = UserEmployment
-    serializer_class = UserEmploymentSerializer
+    queryset = UserSkills.objects.all()
+    serializer_class = UserSkillsSerializer
+
+    http_method_names = ['get', 'post', 'patch', 'put', 'delete']
+
+
+class UserContactFilter(FilterSet):
+    username = CharFilter(field_name='user__username', lookup_expr='iexact')
+
+    class Meta:
+        model = UserSkills
+        fields = ('username',)
+
+
+class UserContactViewSet(viewsets.ModelViewSet):
+    queryset = UserContact.objects.all()
+    serializer_class = UserContactSerializer
+
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = UserContactFilter
+
+    http_method_names = ['get']
+
+
+class UserContactEditViewSet(viewsets.ModelViewSet):
+    authentication_classes = [authentication.JSONWebTokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+
+    queryset = UserContact.objects.all()
+    serializer_class = UserContactSerializer
+
+    http_method_names = ['get', 'post', 'patch', 'put', 'delete']
 
 
 # views for authentication

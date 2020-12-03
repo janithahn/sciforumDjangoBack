@@ -1,12 +1,28 @@
 from django.urls import path
 #from .views import PostDetailView, PostListView, PostCreateView, PostUpdateView, PostDeleteView
-from user_profile.profile_api.views import ProfileViewSet, UserViewSet, UserEmploymentViewSet
+from user_profile.profile_api.views import ProfileViewSet, UserViewSet, UserEmploymentViewSet, UserEmploymentEditViewSet\
+    , UserEducationViewSet, UserEducationEditViewSet, UserLanguagesViewSet, UserLanguagesEditViewSet, UserSkillsViewSet\
+    , UserSkillsEditViewSet, UserContactViewSet, UserContactEditViewSet
 from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
 
 router.register(r'', ProfileViewSet, basename='profile_api')
 router.register(r'users/viewset', UserViewSet, basename='users')
+
 router.register(r'user_employment/viewset', UserEmploymentViewSet, 'user_employment')
+router.register(r'user_employment_edit/viewset', UserEmploymentEditViewSet, 'user_employment')
+
+router.register(r'user_education/viewset', UserEducationViewSet, 'user_education')
+router.register(r'user_education_edit/viewset', UserEducationEditViewSet, 'user_education')
+
+router.register(r'user_skills/viewset', UserSkillsViewSet, 'user_skills')
+router.register(r'user_skills_edit/viewset', UserSkillsEditViewSet, 'user_skills')
+
+router.register(r'user_languages/viewset', UserLanguagesViewSet, 'user_languages')
+router.register(r'user_languages_edit/viewset', UserLanguagesEditViewSet, 'user_languages')
+
+router.register(r'user_contact/viewset', UserContactViewSet, 'user_contact')
+router.register(r'user_contact_edit/viewset', UserContactEditViewSet, 'user_contact')
 
 urlpatterns = router.urls

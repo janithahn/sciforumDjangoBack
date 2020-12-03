@@ -57,10 +57,10 @@ class UserSkills(models.Model):
 class UserEducation(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='education')
     school = models.TextField(blank=True)
-    degree = models.CharField(blank=True, max_length=10)
-    field_of_study = models.TextField(blank=True, validators=[MinValueValidator(1969), MaxValueValidator(2051)])
+    degree = models.CharField(blank=True, max_length=40)
+    field_of_study = models.TextField(blank=True)
     start_year = models.IntegerField(blank=True, null=True, validators=[MinValueValidator(1969), MaxValueValidator(2051)])
-    end_year = models.IntegerField(blank=True, null=True)
+    end_year = models.IntegerField(blank=True, null=True, validators=[MinValueValidator(1969), MaxValueValidator(2051)])
     description = models.TextField(blank=True)
 
 
