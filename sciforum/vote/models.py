@@ -3,10 +3,12 @@ from django.contrib.auth.models import User
 from post.models import Post
 from answer.models import Answer
 
+
 class VoteType(models.TextChoices):
     EMPTY = 'EMPTY'
     LIKE = 'LIKE'
     DISLIKE = 'DISLIKE'
+
 
 class PostVote(models.Model):
 
@@ -19,6 +21,7 @@ class PostVote(models.Model):
     same user putting likes on same answer again and again'''
     class Meta:
         unique_together = ('post', 'owner', )
+
 
 class AnswerVote(models.Model):
 

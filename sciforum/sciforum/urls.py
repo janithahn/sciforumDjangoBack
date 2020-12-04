@@ -53,6 +53,9 @@ urlpatterns = [
     path('answer_api/answer/<int:pk>/delete/', AnswerDeleteView.as_view()),
     # path("answer_api/answer/notifications/<int:pk>/update", NotificationsUpdateView.as_view()),
 
+    # comments
+    path('comment_api/', include('comment.comment_api.urls')),
+
     # post vote changes
     path('vote_api/postvote/vote/post=<int:post>&owner=<int:owner>/update/', PostVoteUpdateView.as_view()),
     path('vote_api/postvote/vote/create/', PostVoteCreateview.as_view()),
