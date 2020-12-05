@@ -14,6 +14,16 @@ from django.contrib.contenttypes.models import ContentType
 
 # ANSWER
 class AnswerCommentViewSet(viewsets.ModelViewSet):
+
+    queryset = AnswerComment.objects.all()
+    serializer_class = AnswerCommentSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['answer', 'owner']
+    http_method_names = ['get']
+
+
+class AnswerCommentCreateViewSet(viewsets.ModelViewSet):
+
     # authentication_classes = [authentication.TokenAuthentication]
     # permission_classes = [permissions.IsAuthenticated]
 
@@ -21,11 +31,21 @@ class AnswerCommentViewSet(viewsets.ModelViewSet):
     serializer_class = AnswerCommentSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['answer', 'owner']
-    # http_method_names = ['get']
+    http_method_names = ['get', 'post', 'patch', 'delete']
 
 
 # POST
 class PostCommentViewSet(viewsets.ModelViewSet):
+
+    queryset = PostComment.objects.all()
+    serializer_class = PostCommentSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['post', 'owner']
+    http_method_names = ['get']
+
+
+class PostCommentCreateViewSet(viewsets.ModelViewSet):
+
     # authentication_classes = [authentication.TokenAuthentication]
     # permission_classes = [permissions.IsAuthenticated]
 
@@ -33,5 +53,5 @@ class PostCommentViewSet(viewsets.ModelViewSet):
     serializer_class = PostCommentSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['post', 'owner']
-    # http_method_names = ['get']
+    http_method_names = ['get', 'post', 'patch', 'delete']
 
