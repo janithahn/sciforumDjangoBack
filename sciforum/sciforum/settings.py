@@ -86,6 +86,9 @@ INSTALLED_APPS = [
 
     # django-mysql
     'django_mysql',
+
+    # generic relations
+    'generic_relations',
 ]
 
 SITE_ID = 3

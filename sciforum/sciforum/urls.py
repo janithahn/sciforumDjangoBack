@@ -23,7 +23,8 @@ from user_profile.profile_api.views import CustomAuthToken, CustomLoginView, Cus
     , UserUpdateView, JWTLoginView, JWTRegisterView, GoogleLoginView
 from answer.answer_api.views import AnswerCreateview, AnswerUpdateView, AnswerDeleteView
 from vote.vote_api.views import PostVoteCreateview, PostVoteUpdateView, PostVoteDeleteView\
-    , AnswerVoteCreateview, AnswerVoteUpdateView, AnswerVoteDeleteView
+    , AnswerVoteCreateview, AnswerVoteUpdateView, AnswerVoteDeleteView, PostCommentVoteCreateview, PostCommentVoteDeleteView\
+    , PostCommentVoteUpdateView, AnswerCommentVoteCreateview, AnswerCommentVoteUpdateView, AnswerCommentVoteDeleteView
 # from notification.views import NotificationViewSet
 # from user_profile.profile_api.views import ProfileUpdateView, ProfileDetailView
 from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token
@@ -61,12 +62,22 @@ urlpatterns = [
     path('vote_api/postvote/vote/create/', PostVoteCreateview.as_view()),
     path('vote_api/postvote/vote/post=<int:post>&owner=<int:owner>/delete/', PostVoteDeleteView.as_view()),
 
+    # post comment vote changes
+    path('vote_api/postcommentvote/vote/comment=<int:comment>&owner=<int:owner>/update/', PostCommentVoteUpdateView.as_view()),
+    path('vote_api/postcommentvote/vote/create/', PostCommentVoteCreateview.as_view()),
+    path('vote_api/postcommentvote/vote/comment=<int:comment>&owner=<int:owner>/delete/', PostCommentVoteDeleteView.as_view()),
+
     # answer vote changes
     # path('vote_api/answervote/vote/<int:pk>/update/', AnswerVoteUpdateView.as_view()),
     path('vote_api/answervote/vote/answer=<int:answer>&owner=<int:owner>/update/', AnswerVoteUpdateView.as_view()),
     path('vote_api/answervote/vote/create/', AnswerVoteCreateview.as_view()),
     # path('vote_api/answervote/vote/<int:pk>/delete/', AnswerVoteDeleteView.as_view()),
     path('vote_api/answervote/vote/answer=<int:answer>&voteType=<str:voteType>&owner=<int:owner>/delete/', AnswerVoteDeleteView.as_view()),
+
+    # answer comment vote changes
+    path('vote_api/answercommentvote/vote/comment=<int:comment>&owner=<int:owner>/update/', AnswerCommentVoteUpdateView.as_view()),
+    path('vote_api/answercommentvote/vote/create/', AnswerCommentVoteCreateview.as_view()),
+    path('vote_api/answercommentvote/vote/comment=<int:comment>&voteType=<str:voteType>&owner=<int:owner>/delete/', AnswerCommentVoteDeleteView.as_view()),
 
     path('rest-auth/', include('dj_rest_auth.urls')),
 

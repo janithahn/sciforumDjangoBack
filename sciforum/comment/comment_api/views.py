@@ -40,7 +40,7 @@ class PostCommentViewSet(viewsets.ModelViewSet):
     queryset = PostComment.objects.all()
     serializer_class = PostCommentSerializer
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['post', 'owner']
+    filterset_fields = ['post', 'owner', 'id']
     http_method_names = ['get']
 
 
@@ -52,6 +52,6 @@ class PostCommentCreateViewSet(viewsets.ModelViewSet):
     queryset = PostComment.objects.all()
     serializer_class = PostCommentSerializer
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['post', 'owner']
+    filterset_fields = ['post', 'owner', 'id']
     http_method_names = ['get', 'post', 'patch', 'delete']
 
