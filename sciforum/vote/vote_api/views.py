@@ -181,7 +181,7 @@ class AnswerCommentVoteUpdateView(MultipleFieldLookupMixin, UpdateAPIView):
     def patch(self, request, *args, **kwargs):
 
         from_user = request.user
-        action_object = self.get_object().answer
+        action_object = self.get_object().comment
         vote_type = request.data['voteType']
         to_user = action_object.owner
         content_type = ContentType.objects.get_for_model(AnswerComment)
@@ -339,7 +339,7 @@ class PostCommentVoteUpdateView(MultipleFieldLookupMixin, UpdateAPIView):
     def patch(self, request, *args, **kwargs):
 
         from_user = request.user
-        action_object = self.get_object().answer
+        action_object = self.get_object().comment
         vote_type = request.data['voteType']
         to_user = action_object.owner
         content_type = ContentType.objects.get_for_model(PostComment)
