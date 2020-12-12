@@ -2,7 +2,7 @@ from rest_framework.generics import ListAPIView, RetrieveAPIView, CreateAPIView,
 from rest_framework import viewsets, permissions, status
 from rest_framework_jwt import authentication
 from .serializers import AnswerCommentSerializer, PostCommentSerializer
-from comment.models import AnswerComment, PostComment
+from comment.models import PostComment, AnswerComment
 from django_filters.rest_framework import DjangoFilterBackend
 from .mixins import MultipleFieldLookupMixin
 from rest_framework.response import Response
@@ -18,7 +18,7 @@ class AnswerCommentViewSet(viewsets.ModelViewSet):
     queryset = AnswerComment.objects.all()
     serializer_class = AnswerCommentSerializer
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['answer', 'owner']
+    filterset_fields = ['answer', 'post', 'owner']
     http_method_names = ['get']
 
 
@@ -30,7 +30,7 @@ class AnswerCommentCreateViewSet(viewsets.ModelViewSet):
     queryset = AnswerComment.objects.all()
     serializer_class = AnswerCommentSerializer
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['answer', 'owner']
+    filterset_fields = ['answer', 'post', 'owner']
     http_method_names = ['get', 'post', 'patch', 'delete']
 
 

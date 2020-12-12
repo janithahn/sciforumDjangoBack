@@ -17,6 +17,7 @@ class PostComment(models.Model):
 
 class AnswerComment(models.Model):
 
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
     answer = models.ForeignKey(Answer, on_delete=models.CASCADE)
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     comment = models.TextField(blank=True)

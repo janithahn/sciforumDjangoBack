@@ -1,6 +1,6 @@
 from rest_framework import serializers
-from comment.models import AnswerComment, PostComment
-from vote.models import AnswerCommentVote, PostCommentVote
+from comment.models import PostComment, AnswerComment
+from vote.models import PostCommentVote, AnswerCommentVote
 
 
 class VoteRelatedField(serializers.RelatedField):
@@ -25,13 +25,13 @@ class AnswerCommentSerializer(serializers.ModelSerializer):
 
     created_at = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S", read_only=True)
     ownerDisplayName = serializers.CharField(source='owner.username', read_only=True)
-    ownerAvatar = serializers.ImageField(source='owner.profile.profileImg')
+    ownerAvatar = serializers.ImageField(source='owner.profile.profileImg', read_only=True)
     likes = serializers.SerializerMethodField(read_only=True)
     dislikes = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = AnswerComment
-        fields = ['id', 'answer', 'owner', 'ownerDisplayName', 'ownerAvatar', 'comment', 'created_at', 'updated_at', 'likes', 'dislikes']
+        fields = ['id', 'answer', 'post', 'owner', 'ownerDisplayName', 'ownerAvatar', 'comment', 'created_at', 'updated_at', 'likes', 'dislikes']
 
     def get_likes(self, obj):
         return AnswerCommentVote.objects.filter(comment_id=obj.id, voteType='LIKE').count()

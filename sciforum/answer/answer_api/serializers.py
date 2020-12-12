@@ -2,6 +2,7 @@ from rest_framework import serializers
 from answer.models import Answer
 from vote.models import AnswerVote
 
+
 class AnswerSerializer(serializers.ModelSerializer):
 
     created_at = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S", read_only=True)
@@ -21,11 +22,13 @@ class AnswerSerializer(serializers.ModelSerializer):
     def get_dislikes(self, obj):
         return AnswerVote.objects.filter(answer_id=obj.id, voteType='DISLIKE').count()
 
+
 class AnswerCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Answer
         fields = ['postBelong', 'owner', 'answerContent']
+
 
 class AnswerUpdateSerializer(serializers.ModelSerializer):
 
