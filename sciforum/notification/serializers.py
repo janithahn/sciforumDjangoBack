@@ -4,11 +4,13 @@ from post.models import Post
 from answer.models import Answer
 from notifications.models import Notification
 
+
 class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = get_user_model()
         fields = ['id', 'username', 'email', 'first_name', 'last_name']
+
 
 class PostObjectSerializer(serializers.ModelSerializer):
 
@@ -16,21 +18,24 @@ class PostObjectSerializer(serializers.ModelSerializer):
         model = Post
         fields = '__all__'
 
+
 class AnswerObjectSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Answer
         fields = '__all__'
 
+
 class GenericNotificationRelatedField(serializers.RelatedField):
 
     def to_representation(self, value):
-        if isinstance(value, Post):
-            serializer = PostObjectSerializer(value)
-        if isinstance(value, Answer):
-            serializer = AnswerObjectSerializer(value)
 
-        return serializer.data
+        if isinstance(value, Post):
+            return PostObjectSerializer(value).data
+        if isinstance(value, Answer):
+            return AnswerObjectSerializer(value).data
+        return None
+
 
 class NotificationSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(read_only=True)
