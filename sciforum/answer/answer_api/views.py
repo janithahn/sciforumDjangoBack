@@ -18,6 +18,7 @@ class AnswerViewSet(viewsets.ModelViewSet):
     filterset_fields = ['id', 'owner', 'postBelong']
     http_method_names = ['get']
 
+
 class AnswerCreateview(CreateAPIView):
     authentication_classes = [authentication.JSONWebTokenAuthentication]
     permission_classes = [permissions.IsAuthenticated]
@@ -43,11 +44,13 @@ class AnswerCreateview(CreateAPIView):
 
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
+
 class AnswerUpdateView(UpdateAPIView):
     authentication_classes = [authentication.JSONWebTokenAuthentication]
     permission_classes = [permissions.IsAuthenticated]
     queryset = Answer.objects.all()
     serializer_class = AnswerUpdateSerializer
+
 
 class AnswerDeleteView(DestroyAPIView):
     authentication_classes = [authentication.JSONWebTokenAuthentication]

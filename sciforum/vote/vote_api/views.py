@@ -160,7 +160,6 @@ class AnswerCommentVoteCreateview(CreateAPIView):
                 notify.send(sender=from_user, recipient=to_user, verb=message, action_object=action_object)
         else:
             notification = to_user.notifications.filter(actor_object_id=from_user.id, action_object_content_type=content_type, action_object_object_id=action_object.id)
-            # print(notification)
             try:
                 notification.delete()
                 # print('existing records deleted')
