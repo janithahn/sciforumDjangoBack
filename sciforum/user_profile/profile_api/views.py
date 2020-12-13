@@ -27,6 +27,7 @@ from .utils import get_client_ip
 from django.db.models import Count, Sum
 from .mixins import GetSerializerClassMixin
 
+
 class ProfileViewSet(viewsets.ModelViewSet):
     # authentication_classes = [authentication.TokenAuthentication]
     # permission_classes = [permissions.IsAuthenticated]
@@ -35,6 +36,7 @@ class ProfileViewSet(viewsets.ModelViewSet):
     lookup_field = 'user'
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['aboutMe', 'user']
+
 
 # views for users
 class UserViewSet(GetSerializerClassMixin, viewsets.ModelViewSet):
