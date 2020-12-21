@@ -5,7 +5,7 @@ from taggit.managers import TaggableManager
 
 
 class Post(models.Model):
-    title = models.CharField(max_length=120)
+    title = models.TextField()
     body = models.TextField()
     # owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     owner = models.ForeignKey(User, on_delete=models.CASCADE)

@@ -1,0 +1,7 @@
+to create tables in the database
+
+first run
+python manage.py migrate
+
+and after run
+python manage.py migrate --run-syncdb
