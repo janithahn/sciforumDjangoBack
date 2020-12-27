@@ -1,9 +1,10 @@
 from rest_framework.generics import ListAPIView, CreateAPIView, UpdateAPIView, DestroyAPIView
 from rest_framework import viewsets, permissions, pagination, status
 from rest_framework.response import Response
-from post.models import Post, Visitors
+from post.models import Post, Visitors, PostImages
 from user_profile.models import ProfileViewerInfo
-from .serializers import PostSerializer, VisitorSerializer, ProfileViewerInfoSerializer, PostUpdateSerializer, PostCreateSerializer
+from .serializers import PostSerializer, VisitorSerializer, ProfileViewerInfoSerializer, PostUpdateSerializer\
+    , PostCreateSerializer, PostTempImagesSerializer
 from django.utils.timezone import now
 from user_profile.models import Profile
 from rest_framework_jwt import authentication
@@ -125,4 +126,9 @@ class PostDeleteView(DestroyAPIView):
     # authentication_classes = [authentication.JSONWebTokenAuthentication]
     # permission_classes = [permissions.IsAuthenticated]
     queryset = Post.objects.all()
+
+
+class PostImagesViewSet(viewsets.ModelViewSet):
+    queryset = PostImages.objects.all()
+    serializer_class = PostTempImagesSerializer
 

@@ -7,27 +7,41 @@ coreapi==2.3.3
 coreschema==0.0.4
 cryptography @ file:///C:/ci/cryptography_1598873979408/work
 defusedxml==0.7.0rc1
+dj-rest-auth==2.1.1
 Django==3.1
 django-allauth==0.42.0
+django-braces==1.14.0
 django-cors-headers==3.5.0
 django-crispy-forms==1.9.2
+django-enumfields==2.0.0
 django-extensions==3.0.3
-django-filter==2.3.0
+django-filter==2.4.0
+django-model-utils==4.0.0
 django-mongodb-engine @ git+https://github.com/django-nonrel/mongodb-engine@1314786975d3d17fb1a2e870dfba004158a5e431
+django-mysql==3.9.0
+django-notifications-hq==1.6.0
+django-oauth-toolkit==1.3.2
 django-rest-auth==0.9.5
+django-rest-framework-social-oauth2==1.1.0
 django-rest-swagger==2.0.7
-djangorestframework==3.11.0
+django-taggit==1.3.0
+django-taggit-serializer==0.1.7
+djangorestframework==3.12.2
+djangorestframework-jwt==1.11.0
+djangorestframework-word-filter==0.2.0
 djangotoolbox @ git+https://github.com/django-nonrel/djangotoolbox@7e2c47e2ab5ee98d0c0f47c5ccce08e75feda48a
 drf-writable-nested==0.6.1
 idna @ file:///tmp/build/80754af9/idna_1593446292537/work
 importlib-metadata==1.7.0
 itypes==1.2.0
 Jinja2==2.11.2
-Markdown==3.2.2
+jsonfield==3.1.0
+Markdown==3.3.3
 MarkupSafe==1.1.1
 mysqlclient==2.0.1
 oauthlib==3.1.0
 openapi-codec==1.3.2
+Pillow==7.2.0
 pycparser @ file:///tmp/build/80754af9/pycparser_1594388511720/work
 PyJWT==1.7.1
 pymongo==3.11.0
@@ -38,11 +52,13 @@ pytz==2020.1
 requests @ file:///tmp/build/80754af9/requests_1592841827918/work
 requests-oauthlib==1.3.0
 responses==0.10.8
+rest-framework-generic-relations==2.0.0
 simplejson==3.17.2
 six==1.15.0
 social-auth-app-django==4.0.0
 social-auth-core==3.3.3
 sqlparse==0.3.1
+swapper==1.1.2.post1
 uritemplate==3.0.1
 urllib3 @ file:///tmp/build/80754af9/urllib3_1597086586889/work
 win-inet-pton==1.1.0
