@@ -65,11 +65,18 @@ class PostSerializer(serializers.ModelSerializer, TaggitSerializer):
 class PostCreateSerializer(TaggitSerializer, serializers.ModelSerializer):
 
     tags = TagListSerializerField()
-    images = PostImagesSerializer(many=True, required=False)
+    # images = PostImagesSerializer(many=True, required=False)
 
     class Meta:
         model = Post
-        fields = ['owner', 'title', 'body', 'tags', 'images']
+        fields = ['owner', 'title', 'body', 'tags']
+
+    '''def create(self, validated_data):
+        images_data = validated_data.pop('images')
+        post = Post.objects.create(**validated_data)
+        for image_data in images_data:
+            PostImages.objects.create(post=post, **image_data)
+        return post'''
 
 
 class PostUpdateSerializer(TaggitSerializer, serializers.ModelSerializer):

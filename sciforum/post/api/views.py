@@ -30,7 +30,7 @@ class ProfileViewerInfoView(ListAPIView):
 
 #views for posts
 class PostsPagination(pagination.PageNumberPagination):
-    page_size = 5
+    page_size = 8
 
     def get_paginated_response(self, data):
         return Response({
