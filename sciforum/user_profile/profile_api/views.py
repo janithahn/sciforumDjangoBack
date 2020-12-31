@@ -328,7 +328,7 @@ class JWTRegisterView(RegisterView):
         user = self.perform_create(serializer)
         # token, created = Token.objects.get_or_create(user=user)
 
-        Profile.objects.update_or_create(user=user)# creating user profile when the user is registered
+        Profile.objects.update_or_create(user=user)  # creating user profile when the user is registered
 
         jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
         jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER

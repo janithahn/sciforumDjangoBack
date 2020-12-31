@@ -31,6 +31,14 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['192.168.8.100', 'localhost', '127.0.0.1', '192.168.43.100', '192.168.8.101', '192.168.8.102']
 
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # this gives the email in the console
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'rng.janitha@gmail.com'
+EMAIL_HOST_PASSWORD = 'tfutzjbtatopserd'
+DEFAULT_FROM_EMAIL = 'default from email'
 
 # Application definition
 
@@ -45,6 +53,7 @@ INSTALLED_APPS = [
     # rest framework
     'rest_framework',
     'rest_framework.authtoken',
+    'django_rest_passwordreset',
 
     # apps
     'post.apps.PostConfig',

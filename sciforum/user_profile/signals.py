@@ -2,19 +2,62 @@ from django.contrib.auth import user_logged_in, user_login_failed
 from django.dispatch import receiver
 from user_profile.models import Profile
 from allauth.account.signals import user_signed_up, user_logged_in
-from django.core.files import File
-from urllib.request import urlretrieve, urlopen
-from django.core.files.temp import NamedTemporaryFile
-from io import BytesIO
+from urllib.request import urlretrieve
 import io
 from PIL import Image
 import copy
-import os
 import logging
+
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
+from django.urls import reverse
+from django_rest_passwordreset.signals import reset_password_token_created
+
+
+@receiver(reset_password_token_created)
+def password_reset_token_created(sender, instance, reset_password_token, *args, **kwargs):
+    """
+    Handles password reset tokens
+    When a token is created, an e-mail needs to be sent to the user
+    :param sender: View Class that sent the signal
+    :param instance: View Instance that sent the signal
+    :param reset_password_token: Token Model Object
+    :param args:
+    :param kwargs:
+    :return:
+    """
+    # send an e-mail to the user
+    context = {
+        'current_user': reset_password_token.user,
+        'username': reset_password_token.user.username,
+        'email': reset_password_token.user.email,
+        'reset_password_url': "{}?token={}".format(
+            instance.request.build_absolute_uri(reverse('password_reset:reset-password-confirm')),
+            reset_password_token.key)
+    }
+
+    # render email text
+    email_html_message = render_to_string('user_profile/user_reset_password.html', context)
+    email_plaintext_message = render_to_string('user_profile/user_reset_password.txt', context)
+
+    msg = EmailMultiAlternatives(
+        # title:
+        "Password Reset for {title}".format(title="sciForum"),
+        # message:
+        email_plaintext_message,
+        # from:
+        "noreply@sciforum.local",
+        # to:
+        [reset_password_token.user.email]
+    )
+    msg.attach_alternative(email_html_message, "text/html")
+    msg.send()
+
 
 error_log = logging.getLogger(__name__)
 
 '''Signals to update login_ip and user_agent_info of the Profile model when the user receives JWT token'''
+
 
 @receiver(user_logged_in)
 def log_user_logged_in_success(sender, user, request, **kwargs):
@@ -29,18 +72,20 @@ def log_user_logged_in_success(sender, user, request, **kwargs):
         # log the error
         error_log.error("log_user_logged_in request: %s, error: %s" % (request, e))
 
+
 @receiver(user_login_failed)
 def log_user_logged_in_failed(sender, credentials, request, **kwargs):
     try:
         user_agent_info = request.META.get('HTTP_USER_AGENT', '<unknown>')[:255],
 
-        #user_login_activity_log = Profile(login_ip=get_client_ip(request), user=credentials, user_agent_info=user_agent_info)
+        # user_login_activity_log = Profile(login_ip=get_client_ip(request), user=credentials, user_agent_info=user_agent_info)
         # user_login_activity_log.save()
         Profile.objects.select_related().filter(user=credentials).update(login_ip=get_client_ip(request), user_agent_info=user_agent_info)
 
     except Exception as e:
         # log the error
         error_log.error("log_user_logged_in request: %s, error: %s" % (request, e))
+
 
 def get_client_ip(request):
     x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
@@ -49,6 +94,7 @@ def get_client_ip(request):
     else:
         ip = request.META.get('REMOTE_ADDR')
     return ip
+
 
 '''@receiver(user_signed_up)
 def social_login_profilepic(sociallogin, user, **kwargs):
@@ -67,6 +113,7 @@ def social_login_profilepic(sociallogin, user, **kwargs):
 
     print(profile.profileImg.url)'''
 
+
 def download_image(url):
     """Downloads an image and makes sure it's verified.
 
@@ -82,6 +129,7 @@ def download_image(url):
     else:
         # Maybe this is not the best error handling...you might want to just provide a path to a generic image instead
         raise Exception('An invalid image was detected when attempting to save a Product!')
+
 
 def valid_img(img):
     """Verifies that an instance of a PIL Image Class is actually an image and returns either True or False."""

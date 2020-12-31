@@ -97,8 +97,11 @@ urlpatterns = [
     path('users/<str:username>/update/', UserUpdateView.as_view()),
     url(r'^api-jwt-token-auth/', obtain_jwt_token),
     url(r'^api-jwt-token-refresh/', refresh_jwt_token),
+
     path('jwtlogin/', JWTLoginView.as_view()),
     path('jwtregister/', JWTRegisterView.as_view()),
+    url(r'^users/profile/password_reset/', include('django_rest_passwordreset.urls', namespace='password_reset')),
+
     path('postvisitors/', VisitorsListView.as_view()),
     path('profilevisitor/', ProfileViewerInfoView.as_view()),
     path('socialauth/', include('rest_framework_social_oauth2.urls')),
