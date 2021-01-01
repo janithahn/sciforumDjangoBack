@@ -107,7 +107,7 @@ class UserDetailView(RetrieveAPIView):
         except Exception as exep:
             print(exep)
 
-        #print(totalPostViewCount)
+        # print(totalPostViewCount)
         profileObj = Profile.objects.get(user=self.get_object())
         profileObj.postViews = totalPostViewCount
         profileObj.save(update_fields=('postViews', ))
@@ -127,6 +127,14 @@ class UserDetailView(RetrieveAPIView):
 
 
 class UserUpdateView(UpdateAPIView):
+    authentication_classes = [authentication.JSONWebTokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    lookup_field = 'username'
+
+
+class UserDeleteView(DestroyAPIView):
     authentication_classes = [authentication.JSONWebTokenAuthentication]
     permission_classes = [permissions.IsAuthenticated]
     queryset = User.objects.all()

@@ -1,5 +1,5 @@
 from django.urls import path
-#from .views import PostDetailView, PostListView, PostCreateView, PostUpdateView, PostDeleteView
+# from .views import PostDetailView, PostListView, PostCreateView, PostUpdateView, PostDeleteView
 from user_profile.profile_api.views import ProfileViewSet, UserViewSet, UserEmploymentViewSet, UserEmploymentEditViewSet\
     , UserEducationViewSet, UserEducationEditViewSet, UserLanguagesViewSet, UserLanguagesEditViewSet, UserSkillsViewSet\
     , UserSkillsEditViewSet, UserContactViewSet, UserContactEditViewSet

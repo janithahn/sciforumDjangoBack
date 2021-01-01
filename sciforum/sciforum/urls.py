@@ -20,7 +20,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from post.api.views import VisitorsListView, ProfileViewerInfoView, PostUpdateView, PostCreateview, PostDeleteView
 from user_profile.profile_api.views import CustomAuthToken, CustomLoginView, CustomRegisterView, UserListView, UserDetailView\
-    , UserUpdateView, JWTLoginView, JWTRegisterView, GoogleLoginView
+    , UserUpdateView, UserDeleteView, JWTLoginView, JWTRegisterView, GoogleLoginView
 from answer.answer_api.views import AnswerCreateview, AnswerUpdateView, AnswerDeleteView
 from vote.vote_api.views import PostVoteCreateview, PostVoteUpdateView, PostVoteDeleteView\
     , AnswerVoteCreateview, AnswerVoteUpdateView, AnswerVoteDeleteView, PostCommentVoteCreateview, PostCommentVoteDeleteView\
@@ -95,6 +95,7 @@ urlpatterns = [
     path('users/', UserListView.as_view()),
     path('users/<str:username>/', UserDetailView.as_view()),
     path('users/<str:username>/update/', UserUpdateView.as_view()),
+    path('users/<str:username>/delete/', UserDeleteView.as_view()),
     url(r'^api-jwt-token-auth/', obtain_jwt_token),
     url(r'^api-jwt-token-refresh/', refresh_jwt_token),
 

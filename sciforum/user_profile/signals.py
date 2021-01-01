@@ -26,15 +26,22 @@ def password_reset_token_created(sender, instance, reset_password_token, *args, 
     :param kwargs:
     :return:
     """
+    font_end_url = 'http://localhost:3000/users/profile/password_reset/confirm/'
+
     # send an e-mail to the user
     context = {
         'current_user': reset_password_token.user,
         'username': reset_password_token.user.username,
         'email': reset_password_token.user.email,
-        'reset_password_url': "{}?token={}".format(
-            instance.request.build_absolute_uri(reverse('password_reset:reset-password-confirm')),
+        'reset_password_url': font_end_url + "{}".format(
             reset_password_token.key)
     }
+
+    ''''
+    reset_password_url': "{}?token={}".format(
+            instance.request.build_absolute_uri(reverse('password_reset:reset-password-confirm')),
+            reset_password_token.key)
+    '''
 
     # render email text
     email_html_message = render_to_string('user_profile/reset_password.html', context)
