@@ -115,5 +115,8 @@ urlpatterns = [
     # tags
     path('tag_api/tags/', TagListView.as_view()),
 
+    # chat
+    path('chat/', include('chat.urls')),
+
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

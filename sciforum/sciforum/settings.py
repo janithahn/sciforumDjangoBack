@@ -31,6 +31,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['192.168.8.100', 'localhost', '127.0.0.1', '192.168.43.100', '192.168.8.101', '192.168.8.102']
 
+# Password reset email
 # EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # this gives the email in the console
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
@@ -39,6 +40,10 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = 'rng.janitha@gmail.com'
 EMAIL_HOST_PASSWORD = 'tfutzjbtatopserd'
 DEFAULT_FROM_EMAIL = 'default from email'
+
+# Chat
+STREAM_API_KEY = '3377njgqgmhg'
+STREAM_API_SECRET = '5445hhk8qb4g5n6sh6t8s5tk4bzgpq6xhz5k7j5fj2bhzp2bw57422unk54qckjh'
 
 # Application definition
 
@@ -62,6 +67,7 @@ INSTALLED_APPS = [
     'vote.apps.VoteConfig',
     'notification.apps.NotificationConfig',
     'comment.apps.CommentConfig',
+    'chat.apps.ChatConfig',
 
     'corsheaders',
 
