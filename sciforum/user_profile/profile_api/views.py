@@ -368,6 +368,8 @@ class GoogleLoginView(SocialLoginView):
 
         user = self.user
 
+        firebase_token = auth.create_custom_token(user.username)
+
         payload = jwt_payload_handler(user)
         jwttoken = jwt_encode_handler(payload)
 
@@ -377,7 +379,8 @@ class GoogleLoginView(SocialLoginView):
                 'id': user.id,
                 'username': user.username,
                 'email': user.email
-            }
+            },
+            'firebase_token': firebase_token,
         })
 
 
