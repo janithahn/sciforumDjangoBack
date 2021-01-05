@@ -55,7 +55,7 @@ class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
         fields = ['user', 'aboutMe', 'profileImg', 'location']
-            #, 'lastAccessDate', 'creationDate', 'location', 'views', 'upVotes', 'downVotes', 'profileImgUrl']
+            # , 'lastAccessDate', 'creationDate', 'location', 'views', 'upVotes', 'downVotes', 'profileImgUrl']
 
     def get_picture_url(self, profile):
         print(profile.profileImg.url)

@@ -26,6 +26,7 @@ from rest_framework_jwt import authentication
 from .utils import get_client_ip
 from django.db.models import Count, Sum
 from .mixins import GetSerializerClassMixin
+from firebase_admin import auth
 
 
 class ProfileViewSet(viewsets.ModelViewSet):

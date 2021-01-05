@@ -16,9 +16,16 @@ from pathlib import Path
 
 from .keys import SECRET_KEY, SOCIAL_AUTH_GOOGLE_OAUTH2_KEY, SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET
 
+import firebase_admin
+from firebase_admin import credentials
+
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 
+credPath = os.path.join(BASE_DIR, 'sciforumchat-firebase-adminsdk-a4c26-5cac033bb0.json')
+cred = credentials.Certificate(credPath)
+firebase_admin.initialize_app(cred)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
