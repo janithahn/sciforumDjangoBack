@@ -75,6 +75,8 @@ INSTALLED_APPS = [
     'notification.apps.NotificationConfig',
     'comment.apps.CommentConfig',
     'chat.apps.ChatConfig',
+    'scraper.apps.ScraperConfig',
+    # 'grabber.grabber.apps.GrabberConfig',
 
     'corsheaders',
 
@@ -250,8 +252,17 @@ DATABASES = {
             'CHARSET': 'utf8mb4',
             'COLLATION': 'utf8mb4_unicode_ci',
         },
-    }
+    },
+    'crawler': {
+        'ENGINE': 'djongo',
+        'NAME': 'sciEventsCrawler',
+        # 'HOST': 'mongodb://127.0.0.1:27017',
+    },
 }
+
+DATABASE_ROUTERS = [
+    'scraper.dbrouters.MongoRouter',
+]
 
 
 # Password validation
