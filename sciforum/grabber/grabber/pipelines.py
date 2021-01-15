@@ -10,7 +10,8 @@ from scrapy.exceptions import DropItem
 from itemadapter import ItemAdapter
 import json
 from .items import WebinarsItem, EventsItem
-from scraper.models import Webinars, Events
+import spacy
+import re
 
 
 class WebinargrabberPipeline:
@@ -63,15 +64,22 @@ class EventDuplicatesPipeline:
 
     def process_item(self, item, spider):
         # adapter = ItemAdapter(item)
+        texts = spider.raw_texts
 
         if spider.name == 'eventbot':
             adapter = EventsItem(item)
+            nlp = spacy.load("en_core_web_sm")
 
             if adapter['title'] in self.ids_seen:
                 raise DropItem(f"Duplicate item found: {item!r}")
             else:
                 if 'event' in adapter['link'] or 'news' in adapter['link']:
                     self.ids_seen.add(adapter['title'])
+
+                    doc = nlp(texts)
+                    sentences = list(doc.sents)
+                    sentences = [" ".join(re.split(r"\s{2,}", str(sent))) for sent in sentences]
+                    adapter['sentences'] = str(sentences)
 
                     line = json.dumps(dict(adapter)) + "\n"
                     self.file.write(line)

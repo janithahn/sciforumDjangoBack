@@ -28,14 +28,13 @@ class EventbotSpider(scrapy.Spider):
     }
 
     item = EventsItem()
+    raw_texts = []
 
     def parse(self, response):
         tag_selector = response.xpath('//a')
         for tag in tag_selector:
             link = tag.xpath('@href').extract_first()
             url = response.url
-
-            nlp = spacy.load("en_core_web_sm")
 
             if 'event' in str(link).lower() or 'news' in str(link).lower():
                 response_text = response.text
@@ -45,14 +44,10 @@ class EventbotSpider(scrapy.Spider):
                 texts = replace_entities(texts)
                 texts = remove_tags(texts)
                 texts = replace_escape_chars(texts, replace_by=" ")
-
-                doc = nlp(texts)
-                sentences = list(doc.sents)
-                sentences = [" ".join(re.split(r"\s{2,}", str(sent))) for sent in sentences]
+                self.raw_texts = texts
 
                 self.item['title'] = title[0]
                 self.item['link'] = url
-                self.item['sentences'] = str(sentences)
                 yield self.item
 
             if link is not None and (str(link).find('download') == -1 or str(link).find('archive') == -1):
