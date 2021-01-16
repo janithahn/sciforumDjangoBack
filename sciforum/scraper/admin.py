@@ -1,5 +1,5 @@
 from django.contrib import admin
-from scraper.models import Webinars, Events
+from scraper.models import Webinar, Event
 
-admin.site.register(Webinars)
-admin.site.register(Events)
+admin.site.register(Webinar)
+admin.site.register(Event)

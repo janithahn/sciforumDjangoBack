@@ -118,5 +118,8 @@ urlpatterns = [
     # chat
     path('chat/', include('chat.urls')),
 
+    # news
+    path('news/', include('scraper.scraper_api.urls')),
+
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

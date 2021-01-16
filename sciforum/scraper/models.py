@@ -1,7 +1,7 @@
 from djongo import models
 
 
-class Events(models.Model):
+class Event(models.Model):
     title = models.TextField()
     link = models.URLField()
     sentences = models.TextField()
@@ -10,7 +10,7 @@ class Events(models.Model):
         return self.title
 
 
-class Webinars(models.Model):
+class Webinar(models.Model):
     link = models.URLField()
     texts = models.TextField()
 
