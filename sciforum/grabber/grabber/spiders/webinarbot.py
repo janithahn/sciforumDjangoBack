@@ -26,7 +26,7 @@ class WebinarbotSpider(scrapy.Spider):
 
     items = []
     item = WebinarsItem()
-    need_urls = ['meet', 'zoom', 'forms']
+    need_urls = ['meet.google', 'zoom', 'forms']
 
     def parse(self, response):
         tag_selector = response.xpath('//a')
@@ -41,11 +41,13 @@ class WebinarbotSpider(scrapy.Spider):
                         parent = parent.xpath('..')
 
                     texts = parent.xpath('.//text()').extract()
+                    title = parent.xpath('//title/text()').extract()
                     filtered_data = self.filter_data(texts)
-                    filtered_data['TITLE'] = parent.xpath('//title/text()').extract()
 
                     self.item['link'] = link
-                    self.item['texts'] = str(filtered_data)
+                    self.item['title'] = title[0]
+                    self.item['texts'] = str(filtered_data).strip()
+                    self.item['reference_url'] = response.url
                     yield self.item
 
                     self.items.append([link, str(filtered_data)])
@@ -87,4 +89,15 @@ class WebinarbotSpider(scrapy.Spider):
             'CARDINAL': cardinal
         }
 
-        return return_item
+        def join_list(lst):
+            if not lst:
+                return None
+            else:
+                return ', '.join(lst)
+
+        sentences = [join_list(org), join_list(gpe), join_list(date), join_list(time), join_list(person)]
+        sentences = [sent for sent in sentences if sent is not None]
+
+        return_sentence = join_list(sentences)
+
+        return return_sentence

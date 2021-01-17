@@ -3,7 +3,7 @@ class MongoRouter:
     A router to control all database operations on models in the
     scraper applications.
     """
-    route_app_labels = {'events', 'webinars', 'scraper'}
+    route_app_labels = {'event', 'webinar', 'scraper'}
 
     def db_for_read(self, model, **hints):
         """

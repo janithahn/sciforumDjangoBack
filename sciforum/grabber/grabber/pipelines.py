@@ -10,6 +10,7 @@ from scrapy.exceptions import DropItem
 from itemadapter import ItemAdapter
 import json
 from .items import WebinarsItem, EventsItem
+from scraper.models import Webinar, Event
 import spacy
 import re
 
@@ -64,9 +65,9 @@ class EventDuplicatesPipeline:
 
     def process_item(self, item, spider):
         # adapter = ItemAdapter(item)
-        texts = spider.raw_texts
 
         if spider.name == 'eventbot':
+            texts = spider.raw_texts
             adapter = EventsItem(item)
             nlp = spacy.load("en_core_web_sm")
 
@@ -76,15 +77,28 @@ class EventDuplicatesPipeline:
                 if 'event' in adapter['link'] or 'news' in adapter['link']:
                     self.ids_seen.add(adapter['title'])
 
+                    avoid_list = [adapter['title'], 'Search this site', 'Report abuse', 'Report Abuse', 'report abuse']
+
                     doc = nlp(texts)
                     sentences = list(doc.sents)
                     sentences = [" ".join(re.split(r"\s{2,}", str(sent))) for sent in sentences]
-                    adapter['sentences'] = str(sentences)
+                    big_sentence = ''
+
+                    for sentence in sentences:
+                        for avoid in avoid_list:
+                            if avoid in sentence:
+                                sentence = sentence.strip().replace(avoid, '')
+                        big_sentence += sentence.strip() + ' '
+
+                    adapter['sentences'] = big_sentence.strip()
 
                     line = json.dumps(dict(adapter)) + "\n"
                     self.file.write(line)
 
-                    adapter.save()
+                    if Event.objects.filter(title=adapter['title']).exists():
+                        adapter.update()
+                    else:
+                        adapter.save()
                     return item
                 return None
 
@@ -99,5 +113,8 @@ class EventDuplicatesPipeline:
                 line = json.dumps(dict(adapter)) + "\n"
                 self.file.write(line)
 
-                adapter.save()
+                if Webinar.objects.filter(link=adapter['link']).exists():
+                    adapter.update()
+                else:
+                    adapter.save()
                 return item
