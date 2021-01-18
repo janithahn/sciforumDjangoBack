@@ -14,8 +14,6 @@ import os
 from pathlib import Path
 from decouple import config
 
-from .keys import SOCIAL_AUTH_GOOGLE_OAUTH2_KEY, SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET
-
 import firebase_admin
 from firebase_admin import credentials
 
