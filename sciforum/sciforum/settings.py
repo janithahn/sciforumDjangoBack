@@ -11,10 +11,10 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
 import os
-
 from pathlib import Path
+from decouple import config
 
-from .keys import SECRET_KEY, SOCIAL_AUTH_GOOGLE_OAUTH2_KEY, SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET
+from .keys import SOCIAL_AUTH_GOOGLE_OAUTH2_KEY, SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET
 
 import firebase_admin
 from firebase_admin import credentials
@@ -31,26 +31,26 @@ firebase_admin.initialize_app(cred)
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = SECRET_KEY
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config('DEBUG', cast=bool)
 
 ALLOWED_HOSTS = ['192.168.8.100', 'localhost', '127.0.0.1', '192.168.43.100', '192.168.8.101', '192.168.8.102']
 
 # Password reset email
 # EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # this gives the email in the console
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST = config('EMAIL_HOST')
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'rng.janitha@gmail.com'
-EMAIL_HOST_PASSWORD = 'tfutzjbtatopserd'
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 DEFAULT_FROM_EMAIL = 'default from email'
 
 # Chat
-STREAM_API_KEY = '3377njgqgmhg'
-STREAM_API_SECRET = '5445hhk8qb4g5n6sh6t8s5tk4bzgpq6xhz5k7j5fj2bhzp2bw57422unk54qckjh'
+# STREAM_API_KEY = '3377njgqgmhg'
+# STREAM_API_SECRET = '5445hhk8qb4g5n6sh6t8s5tk4bzgpq6xhz5k7j5fj2bhzp2bw57422unk54qckjh'
 
 # Application definition
 
@@ -150,8 +150,8 @@ AUTHENTICATION_BACKENDS = (
 )
 
 # Google configuration
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = SOCIAL_AUTH_GOOGLE_OAUTH2_KEY
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = config('SOCIAL_AUTH_GOOGLE_OAUTH2_KEY')
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = config('SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET')
 
 SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
     'https://www.googleapis.com/auth/userinfo.email',
@@ -239,9 +239,9 @@ WSGI_APPLICATION = 'sciforum.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'sciforum',
-        'USER': 'root',
-        'PASSWORD': 'Hello.php1227',
+        'NAME': config('DB_NAME'),
+        'USER': config('DB_USER'),
+        'PASSWORD': config('DB_PASSWORD'),
         'HOST': 'localhost',
         'PORT': '3306',
         'OPTIONS': {
@@ -256,7 +256,6 @@ DATABASES = {
     'crawler': {
         'ENGINE': 'djongo',
         'NAME': 'sciEventsCrawler',
-        # 'HOST': 'mongodb://127.0.0.1:27017',
     },
 }
 
