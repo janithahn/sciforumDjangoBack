@@ -345,13 +345,16 @@ class JWTRegisterView(RegisterView):
         payload = jwt_payload_handler(user)
         jwttoken = jwt_encode_handler(payload)
 
+        firebase_token = auth.create_custom_token(user.username)
+
         return Response({
             'token': jwttoken,
             'user': {
                 'id': user.id,
                 'username': user.username,
                 'email': user.email,
-            }
+            },
+            'firebase_token': firebase_token
         })
 
 
