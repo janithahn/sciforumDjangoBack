@@ -12,8 +12,10 @@ import os
 import django
 from pathlib import Path
 
-BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
-sys.path.insert(0, BASE_DIR)
+# C:\work\CS304\project\sciforumDjangoBack\sciforum
+
+BASE_DIR = Path(__file__).resolve(strict=True).parent.parent.parent
+sys.path.insert(0, str(BASE_DIR))
 os.environ['DJANGO_SETTINGS_MODULE'] = 'sciforum.settings'
 django.setup()
 
