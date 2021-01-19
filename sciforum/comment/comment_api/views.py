@@ -34,15 +34,15 @@ class AnswerCommentCreateViewSet(viewsets.ModelViewSet):
 
     def create(self, request, *args, **kwargs):
 
-        from_user = request.user
-        action_object = Answer.objects.get(id=request.data['answer'])
-        message = from_user.username + ' has put a comment on your answer'
-        to_user = action_object.owner
-
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
+
+        from_user = request.user
+        action_object = AnswerComment.objects.get(id=serializer.data['id'])
+        message = from_user.username + ' has put a comment on your answer'
+        to_user = Answer.objects.get(id=request.data['answer']).owner
 
         if from_user.is_authenticated:
             notify.send(sender=from_user, recipient=to_user, verb=message, action_object=action_object)
@@ -51,9 +51,9 @@ class AnswerCommentCreateViewSet(viewsets.ModelViewSet):
 
     def perform_destroy(self, instance):
         from_user = instance.owner
-        action_object = instance.post
+        action_object = instance
         to_user = instance.post.owner
-        content_type = ContentType.objects.get_for_model(Answer)
+        content_type = ContentType.objects.get_for_model(AnswerComment)
 
         notification = to_user.notifications.filter(actor_object_id=from_user.id, action_object_content_type=content_type, action_object_object_id=action_object.id)
         try:
@@ -86,15 +86,15 @@ class PostCommentCreateViewSet(viewsets.ModelViewSet):
 
     def create(self, request, *args, **kwargs):
 
-        from_user = request.user
-        action_object = Post.objects.get(id=request.data['post'])
-        message = from_user.username + ' has put a comment on your post'
-        to_user = action_object.owner
-
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
+
+        from_user = request.user
+        action_object = PostComment.objects.get(id=serializer.data['id'])
+        message = from_user.username + ' has put a comment on your post'
+        to_user = Post.objects.get(id=request.data['post']).owner
 
         if from_user.is_authenticated:
             notify.send(sender=from_user, recipient=to_user, verb=message, action_object=action_object)
@@ -103,9 +103,10 @@ class PostCommentCreateViewSet(viewsets.ModelViewSet):
 
     def perform_destroy(self, instance):
         from_user = instance.owner
-        action_object = instance.post
+        action_object = instance
         to_user = instance.post.owner
-        content_type = ContentType.objects.get_for_model(Post)
+        content_type = ContentType.objects.get_for_model(PostComment)
+        print(content_type)
 
         notification = to_user.notifications.filter(actor_object_id=from_user.id, action_object_content_type=content_type, action_object_object_id=action_object.id)
         try:

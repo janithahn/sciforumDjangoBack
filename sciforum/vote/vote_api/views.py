@@ -293,8 +293,8 @@ class PostCommentVoteViewSet(viewsets.ModelViewSet):
 
 
 class PostCommentVoteCreateview(CreateAPIView):
-    # authentication_classes = [authentication.JSONWebTokenAuthentication]
-    # permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [authentication.JSONWebTokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
     queryset = PostCommentVote.objects.all()
     serializer_class = PostCommentVoteCreateSerializer
 
@@ -328,8 +328,8 @@ class PostCommentVoteCreateview(CreateAPIView):
 
 
 class PostCommentVoteUpdateView(MultipleFieldLookupMixin, UpdateAPIView):
-    # authentication_classes = [authentication.JSONWebTokenAuthentication]
-    # permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [authentication.JSONWebTokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
     queryset = PostCommentVote.objects.all()
     serializer_class = PostCommentVoteUpdateSerializer
 
@@ -353,8 +353,8 @@ class PostCommentVoteUpdateView(MultipleFieldLookupMixin, UpdateAPIView):
 
 
 class PostCommentVoteDeleteView(MultipleFieldLookupMixin, DestroyAPIView):
-    # authentication_classes = [authentication.JSONWebTokenAuthentication]
-    # permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [authentication.JSONWebTokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
     queryset = PostCommentVote.objects.all()
 
     lookup_fields = ['comment', 'owner']
