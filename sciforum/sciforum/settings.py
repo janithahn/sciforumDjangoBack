@@ -19,7 +19,7 @@ from firebase_admin import credentials
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 
-credPath = os.path.join(BASE_DIR, 'sciforumchat-firebase-adminsdk-a4c26-5cac033bb0.json')
+credPath = os.path.join(BASE_DIR, 'sciforumchat-firebase-adminsdk-a4c26-a99c1755e5.json')
 cred = credentials.Certificate(credPath)
 firebase_admin.initialize_app(cred)
 
