@@ -217,10 +217,20 @@ class UserprofileImgSerializer(serializers.ModelSerializer):
 
 
 class MentionListSerializer(serializers.ModelSerializer):
+    avatar = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = User
-        fields = ['id', 'username', 'first_name', 'last_name']
+        fields = ['id', 'username', 'first_name', 'last_name', 'avatar']
+
+    def get_avatar(self, obj):
+        request = self.context.get('request')
+        try:
+            avatar_url = Profile.objects.get(user=obj).profileImg.url
+            return request.build_absolute_uri(avatar_url)
+        except Exception as exp:
+            print(exp)
+        return None
 
 
 class JWTUserSerializer(serializers.ModelSerializer):

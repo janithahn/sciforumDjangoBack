@@ -299,10 +299,10 @@ class UserContactEditViewSet(viewsets.ModelViewSet):
 
 
 class MentionListViewSet(viewsets.ModelViewSet):
-    permission_classes = [permissions.IsAuthenticated]
+    # permission_classes = [permissions.IsAuthenticated]
     queryset = User.objects.all()
     serializer_class = MentionListSerializer
-    http_method_names = ['get']
+    # http_method_names = ['get']
 
 
 # views for authentication
