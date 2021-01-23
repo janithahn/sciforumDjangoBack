@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from post.models import Post, Visitors, PostImages
 from user_profile.models import ProfileViewerInfo
 from .serializers import PostSerializer, VisitorSerializer, ProfileViewerInfoSerializer, PostUpdateSerializer\
-    , PostCreateSerializer, PostTempImagesSerializer
+    , PostCreateSerializer, PostTempImagesSerializer, TopPostsSerializer
 from django.utils.timezone import now
 from user_profile.models import Profile
 from rest_framework_jwt import authentication
@@ -14,6 +14,7 @@ from django_filters.rest_framework import DjangoFilterBackend, FilterSet, filter
 from django_filters.widgets import CSVWidget
 # from rest_framework_word_filter import FullWordSearchFilter
 from taggit_suggest.utils import suggest_tags
+from vote.models import PostVote
 
 
 # Temporary sample views to get visitors
@@ -130,4 +131,18 @@ class PostDeleteView(DestroyAPIView):
 class PostImagesViewSet(viewsets.ModelViewSet):
     queryset = PostImages.objects.all()
     serializer_class = PostTempImagesSerializer
+
+
+class TopPostsViewSet(viewsets.ModelViewSet):
+    # queryset = Post.objects.annotate(vote_count=Count('postvote')).order_by('postvote__voteType').annotate(postvote__voteType='LIKE')
+    queryset = Post.objects.filter(postvote__voteType='LIKE').annotate(vote_count=Count('postvote')).distinct()
+    pagination_class = PostsPagination
+    serializer_class = TopPostsSerializer
+    http_method_names = ['get']
+
+    filter_backends = [filters.OrderingFilter]
+    ordering_fields = ['vote_count']
+
+
+
 

@@ -216,6 +216,13 @@ class UserprofileImgSerializer(serializers.ModelSerializer):
         fields = ['profileImg']
 
 
+class MentionListSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'first_name', 'last_name']
+
+
 class JWTUserSerializer(serializers.ModelSerializer):
 
     profile = UserprofileImgSerializer(read_only=True)

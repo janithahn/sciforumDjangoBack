@@ -6,7 +6,7 @@ from post.models import Post
 from user_profile.models import ProfileViewerInfo, Profile, UserEmployment, UserEducation, UserLanguages\
     , UserContact, UserSkills
 from .serializers import UserSerializer, CustomUserSerializer, JWTSerializer, UserEmploymentSerializer\
-    , UserEducationSerializer, UserLanguageSerializer, UserSkillsSerializer, UserContactSerializer
+    , UserEducationSerializer, UserLanguageSerializer, UserSkillsSerializer, UserContactSerializer, MentionListSerializer
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
@@ -298,6 +298,12 @@ class UserContactEditViewSet(viewsets.ModelViewSet):
     http_method_names = ['get', 'post', 'patch', 'put', 'delete']
 
 
+class MentionListViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = MentionListSerializer
+    http_method_names = ['get']
+
+
 # views for authentication
 class CustomAuthToken(ObtainAuthToken):
 
@@ -416,4 +422,7 @@ class CustomRegisterView(RegisterView):
             'username': user.username,
             'email': user.email
         })
+
+
+
 
