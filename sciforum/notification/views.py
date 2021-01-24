@@ -5,6 +5,7 @@ from rest_framework_jwt import authentication
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.response import Response
 
+
 class NotificationViewSet(viewsets.ModelViewSet):
     # authentication_classes = [authentication.JSONWebTokenAuthentication]
     # permission_classes = [permissions.IsAuthenticated]

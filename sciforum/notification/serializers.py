@@ -49,6 +49,7 @@ class PostCommentObjectSerializer(serializers.ModelSerializer):
     def get_notification_type(self, obj):
         return str(ContentType.objects.get_for_model(obj))
 
+
 class AnswerCommentObjectSerializer(serializers.ModelSerializer):
 
     notification_type = serializers.SerializerMethodField(read_only=True)

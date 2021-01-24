@@ -18,6 +18,16 @@ class PostComment(models.Model):
         return self.comment
 
 
+class PostCommentMentions(models.Model):
+
+    comment = models.ForeignKey(PostComment, on_delete=models.CASCADE, null=True, related_name='post_comment_mentions')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return '%s: %s' % (self.user, self.comment)
+
+
 class AnswerComment(models.Model):
 
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
@@ -26,6 +36,16 @@ class AnswerComment(models.Model):
     comment = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.comment
+
+
+class AnswerCommentMentions(models.Model):
+
+    comment = models.ForeignKey(AnswerComment, on_delete=models.CASCADE, null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.comment

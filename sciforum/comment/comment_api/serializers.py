@@ -1,6 +1,7 @@
 from rest_framework import serializers
-from comment.models import PostComment, AnswerComment
+from comment.models import PostComment, AnswerComment, PostCommentMentions
 from vote.models import PostCommentVote, AnswerCommentVote
+from notifications.signals import notify
 
 
 class VoteRelatedField(serializers.RelatedField):
@@ -41,6 +42,13 @@ class AnswerCommentSerializer(serializers.ModelSerializer):
 
 
 # POST
+class PostCommentMentionsSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = PostCommentMentions
+        fields = ['user']
+
+
 class PostCommentSerializer(serializers.ModelSerializer):
 
     created_at = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S", read_only=True)
@@ -48,13 +56,35 @@ class PostCommentSerializer(serializers.ModelSerializer):
     ownerAvatar = serializers.ImageField(source='owner.profile.profileImg', read_only=True)
     likes = serializers.SerializerMethodField(read_only=True)
     dislikes = serializers.SerializerMethodField(read_only=True)
+    post_comment_mentions = PostCommentMentionsSerializer(many=True)
 
     class Meta:
         model = PostComment
-        fields = ['id', 'post', 'owner', 'ownerDisplayName', 'ownerAvatar', 'comment', 'created_at', 'updated_at', 'likes', 'dislikes']
+        fields = ['id', 'post', 'owner', 'ownerDisplayName', 'ownerAvatar', 'comment', 'post_comment_mentions', 'created_at', 'updated_at', 'likes', 'dislikes']
 
     def get_likes(self, obj):
         return PostCommentVote.objects.filter(comment_id=obj.id, voteType='LIKE').count()
 
     def get_dislikes(self, obj):
         return PostCommentVote.objects.filter(comment_id=obj.id, voteType='DISLIKE').count()
+
+    ''' writing the mentions '''
+    def create(self, validated_data):
+        mention_data = validated_data.pop('post_comment_mentions')
+        comment = PostComment.objects.create(**validated_data)
+        for mention in mention_data:
+            ''' writing the mentions to the relevant post comment '''
+            PostCommentMentions.objects.create(comment=comment, **mention)
+
+            ''' handling the user notification '''
+            from_user = None
+            request = self.context.get("request")
+            if request and hasattr(request, "user"):
+                from_user = request.user
+            action_object = PostComment.objects.get(id=comment.id)
+            message = str(from_user) + ' has mentioned you in a comment'
+            to_user = mention['user']
+            if from_user.is_authenticated:
+                notify.send(sender=from_user, recipient=to_user, verb=message, action_object=action_object)
+
+        return comment
