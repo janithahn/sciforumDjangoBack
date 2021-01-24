@@ -69,6 +69,32 @@ class AnswerCommentSerializer(serializers.ModelSerializer):
 
         return comment
 
+    def update(self, instance, validated_data):
+        mentions_data = validated_data.pop('answer_comment_mentions')
+        '''mentions = instance.post_comment_mentions.all()
+        mentions = list(mentions)'''
+        instance.post = validated_data.get('post', instance.post)
+        instance.answer = validated_data.get('answer', instance.post)
+        instance.owner = validated_data.get('owner', instance.owner)
+        instance.comment = validated_data.get('comment', instance.comment)
+        instance.save()
+
+        for mention_data in mentions_data:
+
+            ''' handling the user notification '''
+            from_user = None
+            request = self.context.get("request")
+            if request and hasattr(request, "user"):
+                from_user = request.user
+            print(from_user)
+            action_object = AnswerComment.objects.get(id=instance.id)
+            message = str(from_user) + ' has mentioned you in a comment'
+            to_user = mention_data['user']
+            if from_user.is_authenticated:
+                notify.send(sender=from_user, recipient=to_user, verb=message, action_object=action_object)
+
+        return instance
+
 # POST
 class PostCommentMentionsSerializer(serializers.ModelSerializer):
 
@@ -116,3 +142,28 @@ class PostCommentSerializer(serializers.ModelSerializer):
                 notify.send(sender=from_user, recipient=to_user, verb=message, action_object=action_object)
 
         return comment
+
+    def update(self, instance, validated_data):
+        mentions_data = validated_data.pop('post_comment_mentions')
+        '''mentions = instance.post_comment_mentions.all()
+        mentions = list(mentions)'''
+        instance.post = validated_data.get('post', instance.post)
+        instance.owner = validated_data.get('owner', instance.owner)
+        instance.comment = validated_data.get('comment', instance.comment)
+        instance.save()
+
+        for mention_data in mentions_data:
+
+            ''' handling the user notification '''
+            from_user = None
+            request = self.context.get("request")
+            if request and hasattr(request, "user"):
+                from_user = request.user
+            print(from_user)
+            action_object = PostComment.objects.get(id=instance.id)
+            message = str(from_user) + ' has mentioned you in a comment'
+            to_user = mention_data['user']
+            if from_user.is_authenticated:
+                notify.send(sender=from_user, recipient=to_user, verb=message, action_object=action_object)
+
+        return instance
