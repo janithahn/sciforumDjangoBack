@@ -43,9 +43,9 @@ class AnswerComment(models.Model):
 
 class AnswerCommentMentions(models.Model):
 
-    comment = models.ForeignKey(AnswerComment, on_delete=models.CASCADE, null=True)
+    comment = models.ForeignKey(AnswerComment, on_delete=models.CASCADE, null=True, related_name='answer_comment_mentions')
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.comment
+        return '%s: %s' % (self.user, self.comment)

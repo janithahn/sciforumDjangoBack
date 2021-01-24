@@ -1,7 +1,7 @@
 from rest_framework import viewsets, permissions, status
 from rest_framework_jwt import authentication
-from .serializers import AnswerCommentSerializer, PostCommentSerializer, PostCommentMentionsSerializer
-from comment.models import PostComment, AnswerComment, PostCommentMentions
+from .serializers import AnswerCommentSerializer, PostCommentSerializer, PostCommentMentionsSerializer, AnswerCommentMentionsSerializer
+from comment.models import PostComment, AnswerComment, PostCommentMentions, AnswerCommentMentions
 from django_filters.rest_framework import DjangoFilterBackend
 # from .mixins import MultipleFieldLookupMixin
 from rest_framework.response import Response
@@ -49,6 +49,23 @@ class AnswerCommentCreateViewSet(viewsets.ModelViewSet):
 
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        ''' deleting mention notifications '''
+        mentions = AnswerCommentMentions.objects.filter(comment=instance)
+        from_user = instance.owner
+        action_object = instance
+        content_type = ContentType.objects.get_for_model(AnswerComment)
+        for mention in mentions:
+            to_user = mention.user
+            try:
+                notification = to_user.notifications.filter(actor_object_id=from_user.id, action_object_content_type=content_type, action_object_object_id=action_object.id)
+                notification.delete()
+            except Exception as excep:
+                print(excep)
+        self.perform_destroy(instance)
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
     def perform_destroy(self, instance):
         from_user = instance.owner
         action_object = instance
@@ -63,6 +80,11 @@ class AnswerCommentCreateViewSet(viewsets.ModelViewSet):
         instance.delete()
 
 
+class AnswerCommentMentionsViewSet(viewsets.ModelViewSet):
+    queryset = AnswerCommentMentions.objects.all()
+    serializer_class = AnswerCommentMentionsSerializer
+
+
 # POST
 class PostCommentViewSet(viewsets.ModelViewSet):
 
@@ -75,8 +97,8 @@ class PostCommentViewSet(viewsets.ModelViewSet):
 
 class PostCommentCreateViewSet(viewsets.ModelViewSet):
 
-    # authentication_classes = [authentication.JSONWebTokenAuthentication]
-    # permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [authentication.JSONWebTokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
 
     queryset = PostComment.objects.all()
     serializer_class = PostCommentSerializer
