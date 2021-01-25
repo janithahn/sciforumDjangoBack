@@ -44,7 +44,7 @@ class AnswerCommentCreateViewSet(viewsets.ModelViewSet):
         message = from_user.username + ' has put a comment on your answer'
         to_user = Answer.objects.get(id=request.data['answer']).owner
 
-        if from_user.is_authenticated:
+        if from_user.is_authenticated and from_user != to_user:
             notify.send(sender=from_user, recipient=to_user, verb=message, action_object=action_object)
 
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
@@ -124,7 +124,7 @@ class PostCommentCreateViewSet(viewsets.ModelViewSet):
         message = from_user.username + ' has put a comment on your post'
         to_user = Post.objects.get(id=request.data['post']).owner
 
-        if from_user.is_authenticated:
+        if from_user.is_authenticated and from_user != to_user:
             notify.send(sender=from_user, recipient=to_user, verb=message, action_object=action_object)
 
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)

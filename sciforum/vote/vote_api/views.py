@@ -49,7 +49,7 @@ class AnswerVoteCreateview(CreateAPIView):
 
         if vote_type == 'LIKE':
             message = from_user.username + ' has put a like on your answer'
-            if from_user.is_authenticated:
+            if from_user.is_authenticated and from_user != to_user:
                 notify.send(sender=from_user, recipient=to_user, verb=message, action_object=action_object)
         else:
             notification = to_user.notifications.filter(actor_object_id=from_user.id, action_object_content_type=content_type, action_object_object_id=action_object.id)
@@ -156,7 +156,7 @@ class AnswerCommentVoteCreateview(CreateAPIView):
 
         if vote_type == 'LIKE':
             message = from_user.username + ' has put a like on your comment'
-            if from_user.is_authenticated:
+            if from_user.is_authenticated and from_user != to_user:
                 notify.send(sender=from_user, recipient=to_user, verb=message, action_object=action_object)
         else:
             notification = to_user.notifications.filter(actor_object_id=from_user.id, action_object_content_type=content_type, action_object_object_id=action_object.id)
@@ -234,7 +234,7 @@ class PostVoteCreateview(CreateAPIView):
 
         if vote_type == 'LIKE':
             message = from_user.username + ' has put a like on your question'
-            if from_user.is_authenticated:
+            if from_user.is_authenticated and from_user != to_user:
                 notify.send(sender=from_user, recipient=to_user, verb=message, action_object=action_object)
         else:
             notification = to_user.notifications.filter(actor_object_id=from_user.id, action_object_content_type=content_type, action_object_object_id=action_object.id)
@@ -313,7 +313,7 @@ class PostCommentVoteCreateview(CreateAPIView):
 
         if vote_type == 'LIKE':
             message = from_user.username + ' has put a like on your comment'
-            if from_user.is_authenticated:
+            if from_user.is_authenticated and from_user != to_user:
                 notify.send(sender=from_user, recipient=to_user, verb=message, action_object=action_object)
         else:
             notification = to_user.notifications.filter(actor_object_id=from_user.id, action_object_content_type=content_type, action_object_object_id=action_object.id)

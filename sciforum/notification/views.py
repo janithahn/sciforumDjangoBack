@@ -7,8 +7,8 @@ from rest_framework.response import Response
 
 
 class NotificationViewSet(viewsets.ModelViewSet):
-    authentication_classes = [authentication.JSONWebTokenAuthentication]
-    permission_classes = [permissions.IsAuthenticated]
+    # authentication_classes = [authentication.JSONWebTokenAuthentication]
+    # permission_classes = [permissions.IsAuthenticated]
     serializer_class = NotificationSerializer
     queryset = Notification.objects.all()
     filter_backends = [DjangoFilterBackend]

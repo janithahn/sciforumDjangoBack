@@ -64,7 +64,7 @@ class AnswerCommentSerializer(serializers.ModelSerializer):
             action_object = AnswerComment.objects.get(id=comment.id)
             message = str(from_user) + ' has mentioned you in a comment'
             to_user = mention['user']
-            if from_user.is_authenticated:
+            if from_user.is_authenticated and from_user != to_user:
                 notify.send(sender=from_user, recipient=to_user, verb=message, action_object=action_object)
 
         return comment
@@ -90,7 +90,7 @@ class AnswerCommentSerializer(serializers.ModelSerializer):
             action_object = AnswerComment.objects.get(id=instance.id)
             message = str(from_user) + ' has mentioned you in a comment'
             to_user = mention_data['user']
-            if from_user.is_authenticated:
+            if from_user.is_authenticated and from_user != to_user:
                 notify.send(sender=from_user, recipient=to_user, verb=message, action_object=action_object)
 
         return instance
@@ -138,7 +138,7 @@ class PostCommentSerializer(serializers.ModelSerializer):
             action_object = PostComment.objects.get(id=comment.id)
             message = str(from_user) + ' has mentioned you in a comment'
             to_user = mention['user']
-            if from_user.is_authenticated:
+            if from_user.is_authenticated and from_user != to_user:
                 notify.send(sender=from_user, recipient=to_user, verb=message, action_object=action_object)
 
         return comment
@@ -163,7 +163,7 @@ class PostCommentSerializer(serializers.ModelSerializer):
             action_object = PostComment.objects.get(id=instance.id)
             message = str(from_user) + ' has mentioned you in a comment'
             to_user = mention_data['user']
-            if from_user.is_authenticated:
+            if from_user.is_authenticated and from_user != to_user:
                 notify.send(sender=from_user, recipient=to_user, verb=message, action_object=action_object)
 
         return instance
