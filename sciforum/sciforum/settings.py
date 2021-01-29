@@ -42,7 +42,11 @@ EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
-DEFAULT_FROM_EMAIL = 'default from email'
+DEFAULT_FROM_EMAIL = 'sciForum'
+
+# custom account adapter for overriding confirm email url
+ACCOUNT_ADAPTER = 'user_profile.adapter.AccountAdapter'
+URL_FRONT = 'http://localhost:3000/'
 
 # Handle confirmation email
 ACCOUNT_EMAIL_VERIFICATION = 'optional'
