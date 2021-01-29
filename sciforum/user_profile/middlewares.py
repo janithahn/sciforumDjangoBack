@@ -1,6 +1,7 @@
 from django.utils.timezone import now
 from user_profile.models import Profile
 
+
 class SetLastVisitMiddleware:
 
     def __init__(self, get_response):
