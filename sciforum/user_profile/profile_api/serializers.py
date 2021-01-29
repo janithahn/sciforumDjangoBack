@@ -6,6 +6,7 @@ from enumfields.drf.serializers import EnumSupportSerializerMixin
 from user_profile.models import Profile, UserContact, UserLanguages, UserEducation, UserEmployment, UserSkills
 from answer.models import Answer
 from post.models import Post
+from allauth.account.admin import EmailAddress
 # from django.contrib.auth.models import User
 # from user_profile.profile_api.serializers import UserProfileSerializer
 # from drf_writable_nested.serializers import WritableNestedModelSerializer
@@ -216,13 +217,34 @@ class UserprofileImgSerializer(serializers.ModelSerializer):
         fields = ['profileImg']
 
 
-class JWTUserSerializer(serializers.ModelSerializer):
-
-    profile = UserprofileImgSerializer(read_only=True)
+class MentionListSerializer(serializers.ModelSerializer):
+    avatar = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'profile']
+        fields = ['id', 'username', 'first_name', 'last_name', 'avatar']
+
+    def get_avatar(self, obj):
+        request = self.context.get('request')
+        try:
+            avatar_url = Profile.objects.get(user=obj).profileImg.url
+            return request.build_absolute_uri(avatar_url)
+        except Exception as exp:
+            print(exp)
+        return None
+
+
+class JWTUserSerializer(serializers.ModelSerializer):
+
+    profile = UserprofileImgSerializer(read_only=True)
+    email_verified = serializers.SerializerMethodField(read_only=True)
+
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email', 'email_verified', 'profile']
+
+    def get_email_verified(self, obj):
+        return EmailAddress.objects.get(user=obj).verified
 
 
 class JWTSerializer(JSONWebTokenSerializer):

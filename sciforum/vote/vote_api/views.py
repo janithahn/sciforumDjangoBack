@@ -49,7 +49,7 @@ class AnswerVoteCreateview(CreateAPIView):
 
         if vote_type == 'LIKE':
             message = from_user.username + ' has put a like on your answer'
-            if from_user.is_authenticated:
+            if from_user.is_authenticated and from_user != to_user:
                 notify.send(sender=from_user, recipient=to_user, verb=message, action_object=action_object)
         else:
             notification = to_user.notifications.filter(actor_object_id=from_user.id, action_object_content_type=content_type, action_object_object_id=action_object.id)
@@ -156,7 +156,7 @@ class AnswerCommentVoteCreateview(CreateAPIView):
 
         if vote_type == 'LIKE':
             message = from_user.username + ' has put a like on your comment'
-            if from_user.is_authenticated:
+            if from_user.is_authenticated and from_user != to_user:
                 notify.send(sender=from_user, recipient=to_user, verb=message, action_object=action_object)
         else:
             notification = to_user.notifications.filter(actor_object_id=from_user.id, action_object_content_type=content_type, action_object_object_id=action_object.id)
@@ -234,7 +234,7 @@ class PostVoteCreateview(CreateAPIView):
 
         if vote_type == 'LIKE':
             message = from_user.username + ' has put a like on your question'
-            if from_user.is_authenticated:
+            if from_user.is_authenticated and from_user != to_user:
                 notify.send(sender=from_user, recipient=to_user, verb=message, action_object=action_object)
         else:
             notification = to_user.notifications.filter(actor_object_id=from_user.id, action_object_content_type=content_type, action_object_object_id=action_object.id)
@@ -293,8 +293,8 @@ class PostCommentVoteViewSet(viewsets.ModelViewSet):
 
 
 class PostCommentVoteCreateview(CreateAPIView):
-    # authentication_classes = [authentication.JSONWebTokenAuthentication]
-    # permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [authentication.JSONWebTokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
     queryset = PostCommentVote.objects.all()
     serializer_class = PostCommentVoteCreateSerializer
 
@@ -313,7 +313,7 @@ class PostCommentVoteCreateview(CreateAPIView):
 
         if vote_type == 'LIKE':
             message = from_user.username + ' has put a like on your comment'
-            if from_user.is_authenticated:
+            if from_user.is_authenticated and from_user != to_user:
                 notify.send(sender=from_user, recipient=to_user, verb=message, action_object=action_object)
         else:
             notification = to_user.notifications.filter(actor_object_id=from_user.id, action_object_content_type=content_type, action_object_object_id=action_object.id)
@@ -328,8 +328,8 @@ class PostCommentVoteCreateview(CreateAPIView):
 
 
 class PostCommentVoteUpdateView(MultipleFieldLookupMixin, UpdateAPIView):
-    # authentication_classes = [authentication.JSONWebTokenAuthentication]
-    # permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [authentication.JSONWebTokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
     queryset = PostCommentVote.objects.all()
     serializer_class = PostCommentVoteUpdateSerializer
 
@@ -353,8 +353,8 @@ class PostCommentVoteUpdateView(MultipleFieldLookupMixin, UpdateAPIView):
 
 
 class PostCommentVoteDeleteView(MultipleFieldLookupMixin, DestroyAPIView):
-    # authentication_classes = [authentication.JSONWebTokenAuthentication]
-    # permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [authentication.JSONWebTokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
     queryset = PostCommentVote.objects.all()
 
     lookup_fields = ['comment', 'owner']

@@ -20,7 +20,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from post.api.views import VisitorsListView, ProfileViewerInfoView, PostUpdateView, PostCreateview, PostDeleteView
 from user_profile.profile_api.views import CustomAuthToken, CustomLoginView, CustomRegisterView, UserListView, UserDetailView\
-    , UserUpdateView, UserDeleteView, JWTLoginView, JWTRegisterView, GoogleLoginView
+    , UserUpdateView, UserDeleteView, JWTLoginView, JWTRegisterView, GoogleLoginView, EmailConfirmation, NewEmailConfirmation
 from answer.answer_api.views import AnswerCreateview, AnswerUpdateView, AnswerDeleteView
 from vote.vote_api.views import PostVoteCreateview, PostVoteUpdateView, PostVoteDeleteView\
     , AnswerVoteCreateview, AnswerVoteUpdateView, AnswerVoteDeleteView, PostCommentVoteCreateview, PostCommentVoteDeleteView\
@@ -30,6 +30,7 @@ from vote.vote_api.views import PostVoteCreateview, PostVoteUpdateView, PostVote
 from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token
 # from rest_framework.routers import DefaultRouter
 from taggit_suggest.tag_api.views import TagListView
+from dj_rest_auth.registration.views import VerifyEmailView, ConfirmEmailView
 
 urlpatterns = [
 
@@ -86,6 +87,7 @@ urlpatterns = [
 
     path('accounts/', include('allauth.urls')),
 
+    path('rest-auth/registration/account-confirm-email/<str:key>/', ConfirmEmailView.as_view()), # confirming the email
     path('rest-auth/registration/', include('dj_rest_auth.registration.urls')),
     path('api-token-auth/', CustomAuthToken.as_view()),
 
@@ -102,6 +104,8 @@ urlpatterns = [
     path('jwtlogin/', JWTLoginView.as_view()),
     path('jwtregister/', JWTRegisterView.as_view()),
     url(r'^users/profile/password_reset/', include('django_rest_passwordreset.urls', namespace='password_reset')),
+    # path('rest-auth/account-confirm-email/', VerifyEmailView.as_view(), name='account_email_verification_sent'),
+    path('users/profile/account-confirm-email', NewEmailConfirmation.as_view(), name='account_email_verification_sent'),
 
     path('postvisitors/', VisitorsListView.as_view()),
     path('profilevisitor/', ProfileViewerInfoView.as_view()),
@@ -117,6 +121,9 @@ urlpatterns = [
 
     # chat
     path('chat/', include('chat.urls')),
+
+    # news
+    path('news/', include('scraper.scraper_api.urls')),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

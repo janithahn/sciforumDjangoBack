@@ -2,7 +2,9 @@ from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from post.models import Post
 from answer.models import Answer
+from comment.models import PostComment, AnswerComment
 from notifications.models import Notification
+from django.contrib.contenttypes.models import ContentType
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -14,16 +16,50 @@ class UserSerializer(serializers.ModelSerializer):
 
 class PostObjectSerializer(serializers.ModelSerializer):
 
+    notification_type = serializers.SerializerMethodField(read_only=True)
+
     class Meta:
         model = Post
-        fields = '__all__'
+        fields = ['id', 'title', 'body', 'owner', 'notification_type']
+
+    def get_notification_type(self, obj):
+        return str(ContentType.objects.get_for_model(obj))
 
 
 class AnswerObjectSerializer(serializers.ModelSerializer):
 
+    notification_type = serializers.SerializerMethodField(read_only=True)
+
     class Meta:
         model = Answer
-        fields = '__all__'
+        fields = ['id', 'postBelong', 'answerContent', 'owner', 'notification_type']
+
+    def get_notification_type(self, obj):
+        return str(ContentType.objects.get_for_model(obj))
+
+
+class PostCommentObjectSerializer(serializers.ModelSerializer):
+
+    notification_type = serializers.SerializerMethodField(read_only=True)
+
+    class Meta:
+        model = PostComment
+        fields = ['id', 'post', 'owner', 'comment', 'notification_type']
+
+    def get_notification_type(self, obj):
+        return str(ContentType.objects.get_for_model(obj))
+
+
+class AnswerCommentObjectSerializer(serializers.ModelSerializer):
+
+    notification_type = serializers.SerializerMethodField(read_only=True)
+
+    class Meta:
+        model = AnswerComment
+        fields = ['id', 'answer', 'post', 'comment', 'owner', 'notification_type']
+
+    def get_notification_type(self, obj):
+        return str(ContentType.objects.get_for_model(obj))
 
 
 class GenericNotificationRelatedField(serializers.RelatedField):
@@ -34,6 +70,10 @@ class GenericNotificationRelatedField(serializers.RelatedField):
             return PostObjectSerializer(value).data
         if isinstance(value, Answer):
             return AnswerObjectSerializer(value).data
+        if isinstance(value, PostComment):
+            return PostCommentObjectSerializer(value).data
+        if isinstance(value, AnswerComment):
+            return AnswerCommentObjectSerializer(value).data
         return None
 
 
@@ -52,3 +92,10 @@ class NotificationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Notification
         fields = ['id', 'recipient', 'actor', 'unread', 'public', 'action_object', 'verb', 'description', 'timestamp']
+
+
+class NotificationCountSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Notification
+        fields = ['recipient', 'unread']

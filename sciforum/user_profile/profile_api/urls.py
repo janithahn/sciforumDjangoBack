@@ -2,7 +2,7 @@ from django.urls import path
 # from .views import PostDetailView, PostListView, PostCreateView, PostUpdateView, PostDeleteView
 from user_profile.profile_api.views import ProfileViewSet, UserViewSet, UserEmploymentViewSet, UserEmploymentEditViewSet\
     , UserEducationViewSet, UserEducationEditViewSet, UserLanguagesViewSet, UserLanguagesEditViewSet, UserSkillsViewSet\
-    , UserSkillsEditViewSet, UserContactViewSet, UserContactEditViewSet
+    , UserSkillsEditViewSet, UserContactViewSet, UserContactEditViewSet, MentionListViewSet
 from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
@@ -24,5 +24,7 @@ router.register(r'user_languages_edit/viewset', UserLanguagesEditViewSet, 'user_
 
 router.register(r'user_contact/viewset', UserContactViewSet, 'user_contact')
 router.register(r'user_contact_edit/viewset', UserContactEditViewSet, 'user_contact')
+
+router.register(r'mentions/list', MentionListViewSet, 'mentions')
 
 urlpatterns = router.urls

@@ -11,19 +11,15 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
 import os
-
 from pathlib import Path
-
-from .keys import SECRET_KEY, SOCIAL_AUTH_GOOGLE_OAUTH2_KEY, SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET
-
+from decouple import config
 import firebase_admin
 from firebase_admin import credentials
-
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 
-credPath = os.path.join(BASE_DIR, 'sciforumchat-firebase-adminsdk-a4c26-5cac033bb0.json')
+credPath = os.path.join(BASE_DIR, 'sciforumchat-firebase-adminsdk-a4c26-a99c1755e5.json')
 cred = credentials.Certificate(credPath)
 firebase_admin.initialize_app(cred)
 
@@ -31,26 +27,32 @@ firebase_admin.initialize_app(cred)
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = SECRET_KEY
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config('DEBUG', cast=bool)
 
-ALLOWED_HOSTS = ['192.168.8.100', 'localhost', '127.0.0.1', '192.168.43.100', '192.168.8.101', '192.168.8.102']
+ALLOWED_HOSTS = ['192.168.8.100', 'localhost', '127.0.0.1', '192.168.43.100', '192.168.8.101', '192.168.8.102', '0.0.0.0']
 
 # Password reset email
 # EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # this gives the email in the console
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST = config('EMAIL_HOST')
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'rng.janitha@gmail.com'
-EMAIL_HOST_PASSWORD = 'tfutzjbtatopserd'
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 DEFAULT_FROM_EMAIL = 'default from email'
 
+# Handle confirmation email
+ACCOUNT_EMAIL_VERIFICATION = 'optional'
+ACCOUNT_CONFIRM_EMAIL_ON_GET = True
+LOGIN_URL = 'http://localhost:3000/signin/'
+LOGIN_REDIRECT_URL = 'http://localhost:3000/signin/'
+
 # Chat
-STREAM_API_KEY = '3377njgqgmhg'
-STREAM_API_SECRET = '5445hhk8qb4g5n6sh6t8s5tk4bzgpq6xhz5k7j5fj2bhzp2bw57422unk54qckjh'
+# STREAM_API_KEY = '3377njgqgmhg'
+# STREAM_API_SECRET = '5445hhk8qb4g5n6sh6t8s5tk4bzgpq6xhz5k7j5fj2bhzp2bw57422unk54qckjh'
 
 # Application definition
 
@@ -75,6 +77,8 @@ INSTALLED_APPS = [
     'notification.apps.NotificationConfig',
     'comment.apps.CommentConfig',
     'chat.apps.ChatConfig',
+    'scraper.apps.ScraperConfig',
+    # 'grabber.grabber.apps.GrabberConfig',
 
     'corsheaders',
 
@@ -117,7 +121,6 @@ SITE_ID = 3
 
 ACCOUNT_AUTHENTICATION_METHOD ='username_email'
 ACCOUNT_EMAIL_REQUIRED = False
-ACCOUNT_EMAIL_VERIFICATION ='none'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -148,8 +151,8 @@ AUTHENTICATION_BACKENDS = (
 )
 
 # Google configuration
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = SOCIAL_AUTH_GOOGLE_OAUTH2_KEY
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = config('SOCIAL_AUTH_GOOGLE_OAUTH2_KEY')
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = config('SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET')
 
 SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
     'https://www.googleapis.com/auth/userinfo.email',
@@ -237,9 +240,9 @@ WSGI_APPLICATION = 'sciforum.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'sciforum',
-        'USER': 'root',
-        'PASSWORD': 'Hello.php1227',
+        'NAME': config('DB_NAME'),
+        'USER': config('DB_USER'),
+        'PASSWORD': config('DB_PASSWORD'),
         'HOST': 'localhost',
         'PORT': '3306',
         'OPTIONS': {
@@ -250,8 +253,16 @@ DATABASES = {
             'CHARSET': 'utf8mb4',
             'COLLATION': 'utf8mb4_unicode_ci',
         },
-    }
+    },
+    'crawler': {
+        'ENGINE': 'djongo',
+        'NAME': 'sciEventsCrawler',
+    },
 }
+
+DATABASE_ROUTERS = [
+    'scraper.dbrouters.MongoRouter',
+]
 
 
 # Password validation

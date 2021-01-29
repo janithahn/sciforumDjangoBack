@@ -39,7 +39,7 @@ class AnswerCreateview(CreateAPIView):
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
 
-        if from_user.is_authenticated:
+        if from_user.is_authenticated and from_user != to_user:
             notify.send(sender=from_user, recipient=to_user, verb=message, action_object=action_object)
 
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)

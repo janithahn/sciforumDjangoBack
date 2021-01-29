@@ -1,20 +1,20 @@
 from rest_framework.generics import ListAPIView, CreateAPIView, UpdateAPIView, DestroyAPIView
-from rest_framework import viewsets, permissions, pagination, status
+from rest_framework import viewsets, permissions, pagination, filters, status
 from rest_framework.response import Response
 from post.models import Post, Visitors, PostImages
 from user_profile.models import ProfileViewerInfo
 from .serializers import PostSerializer, VisitorSerializer, ProfileViewerInfoSerializer, PostUpdateSerializer\
-    , PostCreateSerializer, PostTempImagesSerializer
+    , PostCreateSerializer, PostTempImagesSerializer, TopPostsSerializer
 from django.utils.timezone import now
 from user_profile.models import Profile
 from rest_framework_jwt import authentication
 from .utils import get_client_ip
 from django.db.models import Count, Sum
-from rest_framework import filters
 from django_filters.rest_framework import DjangoFilterBackend, FilterSet, filters as filters_for_tags
 from django_filters.widgets import CSVWidget
 # from rest_framework_word_filter import FullWordSearchFilter
 from taggit_suggest.utils import suggest_tags
+from vote.models import PostVote
 
 
 # Temporary sample views to get visitors
@@ -28,7 +28,7 @@ class ProfileViewerInfoView(ListAPIView):
     serializer_class = ProfileViewerInfoSerializer
 
 
-#views for posts
+# views for posts
 class PostsPagination(pagination.PageNumberPagination):
     page_size = 8
 
@@ -101,8 +101,8 @@ class PostViewSet(viewsets.ModelViewSet):
 
 
 class PostCreateview(CreateAPIView):
-    # authentication_classes = [authentication.JSONWebTokenAuthentication]
-    # permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [authentication.JSONWebTokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
     queryset = Post.objects.all()
     serializer_class = PostCreateSerializer
 
@@ -116,19 +116,33 @@ class PostCreateview(CreateAPIView):
 
 
 class PostUpdateView(UpdateAPIView):
-    # authentication_classes = [authentication.JSONWebTokenAuthentication]
-    # permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [authentication.JSONWebTokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
     queryset = Post.objects.all()
     serializer_class = PostUpdateSerializer
 
 
 class PostDeleteView(DestroyAPIView):
-    # authentication_classes = [authentication.JSONWebTokenAuthentication]
-    # permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [authentication.JSONWebTokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
     queryset = Post.objects.all()
 
 
 class PostImagesViewSet(viewsets.ModelViewSet):
     queryset = PostImages.objects.all()
     serializer_class = PostTempImagesSerializer
+
+
+class TopPostsViewSet(viewsets.ModelViewSet):
+    # queryset = Post.objects.annotate(vote_count=Count('postvote')).order_by('postvote__voteType').annotate(postvote__voteType='LIKE')
+    queryset = Post.objects.filter(postvote__voteType='LIKE').annotate(vote_count=Count('postvote')).distinct()
+    pagination_class = PostsPagination
+    serializer_class = TopPostsSerializer
+    http_method_names = ['get']
+
+    filter_backends = [filters.OrderingFilter]
+    ordering_fields = ['vote_count']
+
+
+
 

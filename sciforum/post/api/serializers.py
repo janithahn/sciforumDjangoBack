@@ -87,3 +87,12 @@ class PostUpdateSerializer(TaggitSerializer, serializers.ModelSerializer):
     class Meta:
         model = Post
         fields = ['title', 'body', 'tags', 'images']
+
+
+class TopPostsSerializer(serializers.ModelSerializer):
+
+    vote_count = serializers.IntegerField(read_only=True)
+
+    class Meta:
+        model = Post
+        fields = ['id', 'title', 'vote_count']

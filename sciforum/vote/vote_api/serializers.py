@@ -92,10 +92,11 @@ class PostVoteSerializer(serializers.ModelSerializer):
 
     created_at = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S", read_only=True)
     ownerDisplayName = serializers.CharField(source='owner.username', read_only=True)
+    postTitle = serializers.CharField(source='post.title', read_only=True)
 
     class Meta:
         model = PostVote
-        fields = ['id', 'post', 'voteType', 'owner', 'ownerDisplayName', 'created_at']
+        fields = ['id', 'post', 'postTitle', 'voteType', 'owner', 'ownerDisplayName', 'created_at']
 
 
 class PostVoteCreateSerializer(serializers.ModelSerializer):

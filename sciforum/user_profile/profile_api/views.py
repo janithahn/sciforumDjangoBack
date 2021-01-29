@@ -1,18 +1,17 @@
 from .serializers import ProfileSerializer
 from django_filters.rest_framework import DjangoFilterBackend, FilterSet, CharFilter
-from rest_framework.generics import ListAPIView, RetrieveAPIView, UpdateAPIView, CreateAPIView, DestroyAPIView
+from rest_framework.generics import ListAPIView, RetrieveAPIView, UpdateAPIView, CreateAPIView, DestroyAPIView, get_object_or_404
 from rest_framework import viewsets, permissions, status #, pagination
 from post.models import Post
 from user_profile.models import ProfileViewerInfo, Profile, UserEmployment, UserEducation, UserLanguages\
     , UserContact, UserSkills
 from .serializers import UserSerializer, CustomUserSerializer, JWTSerializer, UserEmploymentSerializer\
-    , UserEducationSerializer, UserLanguageSerializer, UserSkillsSerializer, UserContactSerializer
+    , UserEducationSerializer, UserLanguageSerializer, UserSkillsSerializer, UserContactSerializer, MentionListSerializer
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 # from django.contrib.auth.mixins import LoginRequiredMixin
 from rest_auth.views import LoginView
-# from rest_auth.registration.views import RegisterView, SocialLoginView
 from dj_rest_auth.registration.views import RegisterView, SocialLoginView
 from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
 from rest_auth.registration.serializers import RegisterSerializer
@@ -27,6 +26,15 @@ from .utils import get_client_ip
 from django.db.models import Count, Sum
 from .mixins import GetSerializerClassMixin
 from firebase_admin import auth
+
+# email confirmation
+from allauth.account.signals import email_confirmed
+from django.dispatch import receiver
+
+from allauth.account.utils import send_email_confirmation
+from rest_framework.views import APIView
+from allauth.account.admin import EmailAddress
+from rest_framework.exceptions import APIException
 
 
 class ProfileViewSet(viewsets.ModelViewSet):
@@ -261,8 +269,8 @@ class UserSkillsViewSet(viewsets.ModelViewSet):
 
 class UserSkillsEditViewSet(viewsets.ModelViewSet):
 
-    # authentication_classes = [authentication.JSONWebTokenAuthentication]
-    # permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [authentication.JSONWebTokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
 
     queryset = UserSkills.objects.all()
     serializer_class = UserSkillsSerializer
@@ -296,6 +304,13 @@ class UserContactEditViewSet(viewsets.ModelViewSet):
     serializer_class = UserContactSerializer
 
     http_method_names = ['get', 'post', 'patch', 'put', 'delete']
+
+
+class MentionListViewSet(viewsets.ModelViewSet):
+    permission_classes = [permissions.IsAuthenticated]
+    queryset = User.objects.all()
+    serializer_class = MentionListSerializer
+    # http_method_names = ['get']
 
 
 # views for authentication
@@ -345,13 +360,16 @@ class JWTRegisterView(RegisterView):
         payload = jwt_payload_handler(user)
         jwttoken = jwt_encode_handler(payload)
 
+        firebase_token = auth.create_custom_token(user.username)
+
         return Response({
             'token': jwttoken,
             'user': {
                 'id': user.id,
                 'username': user.username,
                 'email': user.email,
-            }
+            },
+            'firebase_token': firebase_token
         })
 
 
@@ -413,4 +431,42 @@ class CustomRegisterView(RegisterView):
             'username': user.username,
             'email': user.email
         })
+
+
+# Account confirmation email
+@receiver(email_confirmed)
+def email_confirmed_(request, email_address, **kwargs):
+    user = email_address.user
+    user.email_verified = True
+
+    user.save()
+
+
+class EmailConfirmation(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request):
+        if request.user.email_verified:
+            return Response({'message': 'Email already verified'}, status=status.HTTP_201_CREATED)
+
+        send_email_confirmation(request, request.user)
+        return Response({'message': 'Email confirmation sent'}, status=status.HTTP_201_CREATED)
+
+
+class NewEmailConfirmation(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def post(self, request):
+        user = get_object_or_404(User, email=request.data['email'])
+        emailAddress = EmailAddress.objects.filter(user=user, verified=True).exists()
+
+        if emailAddress:
+            return Response({'message': 'This email is already verified'}, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            try:
+                send_email_confirmation(request, user=user)
+                return Response({'message': 'Email confirmation sent'}, status=status.HTTP_201_CREATED)
+            except APIException:
+                return Response({'message': 'This email does not exist, please create a new account'}, status=status.HTTP_403_FORBIDDEN)
+
 
