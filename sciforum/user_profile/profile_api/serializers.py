@@ -6,6 +6,7 @@ from enumfields.drf.serializers import EnumSupportSerializerMixin
 from user_profile.models import Profile, UserContact, UserLanguages, UserEducation, UserEmployment, UserSkills
 from answer.models import Answer
 from post.models import Post
+from allauth.account.admin import EmailAddress
 # from django.contrib.auth.models import User
 # from user_profile.profile_api.serializers import UserProfileSerializer
 # from drf_writable_nested.serializers import WritableNestedModelSerializer
@@ -236,10 +237,14 @@ class MentionListSerializer(serializers.ModelSerializer):
 class JWTUserSerializer(serializers.ModelSerializer):
 
     profile = UserprofileImgSerializer(read_only=True)
+    email_verified = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'profile']
+        fields = ['id', 'username', 'email', 'email_verified', 'profile']
+
+    def get_email_verified(self, obj):
+        return EmailAddress.objects.get(user=obj).verified
 
 
 class JWTSerializer(JSONWebTokenSerializer):

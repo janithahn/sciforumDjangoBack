@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="ed84cb33-4769-473c-86eb-55a83dc0489a" name="Default Changelist" comment="" />
+    <list default="true" id="ed84cb33-4769-473c-86eb-55a83dc0489a" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/sciforum/user_profile/profile_api/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/sciforum/user_profile/profile_api/views.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -30,6 +32,7 @@
       <option name="presentableId" value="Default" />
       <updated>1611293343965</updated>
       <workItem from="1611293350579" duration="16000" />
+      <workItem from="1611752000359" duration="27000" />
     </task>
     <servers />
   </component>

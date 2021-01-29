@@ -44,6 +44,12 @@ EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 DEFAULT_FROM_EMAIL = 'default from email'
 
+# Handle confirmation email
+ACCOUNT_EMAIL_VERIFICATION = 'optional'
+ACCOUNT_CONFIRM_EMAIL_ON_GET = True
+LOGIN_URL = 'http://localhost:3000/signin/'
+LOGIN_REDIRECT_URL = 'http://localhost:3000/signin/'
+
 # Chat
 # STREAM_API_KEY = '3377njgqgmhg'
 # STREAM_API_SECRET = '5445hhk8qb4g5n6sh6t8s5tk4bzgpq6xhz5k7j5fj2bhzp2bw57422unk54qckjh'
@@ -115,7 +121,6 @@ SITE_ID = 3
 
 ACCOUNT_AUTHENTICATION_METHOD ='username_email'
 ACCOUNT_EMAIL_REQUIRED = False
-ACCOUNT_EMAIL_VERIFICATION ='none'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
