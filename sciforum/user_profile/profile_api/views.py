@@ -26,6 +26,7 @@ from .utils import get_client_ip
 from django.db.models import Count, Sum
 from .mixins import GetSerializerClassMixin
 from firebase_admin import auth
+from notifications.signals import notify
 
 # email confirmation
 from allauth.account.signals import email_confirmed
