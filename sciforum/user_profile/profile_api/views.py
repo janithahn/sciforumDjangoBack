@@ -454,14 +454,14 @@ class EmailConfirmation(APIView):
 
 
 class NewEmailConfirmation(APIView):
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request):
         user = get_object_or_404(User, email=request.data['email'])
         emailAddress = EmailAddress.objects.filter(user=user, verified=True).exists()
 
         if emailAddress:
-            return Response({'message': 'This email is already verified'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'message': 'This email is already verified'}, status=status.HTTP_201_CREATED)
         else:
             try:
                 send_email_confirmation(request, user=user)

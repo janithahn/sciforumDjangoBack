@@ -105,7 +105,7 @@ urlpatterns = [
     path('jwtregister/', JWTRegisterView.as_view()),
     url(r'^users/profile/password_reset/', include('django_rest_passwordreset.urls', namespace='password_reset')),
     # path('rest-auth/account-confirm-email/', VerifyEmailView.as_view(), name='account_email_verification_sent'),
-    path('users/profile/account-confirm-email', NewEmailConfirmation.as_view(), name='account_email_verification_sent'),
+    path('users/profile/account-confirm-email/', NewEmailConfirmation.as_view(), name='account_email_verification_sent'),
 
     path('postvisitors/', VisitorsListView.as_view()),
     path('profilevisitor/', ProfileViewerInfoView.as_view()),

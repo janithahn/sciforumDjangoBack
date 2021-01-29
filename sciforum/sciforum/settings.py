@@ -49,6 +49,7 @@ ACCOUNT_EMAIL_VERIFICATION = 'optional'
 ACCOUNT_CONFIRM_EMAIL_ON_GET = True
 LOGIN_URL = 'http://localhost:3000/signin/'
 LOGIN_REDIRECT_URL = 'http://localhost:3000/signin/'
+# SOCIALACCOUNT_EMAIL_VERIFICATION = False
 
 # Chat
 # STREAM_API_KEY = '3377njgqgmhg'
