@@ -367,14 +367,11 @@ class JWTRegisterView(RegisterView):
 
         firebase_token = auth.create_custom_token(user.username)
 
-        email_verified = EmailAddress.objects.get(user=user).verified
-
         # user notification about account verification
         from_user = User.objects.get(username='admin')
         to_user = user
         message = 'Account verification link has been sent to your email. Please verify your account.'
-        if not email_verified:
-            notify.send(sender=from_user, recipient=to_user, verb=message, description='email_verification')
+        notify.send(sender=from_user, recipient=to_user, verb=message, description='email_verification')
 
         return Response({
             'token': jwttoken,
@@ -382,7 +379,7 @@ class JWTRegisterView(RegisterView):
                 'id': user.id,
                 'username': user.username,
                 'email': user.email,
-                'email_verified': email_verified
+                'email_verified': False
             },
             'firebase_token': firebase_token
         })
