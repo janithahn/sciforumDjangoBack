@@ -7,6 +7,7 @@ from user_profile.models import Profile, UserContact, UserLanguages, UserEducati
 from answer.models import Answer
 from post.models import Post
 from allauth.account.admin import EmailAddress
+from notifications.signals import notify
 # from django.contrib.auth.models import User
 # from user_profile.profile_api.serializers import UserProfileSerializer
 # from drf_writable_nested.serializers import WritableNestedModelSerializer
@@ -262,6 +263,28 @@ class JWTSerializer(JSONWebTokenSerializer):
                 if not user.is_active:
                     msg = 'User account is disabled.'
                     raise serializers.ValidationError(msg)
+
+                # user notification about email verification
+                email_verified = EmailAddress.objects.get(user=user).verified
+                from_user = User.objects.get(username='admin')
+                to_user = user
+                message = 'Your account has not been verified yet. ' \
+                          'Please check your email or go to account settings and verify your account.'
+                if not email_verified:
+                    try:
+                        notification = to_user.notifications.filter(actor_object_id=from_user.id, recipient=user,
+                                                                    description='email_verification')
+                        notification.delete()
+                        notify.send(sender=from_user, recipient=to_user, verb=message, description='email_verification')
+                    except Exception as excep:
+                        print(excep)
+                else:
+                    try:
+                        notification = to_user.notifications.filter(actor_object_id=from_user.id, recipient=user,
+                                                                    description='email_verification')
+                        notification.delete()
+                    except Exception as excep:
+                        print(excep)
 
                 payload = jwt_payload_handler(user)
                 user_logged_in.send(sender=user.__class__, request=self.context['request'], user=user)

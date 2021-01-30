@@ -26,7 +26,8 @@ from .utils import get_client_ip
 from django.db.models import Count, Sum
 from .mixins import GetSerializerClassMixin
 from firebase_admin import auth
-from notifications.signals import notify
+from dj_rest_auth.registration.views import VerifyEmailView
+from django.utils.translation import ugettext_lazy as _
 
 # email confirmation
 from allauth.account.signals import email_confirmed
@@ -36,6 +37,9 @@ from allauth.account.utils import send_email_confirmation
 from rest_framework.views import APIView
 from allauth.account.admin import EmailAddress
 from rest_framework.exceptions import APIException
+from rest_framework.fields import CurrentUserDefault
+
+from notifications.signals import notify
 
 
 class ProfileViewSet(viewsets.ModelViewSet):
@@ -365,6 +369,13 @@ class JWTRegisterView(RegisterView):
 
         email_verified = EmailAddress.objects.get(user=user).verified
 
+        # user notification about account verification
+        from_user = User.objects.get(username='admin')
+        to_user = user
+        message = 'Account verification link has been sent to your email. Please verify your account.'
+        if not email_verified:
+            notify.send(sender=from_user, recipient=to_user, verb=message, description='email_verification')
+
         return Response({
             'token': jwttoken,
             'user': {
@@ -468,12 +479,42 @@ class NewEmailConfirmation(APIView):
         emailAddress = EmailAddress.objects.filter(user=user, verified=True).exists()
 
         if emailAddress:
-            return Response({'message': 'This email is already verified'}, status=status.HTTP_201_CREATED)
+            return Response({'message': 'This email is already verified'}, status=status.HTTP_200_OK)
         else:
             try:
                 send_email_confirmation(request, user=user)
                 return Response({'message': 'Email confirmation sent'}, status=status.HTTP_201_CREATED)
             except APIException:
                 return Response({'message': 'This email does not exist, please create a new account'}, status=status.HTTP_403_FORBIDDEN)
+
+
+class VerifyEmailCustomView(VerifyEmailView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        user = self.request.user
+        try:
+            emailAddress = EmailAddress.objects.filter(user=user, verified=True).exists()
+            if emailAddress:
+                return Response({'detail': 'already_verified'}, status=status.HTTP_200_OK)
+        except Exception as exp:
+            print(exp)
+
+        # deleting notification if exists
+        from_user = User.objects.get(username='admin')
+        to_user = user
+        try:
+            notification = to_user.notifications.filter(actor_object_id=from_user.id, recipient=user,
+                                                        description='email_verification')
+            notification.delete()
+        except Exception as exp:
+            print(exp)
+
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.kwargs['key'] = serializer.validated_data['key']
+        confirmation = self.get_object()
+        confirmation.confirm(self.request)
+        return Response({'detail': _('ok')}, status=status.HTTP_200_OK)
 
 
