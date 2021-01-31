@@ -43,7 +43,7 @@ EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
-DEFAULT_FROM_EMAIL = 'noreply<team@sciforum.tech>'
+DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL')
 
 # custom account adapter for overriding confirm email url
 ACCOUNT_ADAPTER = 'user_profile.adapter.AccountAdapter'
