@@ -12,14 +12,14 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 
 import os
 from pathlib import Path
-from decouple import config
+from decouple import config, Csv
 import firebase_admin
 from firebase_admin import credentials
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 
-credPath = os.path.join(BASE_DIR, 'sciforumchat-firebase-adminsdk-a4c26-a99c1755e5.json')
+credPath = os.path.join(BASE_DIR, config('FIREBASE_ADMIN_SDK'))
 cred = credentials.Certificate(credPath)
 firebase_admin.initialize_app(cred)
 
@@ -32,7 +32,8 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', cast=bool)
 
-ALLOWED_HOSTS = ['192.168.8.100', 'localhost', '127.0.0.1', '192.168.43.100', '192.168.8.101', '192.168.8.102', '0.0.0.0']
+# ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=lambda v: [s.strip() for s in v.split(',')])
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv())
 
 # Password reset email
 # EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # this gives the email in the console
@@ -42,17 +43,18 @@ EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
-DEFAULT_FROM_EMAIL = 'sciForum'
+DEFAULT_FROM_EMAIL = 'noreply<team@sciforum.tech>'
 
 # custom account adapter for overriding confirm email url
 ACCOUNT_ADAPTER = 'user_profile.adapter.AccountAdapter'
-URL_FRONT = 'http://localhost:3000/'
+URL_FRONT = config('URL_FRONT')
+URL_FRONT_NAME = config('URL_FRONT_NAME')
 
 # Handle confirmation email
 ACCOUNT_EMAIL_VERIFICATION = 'optional'
 ACCOUNT_CONFIRM_EMAIL_ON_GET = True
-LOGIN_URL = 'http://localhost:3000/signin/'
-LOGIN_REDIRECT_URL = 'http://localhost:3000/signin/'
+LOGIN_URL = config('LOGIN_URL')
+LOGIN_REDIRECT_URL = config('LOGIN_REDIRECT_URL')
 # SOCIALACCOUNT_EMAIL_VERIFICATION = False
 
 # Chat
@@ -122,7 +124,7 @@ INSTALLED_APPS = [
     'generic_relations',
 ]
 
-SITE_ID = 3
+SITE_ID = config('SITE_ID')
 
 ACCOUNT_AUTHENTICATION_METHOD ='username_email'
 ACCOUNT_EMAIL_REQUIRED = False

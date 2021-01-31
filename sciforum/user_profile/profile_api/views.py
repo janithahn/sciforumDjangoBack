@@ -403,13 +403,15 @@ class GoogleLoginView(SocialLoginView):
         payload = jwt_payload_handler(user)
         jwttoken = jwt_encode_handler(payload)
 
+        email_verified = EmailAddress.objects.get(user=user).verified
+
         return Response({
             'token': jwttoken,
             'user': {
                 'id': user.id,
                 'username': user.username,
                 'email': user.email,
-                'email_verified': True
+                'email_verified': email_verified
             },
             'firebase_token': firebase_token,
         })
