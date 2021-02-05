@@ -49,7 +49,7 @@ class PostSerializer(serializers.ModelSerializer, TaggitSerializer):
 
     class Meta:
         model = Post
-        fields = ['id', 'owner', 'title', 'body', 'viewCount', 'created_at', 'updated_at', 'tags', 'likes', 'dislikes',
+        fields = ['id', 'owner', 'title', 'body', 'viewCount', 'created_at', 'updated_at', 'label', 'tags', 'likes', 'dislikes',
                   'answers', 'images']
 
     def get_likes(self, obj):
@@ -69,7 +69,7 @@ class PostCreateSerializer(TaggitSerializer, serializers.ModelSerializer):
 
     class Meta:
         model = Post
-        fields = ['owner', 'title', 'body', 'tags']
+        fields = ['owner', 'title', 'body', 'tags', 'label']
 
     '''def create(self, validated_data):
         images_data = validated_data.pop('images')

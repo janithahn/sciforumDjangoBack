@@ -48,7 +48,7 @@ class TaggedPostsFilterSet(FilterSet):
 
     class Meta:
         model = Post
-        fields = ['owner', 'tags']
+        fields = ['owner', 'tags', 'label']
 
     def filter_tags(self, queryset, name, value):
         return queryset.filter(tags__name__in=value)
@@ -62,7 +62,7 @@ class PostViewSet(viewsets.ModelViewSet):
 
     filter_backends = [filters.SearchFilter, filters.OrderingFilter, DjangoFilterBackend]
     filter_class = TaggedPostsFilterSet
-    search_fields = ['title', 'body']
+    search_fields = ['title', 'body', 'label']
     ordering_fields = ['viewCount', 'created_at']
     # filterset_fields = ['owner']
     # filter_backends = [FullWordSearchFilter]
@@ -101,8 +101,8 @@ class PostViewSet(viewsets.ModelViewSet):
 
 
 class PostCreateview(CreateAPIView):
-    authentication_classes = [authentication.JSONWebTokenAuthentication]
-    permission_classes = [permissions.IsAuthenticated]
+    # authentication_classes = [authentication.JSONWebTokenAuthentication]
+    # permission_classes = [permissions.IsAuthenticated]
     queryset = Post.objects.all()
     serializer_class = PostCreateSerializer
 
@@ -123,8 +123,8 @@ class PostUpdateView(UpdateAPIView):
 
 
 class PostDeleteView(DestroyAPIView):
-    authentication_classes = [authentication.JSONWebTokenAuthentication]
-    permission_classes = [permissions.IsAuthenticated]
+    # authentication_classes = [authentication.JSONWebTokenAuthentication]
+    # permission_classes = [permissions.IsAuthenticated]
     queryset = Post.objects.all()
 
 

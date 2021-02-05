@@ -5,6 +5,19 @@ from taggit.managers import TaggableManager
 import os
 
 
+class Label(models.TextChoices):
+    CS = 'CS'
+    STAT = 'STAT'
+    DS = 'DS'
+    MATHEMATICS = 'MATHEMATICS'
+    PHYSICS = 'PHYSICS'
+    CHEMISTRY = 'CHEMISTRY'
+    ZOOLOGY = 'ZOOLOGY'
+    BOTANY = 'BOTANY'
+    ES = 'ES'
+    OTHER = 'OTHER'
+
+
 class Post(models.Model):
     title = models.TextField()
     body = models.TextField()
@@ -14,6 +27,7 @@ class Post(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     tags = TaggableManager()
+    label = models.TextField(choices=Label.choices, default=Label.OTHER)
 
     def __str__(self):
         return self.title
