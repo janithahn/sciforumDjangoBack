@@ -5,6 +5,8 @@ from vote.models import AnswerVote
 
 class AnswerSerializer(serializers.ModelSerializer):
 
+    url = serializers.HyperlinkedIdentityField(view_name='answer_api:answer_api-detail')
+
     created_at = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S", read_only=True)
     updated_at = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S", read_only=True)
     ownerDisplayName = serializers.CharField(source='owner.username')
@@ -15,7 +17,7 @@ class AnswerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Answer
-        fields = ['id', 'postBelong', 'owner', 'ownerDisplayName', 'ownerAvatar', 'answerContent', 'created_at', 'updated_at', 'likes', 'dislikes', 'vote_count']
+        fields = ['url', 'id', 'postBelong', 'owner', 'ownerDisplayName', 'ownerAvatar', 'answerContent', 'created_at', 'updated_at', 'likes', 'dislikes', 'vote_count']
 
     def get_likes(self, obj):
         return AnswerVote.objects.filter(answer_id=obj.id, voteType='LIKE').count()

@@ -41,7 +41,7 @@ urlpatterns = [
     # basic end-ponits
     path('api/', include('post.api.urls')),
     path('profile_api/', include('user_profile.profile_api.urls')),
-    path('answer_api/', include('answer.answer_api.urls')),
+    path('answer_api/', include(('answer.answer_api.urls', 'answer'), namespace='answer_api')),
     path('vote_api/', include('vote.vote_api.urls')),
 
     # post changes

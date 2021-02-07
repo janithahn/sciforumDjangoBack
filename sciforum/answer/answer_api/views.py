@@ -1,5 +1,5 @@
 from rest_framework.generics import CreateAPIView, UpdateAPIView, DestroyAPIView
-from rest_framework import viewsets, permissions, status, filters
+from rest_framework import viewsets, permissions, status, filters, pagination
 from rest_framework_jwt import authentication
 from .serializers import AnswerSerializer, AnswerCreateSerializer, AnswerUpdateSerializer, TopAnswersSerializer
 from answer.models import Answer
@@ -10,11 +10,26 @@ from post.models import Post
 from django.db.models import Count
 
 
+class AnswersPagination(pagination.PageNumberPagination):
+    page_size = 2
+
+    def get_paginated_response(self, data):
+        return Response({
+            'next': self.get_next_link(),
+            'previous': self.get_previous_link(),
+            'count': self.page.paginator.count,
+            'current_page': self.page.number,
+            'total_pages': self.page.paginator.num_pages,
+            'results': data
+        })
+
+
 class AnswerViewSet(viewsets.ModelViewSet):
     # authentication_classes = [authentication.TokenAuthentication]
     # permission_classes = [permissions.IsAuthenticated]
     queryset = Answer.objects.filter().annotate(vote_count=Count('answervote')).distinct()
     serializer_class = AnswerSerializer
+    pagination_class = AnswersPagination
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
     filterset_fields = ['id', 'owner', 'postBelong']
     http_method_names = ['get']
