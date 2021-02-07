@@ -86,7 +86,7 @@ class PostUpdateSerializer(TaggitSerializer, serializers.ModelSerializer):
 
     class Meta:
         model = Post
-        fields = ['title', 'body', 'tags', 'images']
+        fields = ['title', 'body', 'tags', 'label', 'images']
 
 
 class TopPostsSerializer(serializers.ModelSerializer):

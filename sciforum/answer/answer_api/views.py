@@ -1,22 +1,24 @@
 from rest_framework.generics import CreateAPIView, UpdateAPIView, DestroyAPIView
-from rest_framework import viewsets, permissions, status
+from rest_framework import viewsets, permissions, status, filters
 from rest_framework_jwt import authentication
-from .serializers import AnswerSerializer, AnswerCreateSerializer, AnswerUpdateSerializer
+from .serializers import AnswerSerializer, AnswerCreateSerializer, AnswerUpdateSerializer, TopAnswersSerializer
 from answer.models import Answer
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.response import Response
 from notifications.signals import notify
 from post.models import Post
+from django.db.models import Count
 
 
 class AnswerViewSet(viewsets.ModelViewSet):
     # authentication_classes = [authentication.TokenAuthentication]
     # permission_classes = [permissions.IsAuthenticated]
-    queryset = Answer.objects.all()
+    queryset = Answer.objects.filter().annotate(vote_count=Count('answervote')).distinct()
     serializer_class = AnswerSerializer
-    filter_backends = [DjangoFilterBackend]
+    filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
     filterset_fields = ['id', 'owner', 'postBelong']
     http_method_names = ['get']
+    ordering_fields = ['vote_count', 'created_at', 'updated_at']
 
 
 class AnswerCreateview(CreateAPIView):
@@ -32,7 +34,7 @@ class AnswerCreateview(CreateAPIView):
         message = from_user.username + ' has put an answer to your question'
         to_user = action_object.owner
 
-        #print(to_user.notifications.unread())
+        # print(to_user.notifications.unread())
 
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -56,3 +58,14 @@ class AnswerDeleteView(DestroyAPIView):
     authentication_classes = [authentication.JSONWebTokenAuthentication]
     permission_classes = [permissions.IsAuthenticated]
     queryset = Answer.objects.all()
+
+
+# Most voted answers
+class TopAnswersViewSet(viewsets.ModelViewSet):
+    # queryset = Post.objects.annotate(vote_count=Count('postvote')).order_by('postvote__voteType').annotate(postvote__voteType='LIKE')
+    queryset = Answer.objects.filter().annotate(vote_count=Count('answervote')).distinct()
+    serializer_class = TopAnswersSerializer
+    http_method_names = ['get']
+
+    filter_backends = [filters.OrderingFilter]
+    ordering_fields = ['vote_count']

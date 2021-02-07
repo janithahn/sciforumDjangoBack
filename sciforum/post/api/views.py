@@ -101,8 +101,8 @@ class PostViewSet(viewsets.ModelViewSet):
 
 
 class PostCreateview(CreateAPIView):
-    # authentication_classes = [authentication.JSONWebTokenAuthentication]
-    # permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [authentication.JSONWebTokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
     queryset = Post.objects.all()
     serializer_class = PostCreateSerializer
 
@@ -116,8 +116,8 @@ class PostCreateview(CreateAPIView):
 
 
 class PostUpdateView(UpdateAPIView):
-    authentication_classes = [authentication.JSONWebTokenAuthentication]
-    permission_classes = [permissions.IsAuthenticated]
+    # authentication_classes = [authentication.JSONWebTokenAuthentication]
+    # permission_classes = [permissions.IsAuthenticated]
     queryset = Post.objects.all()
     serializer_class = PostUpdateSerializer
 
