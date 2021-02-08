@@ -5,7 +5,8 @@ from vote.models import AnswerVote
 
 class AnswerSerializer(serializers.ModelSerializer):
 
-    url = serializers.HyperlinkedIdentityField(view_name='answer_api:answer_api-detail')
+    url = serializers.HyperlinkedIdentityField(view_name='answer_api:answer_api-detail', read_only=True)
+    page = serializers.SerializerMethodField(read_only=True)
 
     created_at = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S", read_only=True)
     updated_at = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S", read_only=True)
@@ -17,13 +18,16 @@ class AnswerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Answer
-        fields = ['url', 'id', 'postBelong', 'owner', 'ownerDisplayName', 'ownerAvatar', 'answerContent', 'created_at', 'updated_at', 'likes', 'dislikes', 'vote_count']
+        fields = ['url', 'page', 'id', 'postBelong', 'owner', 'ownerDisplayName', 'ownerAvatar', 'answerContent', 'created_at', 'updated_at', 'likes', 'dislikes', 'vote_count']
 
     def get_likes(self, obj):
         return AnswerVote.objects.filter(answer_id=obj.id, voteType='LIKE').count()
 
     def get_dislikes(self, obj):
         return AnswerVote.objects.filter(answer_id=obj.id, voteType='DISLIKE').count()
+
+    def get_page(self, obj):
+        return obj.get_page()
 
 
 class AnswerCreateSerializer(serializers.ModelSerializer):
