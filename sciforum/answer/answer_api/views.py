@@ -8,10 +8,14 @@ from rest_framework.response import Response
 from notifications.signals import notify
 from post.models import Post
 from django.db.models import Count
+from rest_framework.exceptions import NotFound
+from django.core.paginator import InvalidPage
+
+ANSWERS_PER_PAGE = 2
 
 
 class AnswersPagination(pagination.PageNumberPagination):
-    page_size = 2
+    page_size = ANSWERS_PER_PAGE
 
     def get_paginated_response(self, data):
         return Response({
@@ -22,6 +26,67 @@ class AnswersPagination(pagination.PageNumberPagination):
             'total_pages': self.page.paginator.num_pages,
             'results': data
         })
+
+    def paginate_queryset(self, queryset, request, view=None):
+        """
+        Overriding the method to get an entire page which a particular answer is belonged,
+        as asked by the user in the query parameter 'answer'
+        """
+        answer_id = request.query_params.get('answer', None)
+        post_belong = request.query_params.get('postBelong', None)
+
+        '''here it calculates the corresponding page number where does the answer_id belong'''
+        page_num = 1
+        try:
+            answers = queryset.filter(postBelong=post_belong)
+            for index, answer in enumerate(answers):
+                if str(answer.id) == str(answer_id):
+                    page_num = index // ANSWERS_PER_PAGE + 1
+                    # page_num = int(page_num)
+        except Exception as exp:
+            msg = 'For postBelong ' + str(exp) \
+                  + ' Please enter a valid number or just remove the postBelong query parameter from the url'
+            raise NotFound(msg)
+
+        page_size = self.get_page_size(request)
+        if not page_size:
+            return None
+
+        paginator = self.django_paginator_class(queryset, page_size)
+        page_number = request.query_params.get(self.page_query_param, page_num)
+        if page_number in self.last_page_strings:
+            page_number = paginator.num_pages
+
+        try:
+            self.page = paginator.page(page_number)
+        except InvalidPage as exc:
+            msg = self.invalid_page_message.format(
+                page_number=page_number, message=str(exc)
+            )
+            raise NotFound(msg)
+
+        if paginator.num_pages > 1 and self.template is not None:
+            # The browsable API should display pagination controls.
+            self.display_page_controls = True
+
+        self.request = request
+        return list(self.page)
+
+
+class EntirePageByTheAnswerIdFilterBackend(filters.BaseFilterBackend):
+
+    def filter_queryset(self, request, queryset, view):
+        answer_id = request.query_params.get('answer', None)
+        post_belong = request.query_params.get('postBelong', None)
+
+        answers = queryset.filter(postBelong=post_belong)
+        print(answers)
+        for index, answer in enumerate(answers):
+            if str(answer.id) == str(answer_id):
+                count = index / ANSWERS_PER_PAGE + 1
+                print('count from filter:', int(count))
+                # return queryset.filter(id=answer_id)
+        return queryset.filter()
 
 
 class AnswerViewSet(viewsets.ModelViewSet):

@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from post.models import Post
-from django.core.paginator import Paginator
+# from django.core.paginator import Paginator
 
 ANSWERS_PER_PAGE = 2
 
@@ -14,9 +14,7 @@ class Answer(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def get_page(self):
-        print(self.postBelong)
         answers = Answer.objects.filter(postBelong=self.postBelong)
-        print(answers)
         # paginator = Paginator(answers, ANSWERS_PER_PAGE)
         # print(paginator.page(1).object_list)
         for index, answer in enumerate(answers):
