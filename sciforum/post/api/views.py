@@ -161,6 +161,13 @@ class HotPostsViewSet(viewsets.ModelViewSet):
             queryset = queryset.all()
 
         for obj in queryset:
+            '''
+                Calculating the hotness of a particular post according to the following equation
+                
+                (MIN(AnswerCount, 10) * QScore) / 5 + AnswerScore
+                -------------------------------------------------
+                            (QAgeInHours + 1) ^ 1.4
+            '''
             answer_count = Answer.objects.filter(postBelong=obj.id).count()
             score = PostVote.objects.filter(post_id=obj.id, voteType='LIKE').count()
             answer_score = 0
@@ -171,7 +178,6 @@ class HotPostsViewSet(viewsets.ModelViewSet):
             hotness = ((min(answer_count, 10) * score) / (5 + answer_score)) / ((age_in_hours + 1) ** 1.4)
             obj.hotness = hotness
             obj.save()
-            print(hotness)
 
         return queryset.order_by('-hotness')
 
