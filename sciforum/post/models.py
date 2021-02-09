@@ -26,6 +26,7 @@ class Post(models.Model):
     viewCount = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    hotness = models.FloatField(default=0, blank=True)
     tags = TaggableManager()
     label = models.TextField(choices=Label.choices, default=Label.OTHER)
 

@@ -54,6 +54,7 @@ class AnswersPagination(pagination.PageNumberPagination):
 
         paginator = self.django_paginator_class(queryset, page_size)
         page_number = request.query_params.get(self.page_query_param, page_num)
+
         if page_number in self.last_page_strings:
             page_number = paginator.num_pages
 
@@ -142,7 +143,6 @@ class AnswerDeleteView(DestroyAPIView):
 
 # Most voted answers
 class TopAnswersViewSet(viewsets.ModelViewSet):
-    # queryset = Post.objects.annotate(vote_count=Count('postvote')).order_by('postvote__voteType').annotate(postvote__voteType='LIKE')
     queryset = Answer.objects.filter().annotate(vote_count=Count('answervote')).distinct()
     serializer_class = TopAnswersSerializer
     http_method_names = ['get']

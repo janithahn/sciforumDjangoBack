@@ -2,8 +2,9 @@ from post.models import Post, Visitors, PostImages
 from user_profile.models import ProfileViewerInfo
 from rest_framework import serializers
 from taggit_serializer.serializers import TagListSerializerField, TaggitSerializer
-from vote.models import PostVote
+from vote.models import PostVote, AnswerVote
 from answer.models import Answer
+import datetime
 # from user_profile.profile_api.serializers import ProfileSerializer
 # from drf_writable_nested.serializers import WritableNestedModelSerializer
 
@@ -46,11 +47,13 @@ class PostSerializer(serializers.ModelSerializer, TaggitSerializer):
     dislikes = serializers.SerializerMethodField(read_only=True)
     answers = serializers.SerializerMethodField(read_only=True)
     images = PostImagesSerializer(many=True, read_only=True)
+    vote_count = serializers.IntegerField(read_only=True)
+    # hotness = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = Post
         fields = ['id', 'owner', 'title', 'body', 'viewCount', 'created_at', 'updated_at', 'label', 'tags', 'likes', 'dislikes',
-                  'answers', 'images']
+                  'vote_count', 'answers', 'hotness', 'images']
 
     def get_likes(self, obj):
         return PostVote.objects.filter(post_id=obj.id, voteType='LIKE').count()
@@ -60,6 +63,17 @@ class PostSerializer(serializers.ModelSerializer, TaggitSerializer):
 
     def get_answers(self, obj):
         return Answer.objects.filter(postBelong=obj.id).count()
+
+    '''def get_hotness(self, obj):
+        answer_count = Answer.objects.filter(postBelong=obj.id).count()
+        score = PostVote.objects.filter(post_id=obj.id, voteType='LIKE').count()
+        answer_score = 0
+        age_in_hours = (datetime.datetime.today().replace(tzinfo=None) - obj.created_at.replace(tzinfo=None)).days * 60
+        for answer in Answer.objects.filter(postBelong=obj.id):
+            answer_score += AnswerVote.objects.filter(answer=answer, voteType='LIKE').count()
+
+        hotness = ((min(answer_count, 10) * score) / (5 + answer_score)) / ((age_in_hours + 1) ** 1.4)
+        return hotness'''
 
 
 class PostCreateSerializer(TaggitSerializer, serializers.ModelSerializer):

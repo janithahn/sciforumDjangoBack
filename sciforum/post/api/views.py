@@ -15,6 +15,10 @@ from django_filters.widgets import CSVWidget
 # from rest_framework_word_filter import FullWordSearchFilter
 from taggit_suggest.utils import suggest_tags
 from vote.models import PostVote
+import datetime
+from answer.models import Answer
+from vote.models import AnswerVote
+from django.db.models.query import QuerySet
 
 
 # Temporary sample views to get visitors
@@ -133,15 +137,54 @@ class PostImagesViewSet(viewsets.ModelViewSet):
     serializer_class = PostTempImagesSerializer
 
 
-class TopPostsViewSet(viewsets.ModelViewSet):
-    # queryset = Post.objects.annotate(vote_count=Count('postvote')).order_by('postvote__voteType').annotate(postvote__voteType='LIKE')
+# hottest posts
+class HotPostsViewSet(viewsets.ModelViewSet):
+    queryset = Post.objects.all()
+    pagination_class = PostsPagination
+    serializer_class = PostSerializer
+    http_method_names = ['get']
+
+    filter_backends = [filters.OrderingFilter]
+    ordering_fields = ['hotness']
+
+    def get_queryset(self):
+
+        assert self.queryset is not None, (
+                "'%s' should either include a `queryset` attribute, "
+                "or override the `get_queryset()` method."
+                % self.__class__.__name__
+        )
+
+        queryset = self.queryset
+        if isinstance(queryset, QuerySet):
+            # Ensure queryset is re-evaluated on each request.
+            queryset = queryset.all()
+
+        for obj in queryset:
+            answer_count = Answer.objects.filter(postBelong=obj.id).count()
+            score = PostVote.objects.filter(post_id=obj.id, voteType='LIKE').count()
+            answer_score = 0
+            age_in_hours = (datetime.datetime.today().replace(tzinfo=None) - obj.created_at.replace(tzinfo=None)).days * 60
+            for answer in Answer.objects.filter(postBelong=obj.id):
+                answer_score += AnswerVote.objects.filter(answer=answer, voteType='LIKE').count()
+
+            hotness = ((min(answer_count, 10) * score) / (5 + answer_score)) / ((age_in_hours + 1) ** 1.4)
+            obj.hotness = hotness
+            obj.save()
+            print(hotness)
+
+        return queryset.order_by('-hotness')
+
+
+class MostLikedPostsViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.filter(postvote__voteType='LIKE').annotate(vote_count=Count('postvote')).distinct()
     pagination_class = PostsPagination
-    serializer_class = TopPostsSerializer
+    serializer_class = PostSerializer
     http_method_names = ['get']
 
     filter_backends = [filters.OrderingFilter]
     ordering_fields = ['vote_count']
+
 
 
 
