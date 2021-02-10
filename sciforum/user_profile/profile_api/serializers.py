@@ -8,6 +8,7 @@ from answer.models import Answer
 from post.models import Post
 from allauth.account.admin import EmailAddress
 from notifications.signals import notify
+from rest_framework.utils import model_meta
 # from django.contrib.auth.models import User
 # from user_profile.profile_api.serializers import UserProfileSerializer
 # from drf_writable_nested.serializers import WritableNestedModelSerializer
@@ -60,7 +61,6 @@ class ProfileSerializer(serializers.ModelSerializer):
             # , 'lastAccessDate', 'creationDate', 'location', 'views', 'upVotes', 'downVotes', 'profileImgUrl']
 
     def get_picture_url(self, profile):
-        print(profile.profileImg.url)
         return profile.profileImg.url
 
     ''' update(self, instance, validated_data):

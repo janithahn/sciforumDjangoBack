@@ -51,6 +51,13 @@ class ProfileViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['aboutMe', 'user']
 
+    def perform_update(self, serializer):
+        # Check if an image exists for the profile object and if yes then delete the image from the storage
+        prev_image = self.get_object().profileImg
+        if prev_image:
+            prev_image.delete()
+        serializer.save()
+
 
 # views for users
 class UserViewSet(GetSerializerClassMixin, viewsets.ModelViewSet):

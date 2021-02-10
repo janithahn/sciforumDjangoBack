@@ -52,7 +52,7 @@ class TaggedPostsFilterSet(FilterSet):
 
     class Meta:
         model = Post
-        fields = ['owner', 'tags', 'label']
+        fields = ['owner', 'owner__username', 'tags', 'label']
 
     def filter_tags(self, queryset, name, value):
         return queryset.filter(tags__name__in=value)
@@ -66,7 +66,7 @@ class PostViewSet(viewsets.ModelViewSet):
 
     filter_backends = [filters.SearchFilter, filters.OrderingFilter, DjangoFilterBackend]
     filter_class = TaggedPostsFilterSet
-    search_fields = ['title', 'body', 'label']
+    search_fields = ['title', 'body', 'label', 'owner__username']
     ordering_fields = ['viewCount', 'created_at']
     # filterset_fields = ['owner']
     # filter_backends = [FullWordSearchFilter]
@@ -93,7 +93,6 @@ class PostViewSet(viewsets.ModelViewSet):
         except Exception as exep:
             print(exep)
 
-        print(totalPostViewCount)
         profileObj = Profile.objects.get(user=postOwner)
         profileObj.postViews = totalPostViewCount
         profileObj.save(update_fields=('postViews', ))
