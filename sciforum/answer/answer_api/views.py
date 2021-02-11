@@ -110,11 +110,6 @@ class AnswerCreateview(CreateAPIView):
 
     def create(self, request, *args, **kwargs):
 
-        from_user = request.user
-        action_object = Post.objects.get(id=request.data['postBelong'])
-        message = from_user.username + ' has put an answer to your question'
-        to_user = action_object.owner
-
         # print(to_user.notifications.unread())
 
         serializer = self.get_serializer(data=request.data)
@@ -122,10 +117,18 @@ class AnswerCreateview(CreateAPIView):
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
 
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+    def perform_create(self, serializer):
+        data = serializer.save()
+
+        from_user = self.request.user
+        action_object = Answer.objects.get(id=data.id)
+        message = from_user.username + ' has put an answer to your question'
+        to_user = Post.objects.get(id=data.postBelong.id).owner
+
         if from_user.is_authenticated and from_user != to_user:
             notify.send(sender=from_user, recipient=to_user, verb=message, action_object=action_object)
-
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 
 class AnswerUpdateView(UpdateAPIView):
