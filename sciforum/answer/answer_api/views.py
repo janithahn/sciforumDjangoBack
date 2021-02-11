@@ -10,6 +10,8 @@ from post.models import Post
 from django.db.models import Count
 from rest_framework.exceptions import NotFound
 from django.core.paginator import InvalidPage
+from django.core import serializers
+from django.contrib.contenttypes.models import ContentType
 
 ANSWERS_PER_PAGE = 2
 
@@ -102,7 +104,7 @@ class AnswerViewSet(viewsets.ModelViewSet):
     ordering_fields = ['vote_count', 'created_at', 'updated_at']
 
 
-class AnswerCreateview(CreateAPIView):
+class AnswerCreateView(CreateAPIView):
     authentication_classes = [authentication.JSONWebTokenAuthentication]
     permission_classes = [permissions.IsAuthenticated]
     queryset = Answer.objects.all()
@@ -114,21 +116,24 @@ class AnswerCreateview(CreateAPIView):
 
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
+        data = self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
 
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+        return Response(data, status=status.HTTP_201_CREATED, headers=headers)
 
     def perform_create(self, serializer):
-        data = serializer.save()
+        obj = serializer.save()
 
         from_user = self.request.user
-        action_object = Answer.objects.get(id=data.id)
+        action_object = Answer.objects.get(id=obj.id)
         message = from_user.username + ' has put an answer to your question'
-        to_user = Post.objects.get(id=data.postBelong.id).owner
+        to_user = Post.objects.get(id=obj.postBelong.id).owner
 
         if from_user.is_authenticated and from_user != to_user:
             notify.send(sender=from_user, recipient=to_user, verb=message, action_object=action_object)
+
+        serialized_obj = serializers.serialize('json', [obj, ])
+        return serialized_obj
 
 
 class AnswerUpdateView(UpdateAPIView):
@@ -137,11 +142,47 @@ class AnswerUpdateView(UpdateAPIView):
     queryset = Answer.objects.all()
     serializer_class = AnswerUpdateSerializer
 
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        data = self.perform_update(serializer)
+
+        if getattr(instance, '_prefetched_objects_cache', None):
+            # If 'prefetch_related' has been applied to a queryset, we need to
+            # forcibly invalidate the prefetch cache on the instance.
+            instance._prefetched_objects_cache = {}
+
+        return Response(data)
+
+    def perform_update(self, serializer):
+        obj = serializer.save()
+        serialized_obj = serializers.serialize('json', [obj, ])
+        return serialized_obj
+
 
 class AnswerDeleteView(DestroyAPIView):
     authentication_classes = [authentication.JSONWebTokenAuthentication]
     permission_classes = [permissions.IsAuthenticated]
     queryset = Answer.objects.all()
+
+    def perform_destroy(self, instance):
+
+        from_user = instance.owner
+        action_object = instance
+        to_user = instance.postBelong.owner
+        content_type = ContentType.objects.get_for_model(Answer)
+        ''' deleting comment notifications for the user '''
+        notification = to_user.notifications.filter(actor_object_id=from_user.id,
+                                                    action_object_content_type=content_type,
+                                                    action_object_object_id=action_object.id)
+        try:
+            notification.delete()
+        except Exception as excep:
+            print(excep)
+            
+        instance.delete()
 
 
 # Most voted answers
