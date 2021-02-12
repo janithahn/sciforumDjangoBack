@@ -12,6 +12,8 @@ from rest_framework.exceptions import NotFound
 from django.core.paginator import InvalidPage
 from django.core import serializers
 from django.contrib.contenttypes.models import ContentType
+from django.db.models.query import QuerySet
+from vote.models import AnswerVote
 
 ANSWERS_PER_PAGE = 2
 
@@ -95,13 +97,34 @@ class EntirePageByTheAnswerIdFilterBackend(filters.BaseFilterBackend):
 class AnswerViewSet(viewsets.ModelViewSet):
     # authentication_classes = [authentication.TokenAuthentication]
     # permission_classes = [permissions.IsAuthenticated]
-    queryset = Answer.objects.filter().annotate(vote_count=Count('answervote')).distinct()
+    # queryset = Answer.objects.filter().annotate(vote_count=Count('answervote')).distinct()
+    queryset = Answer.objects.all()
     serializer_class = AnswerSerializer
     pagination_class = AnswersPagination
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
     filterset_fields = ['id', 'owner', 'postBelong']
     http_method_names = ['get']
-    ordering_fields = ['vote_count', 'created_at', 'updated_at']
+    ordering_fields = ['up_vote_count', 'created_at', 'updated_at']
+
+    def get_queryset(self):
+
+        assert self.queryset is not None, (
+                "'%s' should either include a `queryset` attribute, "
+                "or override the `get_queryset()` method."
+                % self.__class__.__name__
+        )
+
+        queryset = self.queryset
+        if isinstance(queryset, QuerySet):
+            # Ensure queryset is re-evaluated on each request.
+            queryset = queryset.all()
+
+        for obj in queryset:
+            vote_count = AnswerVote.objects.filter(voteType='LIKE', answer=obj.id).count()
+            obj.up_vote_count = vote_count
+            obj.save()
+
+        return queryset.order_by('-up_vote_count')
 
 
 class AnswerCreateView(CreateAPIView):
@@ -181,7 +204,7 @@ class AnswerDeleteView(DestroyAPIView):
             notification.delete()
         except Exception as excep:
             print(excep)
-            
+
         instance.delete()
 
 

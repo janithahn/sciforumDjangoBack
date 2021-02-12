@@ -12,6 +12,7 @@ class Answer(models.Model):
     answerContent = models.TextField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    up_vote_count = models.IntegerField(default=0, blank=True)
 
     def get_page(self):
         answers = Answer.objects.filter(postBelong=self.postBelong)

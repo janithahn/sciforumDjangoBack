@@ -14,11 +14,10 @@ class AnswerSerializer(serializers.ModelSerializer):
     ownerAvatar = serializers.ImageField(source='owner.profile.profileImg')
     likes = serializers.SerializerMethodField(read_only=True)
     dislikes = serializers.SerializerMethodField(read_only=True)
-    vote_count = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = Answer
-        fields = ['url', 'page', 'id', 'postBelong', 'owner', 'ownerDisplayName', 'ownerAvatar', 'answerContent', 'created_at', 'updated_at', 'likes', 'dislikes', 'vote_count']
+        fields = ['url', 'page', 'id', 'postBelong', 'owner', 'ownerDisplayName', 'ownerAvatar', 'answerContent', 'created_at', 'updated_at', 'likes', 'dislikes', 'up_vote_count']
 
     def get_likes(self, obj):
         return AnswerVote.objects.filter(answer_id=obj.id, voteType='LIKE').count()
