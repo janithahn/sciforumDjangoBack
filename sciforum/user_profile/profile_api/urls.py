@@ -2,7 +2,8 @@ from django.urls import path
 # from .views import PostDetailView, PostListView, PostCreateView, PostUpdateView, PostDeleteView
 from user_profile.profile_api.views import ProfileViewSet, UserViewSet, UserEmploymentViewSet, UserEmploymentEditViewSet\
     , UserEducationViewSet, UserEducationEditViewSet, UserLanguagesViewSet, UserLanguagesEditViewSet, UserSkillsViewSet\
-    , UserSkillsEditViewSet, UserContactViewSet, UserContactEditViewSet, MentionListViewSet
+    , UserSkillsEditViewSet, UserContactViewSet, UserContactEditViewSet, MentionListViewSet, UserInterestsViewSet\
+    , UserInterestsEditViewSet
 from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
@@ -18,6 +19,9 @@ router.register(r'user_education_edit/viewset', UserEducationEditViewSet, 'user_
 
 router.register(r'user_skills/viewset', UserSkillsViewSet, 'user_skills')
 router.register(r'user_skills_edit/viewset', UserSkillsEditViewSet, 'user_skills')
+
+router.register(r'user_interests/viewset', UserInterestsViewSet, 'user_interests')
+router.register(r'user_interests_edit/viewset', UserInterestsEditViewSet, 'user_interests')
 
 router.register(r'user_languages/viewset', UserLanguagesViewSet, 'user_languages')
 router.register(r'user_languages_edit/viewset', UserLanguagesEditViewSet, 'user_languages')

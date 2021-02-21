@@ -122,7 +122,7 @@ class AnswerViewSet(viewsets.ModelViewSet):
         for obj in queryset:
             vote_count = AnswerVote.objects.filter(voteType='LIKE', answer=obj.id).count()
             obj.up_vote_count = vote_count
-            obj.save()
+            obj.save(update_fields=['up_vote_count'])
 
         return queryset.order_by('-up_vote_count')
 

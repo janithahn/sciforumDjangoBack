@@ -4,9 +4,10 @@ from rest_framework.generics import ListAPIView, RetrieveAPIView, UpdateAPIView,
 from rest_framework import viewsets, permissions, status #, pagination
 from post.models import Post
 from user_profile.models import ProfileViewerInfo, Profile, UserEmployment, UserEducation, UserLanguages\
-    , UserContact, UserSkills
+    , UserContact, UserSkills, UserInterests
 from .serializers import UserSerializer, CustomUserSerializer, JWTSerializer, UserEmploymentSerializer\
-    , UserEducationSerializer, UserLanguageSerializer, UserSkillsSerializer, UserContactSerializer, MentionListSerializer
+    , UserEducationSerializer, UserLanguageSerializer, UserSkillsSerializer, UserContactSerializer\
+    , MentionListSerializer, UserInterestsSerializer
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
@@ -28,6 +29,7 @@ from .mixins import GetSerializerClassMixin
 from firebase_admin import auth
 from dj_rest_auth.registration.views import VerifyEmailView
 from django.utils.translation import ugettext_lazy as _
+from django.forms.models import model_to_dict
 
 # email confirmation
 from allauth.account.signals import email_confirmed
@@ -50,6 +52,7 @@ class ProfileViewSet(viewsets.ModelViewSet):
     lookup_field = 'user'
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['aboutMe', 'user']
+    http_method_names = ['get']
 
     def perform_update(self, serializer):
         # Check if an image exists for the profile object and if yes then delete the image from the storage
@@ -148,8 +151,8 @@ class UserDetailView(RetrieveAPIView):
 
 
 class UserUpdateView(UpdateAPIView):
-    authentication_classes = [authentication.JSONWebTokenAuthentication]
-    permission_classes = [permissions.IsAuthenticated]
+    # authentication_classes = [authentication.JSONWebTokenAuthentication]
+    # permission_classes = [permissions.IsAuthenticated]
     queryset = User.objects.all()
     serializer_class = UserSerializer
     lookup_field = 'username'
@@ -290,6 +293,26 @@ class UserSkillsEditViewSet(viewsets.ModelViewSet):
     http_method_names = ['get', 'post', 'patch', 'put', 'delete']
 
 
+class UserInterestsViewSet(viewsets.ModelViewSet):
+    queryset = UserInterests.objects.all()
+    serializer_class = UserInterestsSerializer
+
+    filter_backends = [DjangoFilterBackend]
+
+    http_method_names = ['get']
+
+
+class UserInterestsEditViewSet(viewsets.ModelViewSet):
+
+    # authentication_classes = [authentication.JSONWebTokenAuthentication]
+    # permission_classes = [permissions.IsAuthenticated]
+
+    queryset = UserInterests.objects.all()
+    serializer_class = UserInterestsSerializer
+
+    http_method_names = ['get', 'post', 'patch', 'put', 'delete']
+
+
 class UserContactFilter(FilterSet):
     username = CharFilter(field_name='user__username', lookup_expr='iexact')
 
@@ -386,7 +409,8 @@ class JWTRegisterView(RegisterView):
                 'id': user.id,
                 'username': user.username,
                 'email': user.email,
-                'email_verified': False
+                'email_verified': False,
+                'has_interests': False
             },
             'firebase_token': firebase_token
         })
@@ -412,13 +436,22 @@ class GoogleLoginView(SocialLoginView):
 
         email_verified = EmailAddress.objects.get(user=user).verified
 
+        user_profile = Profile.objects.get(user=user)
+        user_role = user_profile.userRole.value
+
+        has_interests = False
+        if UserInterests.objects.filter(user=user).count() != 0:
+            has_interests = True
+
         return Response({
             'token': jwttoken,
             'user': {
                 'id': user.id,
                 'username': user.username,
                 'email': user.email,
-                'email_verified': email_verified
+                'email_verified': email_verified,
+                'role': user_role,
+                'has_interests': has_interests,
             },
             'firebase_token': firebase_token,
         })

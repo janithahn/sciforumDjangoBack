@@ -176,7 +176,7 @@ class HotPostsViewSet(viewsets.ModelViewSet):
 
             hotness = ((min(answer_count, 10) * score) / (5 + answer_score)) / ((age_in_hours + 1) ** 1.4)
             obj.hotness = hotness
-            obj.save()
+            obj.save(update_fields=['hotness'])
 
         return queryset.order_by('-hotness')
 
