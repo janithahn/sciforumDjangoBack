@@ -157,6 +157,10 @@ class UserUpdateView(UpdateAPIView):
     serializer_class = UserSerializer
     lookup_field = 'username'
 
+    def perform_update(self, serializer):
+        UserInterests.objects.filter(user=self.request.user).delete()  # first delete existing values before update
+        serializer.save()
+
 
 class UserDeleteView(DestroyAPIView):
     authentication_classes = [authentication.JSONWebTokenAuthentication]

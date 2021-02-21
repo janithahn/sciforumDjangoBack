@@ -124,12 +124,13 @@ class CustomUserSerializer(serializers.ModelSerializer):
     education = UserEducationSerializer('education', partial=True, many=True, read_only=True)
     languages = UserLanguageSerializer('languages', partial=True, many=True, read_only=True)
     skills = UserSkillsSerializer('skills', partial=True, many=True, read_only=True)
+    interests = UserInterestsSerializer('interests', partial=True, many=True)
     answers = serializers.SerializerMethodField(read_only=True)
     posts = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = User
-        fields = ['id', 'first_name', 'last_name', 'profile', 'contact', 'employment', 'education', 'languages', 'skills', 'answers', 'posts']
+        fields = ['id', 'first_name', 'last_name', 'profile', 'contact', 'employment', 'education', 'languages', 'skills', 'interests', 'answers', 'posts']
 
     def get_answers(self, obj):
         return Answer.objects.filter(owner=obj.id).count()
