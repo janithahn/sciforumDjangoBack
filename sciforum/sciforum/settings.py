@@ -44,6 +44,7 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL')
+AUTO_MAIL_FROM = DEFAULT_FROM_EMAIL
 
 # custom account adapter for overriding confirm email url
 ACCOUNT_ADAPTER = 'user_profile.adapter.AccountAdapter'
@@ -85,6 +86,7 @@ INSTALLED_APPS = [
     'comment.apps.CommentConfig',
     'chat.apps.ChatConfig',
     'scraper.apps.ScraperConfig',
+    'mail_app.apps.MailAppConfig',
     # 'grabber.grabber.apps.GrabberConfig',
 
     'corsheaders',
