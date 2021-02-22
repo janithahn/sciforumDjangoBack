@@ -248,5 +248,36 @@ class LatestPostsViewSet(viewsets.ModelViewSet):
         return queryset.order_by('-created_at')
 
 
+class UnansweredPostsViewSet(viewsets.ModelViewSet):
+    queryset = Post.objects.all()
+    pagination_class = PostsPagination
+    serializer_class = PostSerializer
+    http_method_names = ['get']
+
+    filter_backends = [filters.OrderingFilter]
+    ordering_fields = ['created_at']
+
+    def get_queryset(self):
+        assert self.queryset is not None, (
+                "'%s' should either include a `queryset` attribute, "
+                "or override the `get_queryset()` method."
+                % self.__class__.__name__
+        )
+
+        queryset = self.queryset
+        if isinstance(queryset, QuerySet):
+            # Ensure queryset is re-evaluated on each request.
+            queryset = queryset.all()
+
+        queryset = queryset.annotate(answers_count=Count('answer')).filter(answers_count=0).distinct()
+
+        request_user = self.request.user
+        if request_user.is_authenticated:
+            user_interests = UserInterests.objects.filter(user=request_user)
+            label_list = [item.interest for item in user_interests]
+            return queryset.filter(label__in=label_list).order_by('-created_at')
+
+        return queryset.order_by('-created_at')
+
 
 
