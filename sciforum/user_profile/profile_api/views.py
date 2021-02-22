@@ -297,19 +297,28 @@ class UserSkillsEditViewSet(viewsets.ModelViewSet):
     http_method_names = ['get', 'post', 'patch', 'put', 'delete']
 
 
+class UserInterestsFilter(FilterSet):
+    username = CharFilter(field_name='user__username', lookup_expr='iexact')
+
+    class Meta:
+        model = UserInterests
+        fields = ('username',)
+
+
 class UserInterestsViewSet(viewsets.ModelViewSet):
     queryset = UserInterests.objects.all()
     serializer_class = UserInterestsSerializer
 
     filter_backends = [DjangoFilterBackend]
+    filterset_class = UserInterestsFilter
 
     http_method_names = ['get']
 
 
 class UserInterestsEditViewSet(viewsets.ModelViewSet):
 
-    # authentication_classes = [authentication.JSONWebTokenAuthentication]
-    # permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [authentication.JSONWebTokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
 
     queryset = UserInterests.objects.all()
     serializer_class = UserInterestsSerializer
