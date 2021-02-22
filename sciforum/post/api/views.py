@@ -19,6 +19,7 @@ import datetime
 from answer.models import Answer
 from vote.models import AnswerVote
 from django.db.models.query import QuerySet
+from user_profile.models import UserInterests
 
 
 # Temporary sample views to get visitors
@@ -178,6 +179,12 @@ class HotPostsViewSet(viewsets.ModelViewSet):
             obj.hotness = hotness
             obj.save(update_fields=['hotness'])
 
+        request_user = self.request.user
+        if request_user.is_authenticated:
+            user_interests = UserInterests.objects.filter(user=request_user)
+            label_list = [item.interest for item in user_interests]
+            return queryset.filter(label__in=label_list).order_by('-hotness')
+
         return queryset.order_by('-hotness')
 
 
@@ -190,6 +197,55 @@ class MostLikedPostsViewSet(viewsets.ModelViewSet):
     filter_backends = [filters.OrderingFilter]
     ordering_fields = ['vote_count']
 
+    def get_queryset(self):
+        assert self.queryset is not None, (
+                "'%s' should either include a `queryset` attribute, "
+                "or override the `get_queryset()` method."
+                % self.__class__.__name__
+        )
+
+        queryset = self.queryset
+        if isinstance(queryset, QuerySet):
+            # Ensure queryset is re-evaluated on each request.
+            queryset = queryset.all()
+
+        request_user = self.request.user
+        if request_user.is_authenticated:
+            user_interests = UserInterests.objects.filter(user=request_user)
+            label_list = [item.interest for item in user_interests]
+            return queryset.filter(label__in=label_list)
+
+        return queryset
+
+
+class LatestPostsViewSet(viewsets.ModelViewSet):
+    queryset = Post.objects.all()
+    pagination_class = PostsPagination
+    serializer_class = PostSerializer
+    http_method_names = ['get']
+
+    filter_backends = [filters.OrderingFilter]
+    ordering_fields = ['created_at']
+
+    def get_queryset(self):
+        assert self.queryset is not None, (
+                "'%s' should either include a `queryset` attribute, "
+                "or override the `get_queryset()` method."
+                % self.__class__.__name__
+        )
+
+        queryset = self.queryset
+        if isinstance(queryset, QuerySet):
+            # Ensure queryset is re-evaluated on each request.
+            queryset = queryset.all()
+
+        request_user = self.request.user
+        if request_user.is_authenticated:
+            user_interests = UserInterests.objects.filter(user=request_user)
+            label_list = [item.interest for item in user_interests]
+            return queryset.filter(label__in=label_list).order_by('-created_at')
+
+        return queryset.order_by('-created_at')
 
 
 
