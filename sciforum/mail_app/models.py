@@ -54,5 +54,4 @@ class ScheduledMail(models.Model):
             to=recipient_list,
         )
         mail_msg.content_subtype = 'html'
-        print('email sent')
         mail_msg.send()

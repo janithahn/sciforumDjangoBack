@@ -26,6 +26,7 @@ class Profile(models.Model):
     upVotes = models.IntegerField(blank=True, null=True)
     downVotes = models.IntegerField(blank=True, null=True)
     profileImg = models.ImageField(upload_to='profile_image', blank=True)
+    is_email_subscribed = models.BooleanField(default=False)
     # profileImgUrl = models.URLField(blank=True)
 
 

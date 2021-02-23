@@ -63,19 +63,38 @@ LOGIN_REDIRECT_URL = config('LOGIN_REDIRECT_URL')
 # STREAM_API_KEY = '3377njgqgmhg'
 # STREAM_API_SECRET = '5445hhk8qb4g5n6sh6t8s5tk4bzgpq6xhz5k7j5fj2bhzp2bw57422unk54qckjh'
 
+# Templates
+'''TEMPLATE_DIRS = (
+    os.path.join(BASE_DIR, 'user_profile\\templates'),
+)'''
+
 # Celery setup
-CELERY_BROKER_URL = 'redis://localhost:6379'
 CELERY_RESULT_BACKEND = 'redis://localhost:6379'
+CELERY_CACHE_BACKEND = 'default'
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+        'LOCATION': 'sciforum-cache',
+    }
+}
+
+CELERY_BROKER_URL = 'redis://localhost:6379'
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = 'Asia/Colombo'
-CELERY_BEAT_SCHEDULE = {
+'''CELERY_BEAT_SCHEDULE = {
     'notify-every-10-seconds': {
         'task': 'user_profile.tasks.send_notification',
         'schedule': 10.0,
     },
-}
+    'notify-every-1-minute': {
+        'task': 'user_profile.tasks.send_moderator_daily_notification',
+        'schedule': crontab(minute=1),
+    },
+}'''
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
 
 # Application definition
 

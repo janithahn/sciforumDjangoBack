@@ -1,0 +1,14 @@
+{% autoescape off %}
+    <h2>Hi {{ username }},</h2>
+    <h4>Here are your daily updates from <strong><a href={{ base_url }}>sciForum</a></strong></h4>
+
+    {% for post in posts_list %}
+        <h4>{{ post.title }}</h4>
+    {% endfor %}
+
+    <p>
+        Sincerely,
+        <br>
+        The sciForum Team
+    </p>
+{% endautoescape %}
