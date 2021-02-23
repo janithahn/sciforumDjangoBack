@@ -95,7 +95,7 @@ class CustomProfileSerializer(EnumSupportSerializerMixin, serializers.ModelSeria
 
     class Meta:
         model = Profile
-        fields = ['aboutMe', 'profileImg', 'location', 'lastAccessDate', 'postViews', 'login_ip', 'user_agent_info', 'userRole']
+        fields = ['aboutMe', 'profileImg', 'location', 'lastAccessDate', 'postViews', 'login_ip', 'user_agent_info', 'userRole', 'is_email_subscribed']
             #, 'userRole']
         extra_kwargs = {
             'login_ip': {'write_only': True},

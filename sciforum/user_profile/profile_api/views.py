@@ -64,7 +64,8 @@ class ProfileViewSet(viewsets.ModelViewSet):
 
 # views for users
 class UserViewSet(GetSerializerClassMixin, viewsets.ModelViewSet):
-
+    authentication_classes = [authentication.JSONWebTokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
     '''
         here it describes the way of getting user information over the drf depending on the serializer.
     '''

@@ -14,6 +14,10 @@ from django.core import serializers
 from django.contrib.contenttypes.models import ContentType
 from django.db.models.query import QuerySet
 from vote.models import AnswerVote
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import get_template
+from django.conf import settings
+from user_profile.models import Profile
 
 ANSWERS_PER_PAGE = 2
 
@@ -151,12 +155,41 @@ class AnswerCreateView(CreateAPIView):
         action_object = Answer.objects.get(id=obj.id)
         message = from_user.username + ' has put an answer to your question'
         to_user = Post.objects.get(id=obj.postBelong.id).owner
+        post_belong = Post.objects.get(id=obj.postBelong.id)
 
         if from_user.is_authenticated and from_user != to_user:
             notify.send(sender=from_user, recipient=to_user, verb=message, action_object=action_object)
+            self.send_email_notification(to_user, from_user, post_belong)
 
         serialized_obj = serializers.serialize('json', [obj, ])
         return serialized_obj
+
+    def send_email_notification(self, to_user, from_user, post_belong):
+        is_email_subscribed = Profile.objects.get(user=to_user).is_email_subscribed
+        plaintext = get_template('answer_created_notification.txt')
+        html = get_template('answer_created_notification.html')
+
+        if is_email_subscribed:
+            from_user_url = settings.URL_FRONT + 'profile/' + from_user.username
+            post_url = settings.URL_FRONT + 'questions/' + str(post_belong.id)
+            ctx = {
+                'username': to_user.username,
+                'base_url': settings.URL_FRONT,
+                'from_user': from_user,
+                'post_belong': post_belong,
+                'from_user_url': from_user_url,
+                'post_url': post_url,
+            }
+
+            # d = Context({'username': recipient.username, 'base_url': settings.URL_FRONT, 'posts': posts_list})
+            subject, from_email, to = 'sciForum Updates', settings.AUTO_MAIL_FROM, to_user.email
+            text_content = plaintext.render(ctx)
+            html_content = html.render(ctx)
+            msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
+            msg.attach_alternative(html_content, "text/html")
+            msg.send()
+            print('email sent')
+
 
 
 class AnswerUpdateView(UpdateAPIView):
