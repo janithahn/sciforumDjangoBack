@@ -15,6 +15,7 @@ from pathlib import Path
 from decouple import config, Csv
 import firebase_admin
 from firebase_admin import credentials
+from celery.schedules import crontab
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
@@ -61,6 +62,20 @@ LOGIN_REDIRECT_URL = config('LOGIN_REDIRECT_URL')
 # Chat
 # STREAM_API_KEY = '3377njgqgmhg'
 # STREAM_API_SECRET = '5445hhk8qb4g5n6sh6t8s5tk4bzgpq6xhz5k7j5fj2bhzp2bw57422unk54qckjh'
+
+# Celery setup
+CELERY_BROKER_URL = 'redis://localhost:6379'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'Asia/Colombo'
+CELERY_BEAT_SCHEDULE = {
+    'notify-every-10-seconds': {
+        'task': 'user_profile.tasks.send_notification',
+        'schedule': 10.0,
+    },
+}
 
 # Application definition
 
@@ -124,6 +139,9 @@ INSTALLED_APPS = [
 
     # generic relations
     'generic_relations',
+
+    # celery
+    'django_celery_beat',
 ]
 
 SITE_ID = config('SITE_ID')
