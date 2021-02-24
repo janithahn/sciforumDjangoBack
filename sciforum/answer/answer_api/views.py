@@ -159,19 +159,19 @@ class AnswerCreateView(CreateAPIView):
 
         if from_user.is_authenticated and from_user != to_user:
             notify.send(sender=from_user, recipient=to_user, verb=message, action_object=action_object)
-            self.send_email_notification(to_user, from_user, post_belong)
+            self.send_email_notification(to_user, from_user, post_belong, action_object)
 
         serialized_obj = serializers.serialize('json', [obj, ])
         return serialized_obj
 
-    def send_email_notification(self, to_user, from_user, post_belong):
+    def send_email_notification(self, to_user, from_user, post_belong, answer):
         is_email_subscribed = Profile.objects.get(user=to_user).is_email_subscribed
         plaintext = get_template('answer_created_notification.txt')
         html = get_template('answer_created_notification.html')
 
         if is_email_subscribed:
             from_user_url = settings.URL_FRONT + 'profile/' + from_user.username
-            post_url = settings.URL_FRONT + 'questions/' + str(post_belong.id)
+            post_url = settings.URL_FRONT + 'questions/' + str(post_belong.id) + '/' + str(answer.id) + '#' + str(answer.id)
             ctx = {
                 'username': to_user.username,
                 'base_url': settings.URL_FRONT,

@@ -240,7 +240,7 @@ class UserprofileJWTLoginSerializer(EnumSupportSerializerMixin, serializers.Mode
 
     class Meta:
         model = Profile
-        fields = ['profileImg', 'userRole']
+        fields = ['profileImg', 'userRole', 'is_email_subscribed']
 
 
 class MentionListSerializer(serializers.ModelSerializer):

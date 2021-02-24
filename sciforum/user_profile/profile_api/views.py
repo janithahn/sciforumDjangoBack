@@ -424,7 +424,8 @@ class JWTRegisterView(RegisterView):
                 'username': user.username,
                 'email': user.email,
                 'email_verified': False,
-                'has_interests': False
+                'has_interests': False,
+                'is_email_subscribed': False,
             },
             'firebase_token': firebase_token
         })
@@ -452,6 +453,7 @@ class GoogleLoginView(SocialLoginView):
 
         user_profile = Profile.objects.get(user=user)
         user_role = user_profile.userRole.value
+        is_email_subscribed = user_profile.is_email_subscribed
 
         has_interests = False
         if UserInterests.objects.filter(user=user).count() != 0:
@@ -466,6 +468,7 @@ class GoogleLoginView(SocialLoginView):
                 'email_verified': email_verified,
                 'role': user_role,
                 'has_interests': has_interests,
+                'is_email_subscribed': is_email_subscribed,
             },
             'firebase_token': firebase_token,
         })
