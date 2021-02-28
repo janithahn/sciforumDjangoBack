@@ -54,6 +54,15 @@ class ProfileViewSet(viewsets.ModelViewSet):
     filterset_fields = ['aboutMe', 'user']
     http_method_names = ['get']
 
+
+class ProfileUpdateViewSet(viewsets.ModelViewSet):
+    authentication_classes = [authentication.JSONWebTokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+    queryset = Profile.objects.all()
+    serializer_class = ProfileSerializer
+    lookup_field = 'user'
+    http_method_names = ['put', 'patch']
+
     def perform_update(self, serializer):
         # Check if an image exists for the profile object and if yes then delete the image from the storage
         prev_image = self.get_object().profileImg

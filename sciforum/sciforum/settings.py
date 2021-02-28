@@ -72,10 +72,19 @@ LOGIN_REDIRECT_URL = config('LOGIN_REDIRECT_URL')
 CELERY_RESULT_BACKEND = 'redis://localhost:6379'
 CELERY_CACHE_BACKEND = 'default'
 
-CACHES = {
+'''CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
         'LOCATION': 'sciforum-cache',
+    }
+}'''
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://localhost:6379",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
     }
 }
 
@@ -303,6 +312,9 @@ DATABASES = {
     'crawler': {
         'ENGINE': 'djongo',
         'NAME': 'sciEventsCrawler',
+        'CLIENT': {
+            'host': 'localhost'
+        }
     },
 }
 
