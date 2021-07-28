@@ -2,8 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="ed84cb33-4769-473c-86eb-55a83dc0489a" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/sciforum/answer/answer_api/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/sciforum/answer/answer_api/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sciforum/post/api/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/sciforum/post/api/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sciforum/grabber/grabber/events.json" beforeDir="false" afterPath="$PROJECT_DIR$/sciforum/grabber/grabber/events.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sciforum/grabber/grabber/webinars.csv" beforeDir="false" afterPath="$PROJECT_DIR$/sciforum/grabber/grabber/webinars.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sciforum/grabber/grabber/webinars.json" beforeDir="false" afterPath="$PROJECT_DIR$/sciforum/grabber/grabber/webinars.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -35,6 +36,7 @@
       <workItem from="1611293350579" duration="16000" />
       <workItem from="1611752000359" duration="27000" />
       <workItem from="1613620953972" duration="17000" />
+      <workItem from="1627394914465" duration="18000" />
     </task>
     <servers />
   </component>

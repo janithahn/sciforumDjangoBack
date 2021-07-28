@@ -298,7 +298,7 @@ DATABASES = {
         'NAME': config('DB_NAME'),
         'USER': config('DB_USER'),
         'PASSWORD': config('DB_PASSWORD'),
-        'HOST': 'localhost',
+        'HOST': config('DB_HOST'),
         'PORT': '3306',
         'OPTIONS': {
             # Tell MySQLdb to connect with 'utf8mb4' character set
@@ -313,7 +313,7 @@ DATABASES = {
         'ENGINE': 'djongo',
         'NAME': 'sciEventsCrawler',
         'CLIENT': {
-            'host': 'localhost'
+            'host': config('MONGO_DB_HOST')
         }
     },
 }
