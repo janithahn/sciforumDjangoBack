@@ -168,8 +168,11 @@ class UserUpdateView(UpdateAPIView):
     lookup_field = 'username'
 
     def perform_update(self, serializer):
-        if self.request.data['interests']:
-            UserInterests.objects.filter(user=self.request.user).delete()  # first delete existing values before update
+        try:
+            if self.request.data['interests']:
+                UserInterests.objects.filter(user=self.request.user).delete()  # first delete existing values before update
+        except Exception as e:
+            print(e)
         serializer.save()
 
 
