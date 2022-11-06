@@ -38,7 +38,7 @@ def send_moderator_daily_notification():
 
     for recipient in recipients:
         interests = [interest.interest for interest in UserInterests.objects.filter(user=recipient)]
-        posts_list = [{'title': post.title, 'url': settings.URL_FRONT + 'questions/' + str(post.id)} for post in Post.objects.filter(label__in=interests)]# if post.created_at.date() == today]
+        posts_list = [{'title': post.title, 'url': settings.URL_FRONT + 'questions/' + str(post.id)} for post in Post.objects.filter(label__in=interests) if post.created_at.date() == yesterday]
 
         if len(posts_list) != 0:
             ctx = {
