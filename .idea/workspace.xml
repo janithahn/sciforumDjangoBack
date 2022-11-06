@@ -2,9 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="ed84cb33-4769-473c-86eb-55a83dc0489a" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/sciforum/grabber/grabber/events.json" beforeDir="false" afterPath="$PROJECT_DIR$/sciforum/grabber/grabber/events.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sciforum/grabber/grabber/webinars.csv" beforeDir="false" afterPath="$PROJECT_DIR$/sciforum/grabber/grabber/webinars.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sciforum/grabber/grabber/webinars.json" beforeDir="false" afterPath="$PROJECT_DIR$/sciforum/grabber/grabber/webinars.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sciforum/user_profile/tasks.py" beforeDir="false" afterPath="$PROJECT_DIR$/sciforum/user_profile/tasks.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -14,17 +13,24 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
   <component name="ProjectId" id="1nPYkmYPJvxi5CXT2lLSyrFV2dE" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">
-    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
-    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="WebServerToolWindowFactoryState" value="false" />
-  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "last_opened_file_path": "C:/Work/University/CS304/project/Docker/sciforum-backend",
+    "nodejs_package_manager_path": "npm"
+  }
+}]]></component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -37,6 +43,8 @@
       <workItem from="1611752000359" duration="27000" />
       <workItem from="1613620953972" duration="17000" />
       <workItem from="1627394914465" duration="18000" />
+      <workItem from="1651033159371" duration="657000" />
+      <workItem from="1651044434663" duration="617000" />
     </task>
     <servers />
   </component>
